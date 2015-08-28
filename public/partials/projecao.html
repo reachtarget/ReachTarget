@@ -1,0 +1,146 @@
+<h1>Projeção</h1>
+
+<div class="row">
+	<ul class="pager">
+      <button class="btn btn-default" type="button" ng-click="semestreAnterior()">&larr;</button>
+      {{semestreAno}}
+      <button class="btn btn-default" type="button" ng-click="proximoSemestre()">&rarr;</button>
+  	</ul>
+</div>
+
+<div class="row">
+	<div class="col-md-2">
+		<div class="row">
+			<br/>
+		</div>
+
+		<div class="row">
+			Acessos
+		</div>
+
+		<div class="row">
+			Leads
+		</div>
+
+		<div class="row">
+			Vendas
+		</div>
+	</div>
+
+	<div class="col-md-10">
+		<div class="row">
+			<div class="col-md-2">
+				{{mesCol0107}}
+			</div>
+
+			<div class="col-md-2">
+				{{mesCol0208}}
+			</div>
+
+			<div class="col-md-2">
+				{{mesCol0309}}
+			</div>
+
+			<div class="col-md-2">
+				{{mesCol0410}}
+			</div>
+
+			<div class="col-md-2">
+				{{mesCol0511}}
+			</div>
+
+			<div class="col-md-2">
+				{{mesCol0612}}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('acessos', '0107', true)" ng-model="acessos0107" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('acessos', '0208', true)" ng-model="acessos0208" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('acessos', '0309', true)" ng-model="acessos0309" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('acessos', '0410', true)" ng-model="acessos0410" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('acessos', '0511', true)" ng-model="acessos0511" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('acessos', '0612', true)" ng-model="acessos0612" placeholder="R$ 1.256,98">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('leads', '0107', true)" ng-model="leads0107" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('leads', '0208', true)" ng-model="leads0208" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('leads', '0309', true)" ng-model="leads0309" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('leads', '0410', true)" ng-model="leads0410" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('leads', '0511', true)" ng-model="leads0511" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('leads', '0612', true)" ng-model="leads0612" placeholder="R$ 1.256,98">
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('vendas', '0107', true)" ng-model="vendas0107" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('vendas', '0208', true)" ng-model="vendas0208" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('vendas', '0309', true)" ng-model="vendas0309" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('vendas', '0410', true)" ng-model="vendas0410" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('vendas', '0511', true)" ng-model="vendas0511" placeholder="R$ 1.256,98">
+			</div>
+
+			<div class="col-md-2">
+				<input type="number" min="0" step="2" class="form-control" ng-blur="salvarProjecao('vendas', '0612', true)" ng-model="vendas0612" placeholder="R$ 1.256,98">
+			</div>
+		</div>
+	</div>
+</div>
+
+<br/>
+
+<div class="row">
+	<ul class="pager">
+		<label>
+  			<input type="checkbox" ng-model="aplicarPercMensal"> Desejo aplicar 
+  			<input type="number" class="form-control" min="0" step="2" ng-model="valorPercMensal"> % de crescimento, mensalmente, até o final do semestre.
+  		</label>
+  	</ul>
+</div>

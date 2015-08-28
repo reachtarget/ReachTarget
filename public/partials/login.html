@@ -1,0 +1,49 @@
+<div class="panel-body">
+
+  <div class="row">
+
+    <div class="panel panel-default" id="login-box">
+      <img id='imgLogin' alt="Acesse sua conta" title="Acesse sua conta" />
+    
+      <div class="panel-heading clearfix">
+        <h5 class="panel-title">Acesse sua conta</h5>
+      </div>
+
+      <div class="panel-body">
+        <div class="input-group">
+          <label class="input-group-addon" for="login">Login</label>
+          <input class="form-control" id="login" name="login" ng-model="login" required>
+        </div>
+
+        <!--
+        <div style="cursor: pointer;" class="input-group-addon" for="senha" ng-click="esqueciSenha()">
+          Esqueci minha senha
+        </div>
+        -->
+        
+
+        <div class="input-group">
+          <label class="input-group-addon" for="senha">Senha</label>
+          <input type="password" class="form-control" id="senha" name="senha" ng-model="senha" ng-keypress="enter($event)" required>
+        </div>
+
+        <div class="col-md-6">
+        <!--
+          <div class="input-group" id="lembrar">
+            <input type="checkbox" ng-model="lembrarDeMim">Lembrar de mim
+          </div> 
+        -->
+        </div>
+
+        <div class="col-md-6">
+          <button class="btn btn-primary pull-right" ng-click="validarLogin()">Login</button>
+        </div>
+
+      </div>
+
+      <div ng-show="usuarioSenhaInvalido" role="alert" id="alerta-login">
+        {{mensagemUsuarioSenhaInvalido}}
+      </div>
+    </div>
+  </div>
+</div>

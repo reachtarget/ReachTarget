@@ -1,0 +1,113 @@
+<br/>
+
+<div class="row">
+  <div class="col-md-2">  
+    <h2>{{nome}}</h2>
+	  <h3>{{cargo}}</h3>
+	  <h4>{{empresa}}</h4>
+    <h5>{{email}}</h5>
+    <h6>{{telefone}}</h6>
+  </div>
+</div>
+
+<br/>
+
+<div class="row">
+  <div class="col-md-2">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Conversões</h3>
+      </div>
+      <div class="panel-body">
+      	<h3>{{conversoes}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-2">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Interesse</h3>
+      </div>
+      <div class="panel-body">
+      	<h3>{{interesse}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-2">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Origem</h3>
+      </div>
+      <div class="panel-body">
+        <h3>{{origem}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-2">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Status</h3>
+      </div>
+      <div class="panel-body">
+        <h3>{{status}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-2">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Data de fechamento</h3>
+      </div>
+      <div class="panel-body">
+        <h3>{{dataFechamento}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-2">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Valor de fechamento</h3>
+      </div>
+      <div class="panel-body">
+        <h3>{{valorFechamento}}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br/>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">Timeline</h3>
+      </div>
+
+      <div class="panel-body">
+        <div class="row">
+          <table class="table table-hover">
+            <tr>
+              <th class="text-center">Tipo</th>
+              <th class="text-center">Data</th>
+              <th class="text-center">De</th>
+              <th class="text-center">Para</th>              
+            </tr>
+
+            <tr ng-repeat="itemTimeline in listaTimeline">
+              <td class="text-center"> {{itemTimeline.tipo}} </td>
+              <td class="text-center"> {{itemTimeline.data}} </td>
+              <td class="text-center"> {{itemTimeline.valorAnterior}} </td>
+              <td class="text-center"> {{itemTimeline.valorAtual}} </td>              
+            </tr>
+          </table>
+        </div>
+      </div>
+     </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="panel-body">
+
+  <div class="row">
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Visualizações</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>{{acessos}}</h4> 
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Visitantes</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>{{visitantes}}</h4> 
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Leads</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>{{conversoes}}</h4> 
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Taxa de conversão</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>{{taxaDeConversao}} %</h4> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" >  
+    <div class="col-md-12">
+      <div class="panel panel-default" id="panel-destaque">
+        <div class="panel-heading">
+            <h5 class="panel-title">Gráfico</h5>
+        </div>
+
+        <div id='panelGrafico' class="panel-body" >
+          <canvas height="60px" id="graficoLeads"></canvas>
+
+          <div style="position: absolute; bottom: 31px;" class="btn-group btn-group-xs" role="group">
+            <p class="label-view">Visualizar gráfico por:</p>
+            <button type="button" class="btn btn-default" ng-click="filtroDiaSemanaMes(true, 'd')">Dias</button>
+            <button type="button" class="btn btn-default" ng-click="filtroDiaSemanaMes(true, 's')">Semanas</button>
+            <button type="button" class="btn btn-default" ng-click="filtroDiaSemanaMes(true, 'm')">Meses</button>
+          </div>
+
+          <div class="label-legenda">
+            <p id="label-lead">Leads</p>
+            <p id="label-visitantes">Visitantes</p>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>

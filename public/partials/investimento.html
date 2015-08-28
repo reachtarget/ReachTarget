@@ -1,0 +1,123 @@
+<h1>Investimento</h1>    
+
+<div class="row">
+  <ul class="pager">
+    <button class="btn btn-default" type="button" ng-click="clickProjecao()">Projeção</button>
+  </ul>  
+
+	<ul class="pager">
+      <button class="btn btn-default" type="button" ng-click="mesAnterior()">&larr;</button>
+      {{mesAno}}
+      <button class="btn btn-default" type="button" ng-click="proximoMes()">&rarr;</button>
+
+  	</ul>
+</div>
+
+<div class="row">
+	<div class="col-md-6">
+		  <div class="input-group">
+      		<span class="input-group-addon">Adwords</span>
+      		<input type="number" min="0" step="2" class="form-control" ng-blur="salvarInvestimento('R')" ng-model="adwords" placeholder="R$ 1.256,98">
+    	</div>
+    	<br/>
+    	<div class="input-group">
+      		<span class="input-group-addon">E-mail</span>
+      		<input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('R')"ng-model="email" placeholder="R$ 4,22">
+    	</div>
+    	<br/>
+    	<div class="input-group">
+      		<span class="input-group-addon">Orgânica</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('R')"ng-model="organica" placeholder="R$ 991,70">
+    	</div>
+    	<br/>
+    	<div class="input-group">
+      		<span class="input-group-addon">Outros</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('R')"ng-model="outros" placeholder="R$ 1.000,00">
+    	</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="input-group">
+      		<span class="input-group-addon">Social</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('R')"ng-model="social" placeholder="R$ 2.500,00">
+    	</div>
+    	<br/>
+    	<div class="input-group">
+      		<span class="input-group-addon">Direto</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('R')"ng-model="direto" placeholder="R$ 1,99">
+    	</div>
+    	<br/>
+    	<div class="input-group">
+      		<span class="input-group-addon">Referência</span>
+          <input type="number" min="0" step="0.01" class="form-control" ng-blur="salvarInvestimento('R')"ng-model="referencia" placeholder="R$ 338,88">
+    	</div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon">Total</span>
+          <input type="number" min="0" step="0.01" class="form-control" ng-model="total" placeholder="R$ 0,19">
+      </div>
+	</div>
+</div>
+
+
+<div id="modalProjecao" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Projeção ( {{mesAno}} )</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+  <div class="col-md-6">
+    <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Adwords</span>
+          <input type="number" min="0" step="2" class="form-control" ng-blur="salvarInvestimento('P')" ng-model="adwordsProjetado" placeholder="R$ 1.256,98">
+      </div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">E-mail</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('P')"ng-model="emailProjetado" placeholder="R$ 4,22">
+      </div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Orgânica</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('P')"ng-model="organicaProjetado" placeholder="R$ 991,70">
+      </div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Outros</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('P')"ng-model="outrosProjetado" placeholder="R$ 1.000,00">
+      </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Social</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('P')"ng-model="socialProjetado" placeholder="R$ 2.500,00">
+      </div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Direto</span>
+          <input type="number" min="0" step="any" class="form-control" ng-blur="salvarInvestimento('P')"ng-model="diretoProjetado" placeholder="R$ 1,99">
+      </div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Referência</span>
+          <input type="number" min="0" step="0.01" class="form-control" ng-blur="salvarInvestimento('P')"ng-model="referenciaProjetado" placeholder="R$ 338,88">
+      </div>
+      <br/>
+      <div class="input-group">
+          <span class="input-group-addon" style="width: 100px;">Total</span>
+          <input type="number" min="0" step="0.01" class="form-control" ng-model="totalProjetado" placeholder="R$ 338,88">
+      </div>
+  </div>
+</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="fecharProjecao()">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

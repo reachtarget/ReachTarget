@@ -1,0 +1,429 @@
+<div class="panel-body">
+  <div class="tabbable">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="javascript:#pnlDadosCadastrais" data-toggle="tab">Dados cadastrais</a></li>
+      <li><a href="javascript:#pnlCampanhas" data-toggle="tab">Campanhas</a></li>
+      <li><a href="javascript:#pnlBriefing" data-toggle="tab">Briefing</a></li>
+      <li><a href="javascript:#pnlAdwords" data-toggle="tab">Budget</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="pnlDadosCadastrais" class="tab-pane active">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <input type="checkbox" ng-model="status"> Ativo
+              <br/>
+              <br/>
+
+              Empresa
+              <input class="form-control" ng-model="empresa" placeholder="">
+              <br/>
+
+              E-mail
+              <input class="form-control" ng-model="email" placeholder="">
+              <br/>
+
+              Login
+              <input class="form-control" ng-model="login" placeholder="">
+              <br/>
+
+              Senha
+              <input class="form-control" ng-model="senha" placeholder="">
+              <br/>
+
+
+              <div ng-show="tipo == 'S'">
+                Adwords
+                <input class="form-control" ng-model="adwords" placeholder="">
+                <br/>
+
+                API Key (Mailchimp)
+                <input class="form-control" ng-model="apikeymailchimp" placeholder="">
+                <br/>
+
+
+                <div >
+                  Contas
+                  <select class="form-control" id="contas"
+                    ng-model="contaSelecionada"
+                    ng-options="conta.id as conta.nome for conta in accounts"
+                    ng-change="popularListaWebPropertyId()">
+                    <option value="">--Selecione uma conta--</option>
+                  </select>
+                </div>
+
+                <br />
+
+                <div ng-show="contaSelecionada">
+                  Propriedades
+                  <select class="form-control" id="propriedades"
+                    ng-model="propriedadeSelecionada"
+                    ng-options="webProperty.id as webProperty.nome for webProperty in webPropertyIds"
+                    ng-change="popularListaProfileId()">
+                    <option value="">--Selecione uma propriedade--</option>
+                  </select>
+                </div>
+
+                <br />
+
+                <div ng-show="propriedadeSelecionada">
+                  Visualizar
+                  <select class="form-control" id="perfil"
+                    ng-model="perfilSelecionado"
+                    ng-options="profile.id as profile.nome for profile in profileIds">
+                    <option value="">--Selecione um perfil--</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="pnlCampanhas" class="tab-pane">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="row">
+                <button class="btn btn-primary" ng-click="selecionar()">Adicionar</button>
+              </div>
+
+              <div class="row">
+                <table class="table table-hover" style="overflow: auto; height: 100px;">
+                  <thead>
+                    <tr>
+                      <th width="40" class="text-center"></th>
+                      <th width="40" class="text-center">Status</th>
+                      <th class="text-center">PageID</th>
+                      <th class="text-center">LandingPage</th>
+                      <th class="text-center">PagePath</th>
+                      <th class="text-center">Adwords</th>
+                      <th class="text-center">Conta</th>
+                      <th class="text-center">Propriedade</th>
+                      <th class="text-center">Visualizar</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr ng-repeat="item in lista">
+                      <td width="40"> 
+                        <button class="btn btn-primary" ng-click="apagar(item)">X</button>
+                      </td>
+
+                      <td width="40" class="text-center"> 
+                        <input class="form-control" type="checkbox" ng-model="item.Check" >
+                      </td>
+
+                      <td>
+                        <input class="form-control" ng-model="item.IDPagina" >
+                      </td>
+
+                      <td>
+                        <input class="form-control" ng-model="item.Nome" >
+                      </td>
+
+                      <td>
+                        <input class="form-control" ng-model="item.PagePath" >
+                      </td>
+
+                      <td>
+                        <input class="form-control" ng-model="item.Adwords" >
+                      </td>
+
+                      <td>
+                        <select class="form-control" ng-model="item.ContaSelecionada" ng-options="conta.id as conta.nome for conta in item.accounts" ng-change="popularListaWebPropertyId(false, item, true)">
+                          <option value="">--Selecione uma conta--</option>
+                        </select>
+                      </td>
+
+                      <td>
+                        <select class="form-control" ng-model="item.PropriedadeSelecionada" ng-options="webProperty.id as webProperty.nome for webProperty in item.webPropertyIds" ng-change="popularListaProfileId(false, item, true)">
+                          <option value="">--Selecione uma propriedade--</option>
+                        </select>
+                      </td>
+
+                      <td>
+                        <select class="form-control" ng-model="item.PerfilSelecionado" ng-options="profile.id as profile.nome for profile in item.profileIds">
+                          <option value="">--Selecione um perfil--</option>
+                        </select>
+                      </td>              
+                    </tr>
+                  </tbody>
+                </table>
+              </div>  
+            </div>
+          </div>  
+        </div>
+      </div>
+
+      <div id="pnlBriefing" class="tab-pane">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <h5>1. Qual o nome da sua empresa?</h5>   
+              <input class="form-control" placeholder="Escreva na grafia correta, da forma como devemos usar nas landingpages." ng-model="nomeEmpresa" required>
+
+              <br/>
+
+              <h5>2. Qual e-mail deverá receber os leads das campanhas?</h5>  
+              <input class="form-control" placeholder="Esse e-mail será utilizado para o login no dashboard e receberá todos os formulários que forem preenchidos e os relatórios de desempenho." ng-model="emailRecebeLeads" required>
+
+              <br/>
+
+              <h5>3. Quais os produtos/serviços que serão trabalhados?</h5> 
+              <input class="form-control" placeholder="É indicado trabalhar uma única oferta por campanha, ou seja, um único serviço, produto ou linha de produtos." ng-model="produtoServicosTrabalhados" required>
+
+              <br/>
+
+              <h5>4. Qual a abrangência geográfica que os produtos/serviços atendem?</h5> 
+              <input class="form-control" placeholder="Mencione os estados e cidades que lhe interessa gerar demanda para seus produtos/serviços." ng-model="abrangenciaGeografica" required>
+
+              <br/>
+
+              <h5>5. Qual o orçamento de Adwords para cada produto/serviço a ser trabalhado?</h5> 
+              <input class="form-control" placeholder="Recomendamos um orçamento a parte para cada campanha, considerando a concorrência do que está oferecido e da região escolhida." ng-model="orcamentoAdwords" required>
+
+              <br/>
+
+              <h5>6. Quais os principais atributos dos produtos/serviços que serão trabalhados?</h5>  
+              <input class="form-control" placeholder="Destaque as principais características, pontos fortes e os benefícios que mais chamam a atenção dos clientes." ng-model="atributosTrabalhados" required>
+
+              <br/>
+
+              <h5>7. Quem é o público alvo de cada produto/serviço que será oferecido?</h5> 
+              <input class="form-control" placeholder="Mencione características, cargo, segmento de atuação da empresa etc." ng-model="publicoAlvo" required>
+
+              <br/>
+
+              <h5>8. Como você imagina que seus clientes procuram seus produtos/serviços no Google?</h5>  
+              <input class="form-control" placeholder="Quais palavras-chave você imagina que eles procuram." ng-model="comoClientesProcuramGoogle" required>
+
+              <br/>
+
+              <h5>9. Quais principais diferenciais da sua empresa?</h5> 
+              <input class="form-control" placeholder="O que faz sua empresa ser especial e diferente da concorrência." ng-model="pricipaisDiferenciais" required>
+
+              <br/>
+
+              <h5>10. Quem são seus principais clientes?</h5> 
+              <input class="form-control" placeholder="Importante para dar destaque em sua campanha." ng-model="clientes" required>
+
+              <br/>
+
+              <h5>11. Quem são seus principais parceiros?</h5>  
+              <input class="form-control" placeholder="Importante para dar força em sua campanha." ng-model="parceiros" required>
+
+              <br/>
+
+              <h5>12. Quem são seus principais concorrentes?</h5> 
+              <input class="form-control" placeholder="Importante para podermos estudar o seu mercado e contextualizá-lo na criação." ng-model="concorrentes" required>
+
+              <br/>
+
+              <h5>13. Existe alguma referência visual que você queira indicar?</h5> 
+              <input class="form-control" placeholder="Envie links de sites ou nomes de marcas que você admira e poderia nos servir de inspiração." ng-model="referenciaVisual" required>
+            </div>
+          </div>
+        </div>          
+      </div>
+
+      <div id="pnlAdwords" class="tab-pane">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-2">
+                <h5>Data inicial</h5> 
+                <input type="date" class="form-control" ng-model="dataInicial">
+              </div>
+
+              <div class="col-md-2">
+                <h5>Data final</h5> 
+                <input type="date" class="form-control" ng-model="dataFinal">
+              </div>
+
+              <div class="col-md-3">
+                <h5>Budget consumido</h5> 
+                <input type="number" min="0" step="2" class="form-control" ng-model="budgetConsumido" placeholder="R$ 0,00">
+              </div>
+
+              <div class="col-md-3">
+                <h5>Budget disponível</h5>  
+                <input type="number" min="0" step="2" class="form-control" ng-model="budgetDisponivel" placeholder="R$ 0,00">
+              </div>
+
+              <div class="col-md-2">
+                <button class="btn btn-primary" ng-click="incluirBudget()">Adicionar</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table table-hover" style="overflow: auto; height: 100px;">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Data inicial</th>
+                      <th>Data final</th>
+                      <th>Budget consumido</th>
+                      <th>Budget disponível</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr ng-repeat="itemBudgetAdwords in listaBudgetAdwords">
+                      <td> 
+                        {{itemBudgetAdwords.dataShow}}
+                      </td>
+
+                      <td> 
+                        {{itemBudgetAdwords.dataInicialShow}}
+                      </td>
+
+                      <td> 
+                        {{itemBudgetAdwords.dataFinalShow}}
+                      </td>
+
+                      <td> 
+                        {{itemBudgetAdwords.budgetConsumido}}
+                      </td>
+
+                      <td> 
+                        {{itemBudgetAdwords.budgetDisponivel}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+
+      <div id="pnlCampanhas" class="tab-pane">
+         <div class="panel-body">
+            <div class="col-md-12">
+              <div class="row">
+                <button class="btn btn-primary" ng-click="novaCampanha()">Nova campanha</button>
+              </div>
+          </div>
+        </div> 
+      </div>
+
+    </div>
+  </div>
+
+  <br/>
+
+  <button class="btn btn-primary" ng-click="salvar()">Salvar alterações</button>
+  <button class="btn btn-primary" ng-click="voltar()">Voltar</button>
+</div>
+
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h6 class="modal-title">Incluir páginas</h6>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            
+            Nome
+            <input class="form-control" id="login" name="login" ng-model="paginaNome" required>
+
+            <br />
+
+            PageID
+            <input class="form-control" id="login" name="login" ng-model="paginaPageID" required>
+
+            <br />
+
+            PagePath
+            <input class="form-control" id="login" name="login" ng-model="paginaPagePath" required>
+
+            <br />
+
+            Adwords
+            <input class="form-control" id="login" name="login" ng-model="paginaAdwords" required>
+
+            <br />
+
+            <div >
+              Contas
+              <select class="form-control" id="contas"
+                ng-model="contaSelecionada"
+                ng-options="conta.id as conta.nome for conta in accounts"
+                ng-change="popularListaWebPropertyId()">
+                <option value="">--Selecione uma conta--</option>
+              </select>
+            </div>
+
+            <br />
+
+            <div ng-show="contaSelecionada">
+              Propriedades
+              <select class="form-control" id="propriedades"
+                ng-model="propriedadeSelecionada"
+                ng-options="webProperty.id as webProperty.nome for webProperty in webPropertyIds"
+                ng-change="popularListaProfileId()">
+                <option value="">--Selecione uma propriedade--</option>
+              </select>
+            </div>
+
+            <br />
+
+            <div ng-show="propriedadeSelecionada">
+              Visualizar
+              <select class="form-control" id="perfil"
+                ng-model="perfilSelecionado"
+                ng-options="profile.id as profile.nome for profile in profileIds">
+                <option value="">--Selecione um perfil--</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button ng-disabled="perfilSelecionado == ''" type="button" class="btn btn-primary" ng-click="fecharModal()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="modalNovaCampanha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        
+        <h6 class="modal-title">Nova campanha</h6>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <input class="form-control" placeholder="Nome da campanha">
+          </div>
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn btn-primary">Mailchimp</button>
+          <button type="button" class="btn btn-primary">Unbounce</button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="fecharNovaCampanha()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>

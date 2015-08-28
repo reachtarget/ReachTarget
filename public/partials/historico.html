@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-md-2">
+    	<h1>Resumos</h1>    
+  	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+		    <div class="panel-heading">
+		    	<h5 class="panel-title">Históricos</h5>
+		    </div>
+		    
+		    <div class="panel-body">
+		    	<input class="form-control" ng-model="filtro" type="search" placeholder="Pesquisar">
+
+		    	<br/>
+
+		      	<div class="table-responsive">
+			      	<table class="table table-hover table-striped">
+				  		<thead>
+				        	<tr>
+				        		<th width="12%" class="text-center">Envio</th>
+				        		<th width="18%" class="text-center">Período</th>
+
+				        		<th width="10%" class="text-center">Acessos</th>
+				        		<th width="10%" class="text-center">Visualizações</th>
+				        		<th width="10%" class="text-center">Leads</th>
+				        		<th width="10%" class="text-center">Conversão</th>
+
+				        		<th width="30%" class="text-center">Comentário</th>
+				        	</tr>
+				        </thead>
+
+				        <tbody>
+				        	<tr ng-repeat="itemHistoricoResumo in listaHistoricoResumo | filter: filtro | orderBy: DataEnvio ">
+				        		<td width="12%" class="text-center">{{itemHistoricoResumo.DataEnvio}}</td>
+				        		<td width="18%" class="text-center">{{itemHistoricoResumo.Periodo}}</td>
+
+				        		<td width="10%" class="text-center">{{itemHistoricoResumo.Acessos}}</td>
+				        		<td width="10%" class="text-center">{{itemHistoricoResumo.Visualizacoes}}</td>
+				        		<td width="10%" class="text-center">{{itemHistoricoResumo.Leads}}</td>
+				        		<td width="10%" class="text-center">{{itemHistoricoResumo.Conversao}} %</td>
+
+				        		<td width="30%" class="text-center">{{itemHistoricoResumo.Comentario}}</td>
+				        	</tr>	            	  
+				        </tbody>
+				  	</table>
+		        </div>
+		    </div>
+		</div>	  	
+	</div>
+</div>

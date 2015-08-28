@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html ng-app="reachtarget" xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link type="text/css" href="vendor/bootstrap/less/bootstrap.less" rel="stylesheet/less">
+    <script type="text/javascript" src="vendor/bootstrap/js/less.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap-daterangepicker-master/daterangepicker-bs3.css" />
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+
+    <div ng-controller="LoginController">
+        <title>{{TituloDaPagina}}</title>
+    </div>
+
+    <script>
+        (function(w,d,s,g,js,fjs){
+            g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(cb){this.q.push(cb)}};
+            js=d.createElement(s);fjs=d.getElementsByTagName(s)[0];
+            js.src='https://apis.google.com/js/platform.js';
+            fjs.parentNode.insertBefore(js,fjs);js.onload=function(){g.load('analytics')};
+        }
+        (window, document, 'script'))
+    </script>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-32635211-4', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script>
+        document.onkeydown = function () { 
+
+           switch (event.keyCode) {
+
+             case 116 :  
+                    event.returnValue = false;
+                    event.keyCode = 0;           
+                    return false;   
+
+
+              case 82 : 
+                if (event.ctrlKey) {  
+                    event.returnValue = false;
+                    event.keyCode = 0;    
+
+                    return false;
+                }
+            }
+        } 
+    </script>
+
+
+    <script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("https://assets.zendesk.com/embeddable_framework/main.js","siteina.zendesk.com");/*]]>*/</script>
+</head>
+
+<body>
+    <div id='loaderIndex' class="mask-loader" style="display: none;">
+        <div id="loader-siteina"></div>
+    </div>
+
+    <div ng-controller="LoginController">
+        <header id='headerNav' role="top-menu" class="header" >
+            <div class="navbar navbar-default navbar-static-top">
+                <div class="navbar-header" >
+                    <img id="logoTopo" class="navbar-brand" />
+                    <img id="logoCliente" class="navbar-brand" />
+
+                    <div id="divFiltros" name="divFiltros" data-placement="bottom" data-popover-content="#a1" data-toggle="popover" data-trigger="focus" tabindex="0">
+                        <h5 id="campanhaSelecionada"></h5>
+                        <br />
+                        <h5 id="periodoSelecionado"></h5>
+                    </div>
+
+                    <div class="hidden" id="a1">
+                        <div class="popover-body" bs-popover>
+                            <label >Campanhas</label>
+                            
+                            <select id="selectCampanhas" name="selectCampanhas" class="form-control" ng-options="item.IDPagina as item.Nome for item in listaCampanhas" ng-model="selected"></select>
+
+                            <label >Período</label>
+                            <input type="text" class="form-control" name="daterange" id="daterange">                        
+
+                            <button id="bttnAtualizarFiltros" name="bttnAtualizarFiltros" class="btn btn-primary" >Atualizar</button>
+                        </div>
+                    </div>
+                </div>
+                    
+                </div>
+
+                <div class="pull-right" ng-hide="administrador">
+                    <nav role="nav-menu" class="nav">
+                        <ul class="main-menu">
+
+                            <li id='leads'>
+                                <a class="dropdown-toggle" aria-expanded="true" href="#/leads">Leads</a>
+                            </li>
+
+                            <li id="resultados">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Resultados
+                                    </a>
+
+                                    <ul role="submenu" class="dropdown-menu dropdown-menu-right" id="resultados-drop">
+                                        <li role="subitem">
+                                            <a href="#/resultados/estatisticas"><i class="fa fa-fw fa-signal"></i> Estatísticas</a>
+                                        </li>
+
+                                        <li role="subitem">
+                                            <a href="#/resultados/leads"><i class="fa fa-fw fa-signal"></i> Leads</a>
+                                        </li>
+
+                                        <li ng-show="searchOuInbound" role="subitem">
+                                            <a href="#/resultados/canais"><i class="fa fa-fw fa-signal"></i> Canais</a>
+                                        </li>                                        
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li id="acoes">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    Ações
+                                    </a>
+
+                                    <ul role="submenu" class="dropdown-menu dropdown-menu-right" id="estrategia-drop">
+                                        <li role="subitem">
+                                            <a href="#/acoes/adwords"><i class="fa fa-fw fa-signal"></i> Adwords</a>
+                                        </li>
+
+                                        <li ng-show="searchOuInbound" role="subitem">
+                                            <a href="#/acoes/campanhas"><i class="fa fa-fw fa-signal"></i> Campanhas</a>
+                                        </li>
+
+                                        <li ng-show="searchOuInbound" role="subitem">
+                                            <a href="#/acoes/seo"><i class="fa fa-fw fa-signal"></i> SEO</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li id="estrategia">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    Estratégia
+                                    </a>
+
+                                    <ul role="submenu" class="dropdown-menu dropdown-menu-right" id="estrategia-drop">
+                                        <li id='objetivosMaaSRT' role="subitem">
+                                            <a href="#/estrategia/objetivos"><i class="fa fa-fw fa-signal"></i> Objetivos</a>
+                                        </li>
+
+                                        <li id='metasMaaSRT' role="subitem">
+                                            <a href="#/estrategia/metas"><i class="fa fa-fw fa-signal"></i> Metas</a>
+                                        </li>
+
+                                        <li id='timelineMaaSRT' role="subitem">
+                                            <a href="#/estrategia/timeline"><i class="fa fa-fw fa-signal"></i> Timeline</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+
+                            <li id="preferences">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                                    </a>
+
+                                    <ul role="submenu" class="dropdown-menu dropdown-menu-right" id="preferences-drop">
+                                        <li id='menuDadosCadastraisMaaS' role="subitem">
+                                            <a href="#/configuracoes/dadosCadastrais"><i class="fa fa-fw fa-signal"></i> Dados cadastrais</a>
+                                        </li>
+
+                                        <li id='menuFaturasMaaS' role="subitem">
+                                            <a ><i class="fa fa-fw fa-money"></i> Faturas</a>
+                                        </li>
+
+                                        <li id='menuDivider' class="divider"></li>
+
+                                        <li role="subitem">
+                                            <a ng-click="sair()">Sair</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+    </div>
+    
+    <div id="wrapper">
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="content-middle" ng-view></div>
+
+                <h6 id="textoMaaS" name="textoMaaS">O Marketing as a Service (MaaS) é uma plataforma de marketing da Siteina - Todos os direitos reservados - <b>Termos e condições</b></h6>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAlterarSenha" class="modal fade" ng-controller="LoginController">
+  		<div class="modal-dialog modal-sm">
+    		<div class="modal-content">
+		    	<div class="modal-header">
+		    		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        			<h4 class="modal-title">Alterar senha</h4>
+      			</div>
+
+	      		<div class="modal-body">
+	      			<div class="row">
+		        		Atual:
+		        		<br/>
+		        		<input class="form-control" ng-model="senhaAnterior" />
+				        <br />
+
+		        		Nova:
+		        		<br/>
+		        		<input class="form-control" ng-model="novaSenha" />
+		        	</div>
+	      		</div>
+
+	      		<div ng-show="usuarioSenhaInvalido" role="alert" id="alerta-login">
+        			{{mensagemUsuarioSenhaInvalido}}
+      			</div>
+
+	      		<div class="modal-footer">
+	        		<button type="button" class="btn btn-primary" ng-click="salvarNovaSenha()">Salvar</button>
+	      		</div>
+    		</div>
+  		</div>
+	</div>
+
+
+    <script src="vendor/jquery/dist/jquery.js"></script>
+    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap-daterangepicker-master/moment.js"></script>
+    <script src="vendor/bootstrap-daterangepicker-master/daterangepicker.js"></script>
+
+    <!-- APAGAR -->
+    <script src="vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+    <script src="vendor/bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+
+    <!-- AngularJS -->
+    <script src="vendor/angular/angular.js"></script>
+    <script src="vendor/angular-route/angular-route.js"></script>
+    <script src="vendor/angular-resource/angular-resource.js"></script>
+
+    <!-- ChartJS -->
+    <script src="vendor/chart-js/Chart.js"></script>
+    <script src="vendor/chart-stackedbar-js/src/Chart.StackedBar.js"></script>
+
+    <!-- Javascript Runner -->
+    <script src="js/main.js"></script>
+    <script src="js/global.js"></script>
+    
+    <!-- App Controllers -->
+    <script src="js/controllers/AdministrativoController.js"></script>
+    <script src="js/controllers/AdwordsMaaSController.js"></script>
+    <script src="js/controllers/AnaliseController.js"></script>
+    <script src="js/controllers/AnaliseLeadsMaaSController.js"></script>
+    <script src="js/controllers/CampanhasController.js"></script>
+    <script src="js/controllers/CanaisMaaSController.js"></script>
+    <script src="js/controllers/ClienteController.js"></script>
+    <script src="js/controllers/DadosCadastraisMaaSController.js"></script>
+    <script src="js/controllers/DashboardController.js"></script>
+    <script src="js/controllers/EstatisticasMaaSController.js"></script>
+    <script src="js/controllers/FichaLeadController.js"></script>
+    <script src="js/controllers/GoogleAnalyticsController.js"></script>
+    <script src="js/controllers/HistoricoController.js"></script>
+    <script src="js/controllers/InvestimentoController.js"></script>
+    <script src="js/controllers/LeadsController.js"></script>
+    <script src="js/controllers/LeadsMaaSController.js"></script>
+    <script src="js/controllers/LoginController.js"></script>
+    <script src="js/controllers/MetasMaaSController.js"></script>
+    <script src="js/controllers/NovoClienteController.js"></script>
+    <script src="js/controllers/ObjetivosMaaSController.js"></script>
+    <script src="js/controllers/ProjecaoController.js"></script>
+    <script src="js/controllers/TimelineMaaSController.js"></script>
+
+    <!-- App Services -->
+    <script src="js/services/LoginService.js"></script>
+    <script src="js/services/ClienteService.js"></script>
+    <script src="js/services/FichaLeadService.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<div class="panel-body">
+
+  <div class="row">
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Budget consumido</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4> R$ {{budgetConsumido}} </h4>
+        </div>
+      </div>  
+    </div>
+
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Budget disponível</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>
+            R$ 0,00 <!-- {{budgetDisponivel}} -->
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">CPC médio</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>
+          R$ {{cpcMedio}}
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">  
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h5 class="panel-title">Taxa de conversão</h5>
+          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+        </div>
+        <div class="panel-body">
+          <h4>
+          {{taxaDeConversao}} %
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" >  
+    <div class="col-md-12">
+      <div class="panel panel-default" id="panel-destaque">
+        <div class="panel-heading">
+          <h5 class="panel-title">Keywords</h5>
+          <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
+        </div>
+
+        <div style="overflow-y: scroll; height: 100%; width: 100%; padding: 0 !important;" class="panel-body" >
+          <br/>
+
+          <div class="table-responsive">
+            <table class="table table-hover table-striped">
+              <thead>
+                <tr>
+                  <th width="5%" class="text-center">
+                    
+                  </th>
+
+                  <th width="18%" class="text-center">
+                    <a >Grupo de anúncio</a>
+                  </th>
+
+                  <th width="15%" class="text-center">
+                    <a >Palavra-chave</a>              
+                  </th>
+
+                  <th width="10%" class="text-center">
+                    <a >Impressões</a>              
+                  </th>
+
+                  <th width="10%" class="text-center">
+                    <a >Cliques</a>              
+                  </th>
+
+                  <th width="10%" class="text-center">
+                    <a >CPC</a>              
+                  </th>
+
+                  <th width="10%" class="text-center">
+                    <a >CTR</a>
+                  </th>
+
+                  <th width="10%" class="text-center">
+                    <a >Conversões</a>
+                  </th>
+
+                  <th width="12%" class="text-center">
+                    <a >Taxa conv. (%)</a>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr ng-repeat-start="itemGrupos in listaGrupos | filter: filtro | orderBy: 'Impressoes' : true ">
+                  <td width="5%"> 
+                    <button type="button" class="btn btn-default " ng-click="abrirPalavrasChave(itemGrupos)"></button>
+                  </td>
+                  <td width="18%" class="text-center">{{itemGrupos.GrupoDeAnuncio}} </td>
+                  <td width="15%" class="text-center"> </td>
+                  <td width="10%" class="text-center">{{itemGrupos.Impressoes}}</td>
+                  <td width="10%" class="text-center">{{itemGrupos.Cliques}}</td>
+                  <td width="10%" class="text-center">R$ {{itemGrupos.CPC}}</td>
+                  <td width="10%" class="text-center">{{itemGrupos.CTR}} %</td>
+                  <td width="10%" class="text-center">{{itemGrupos.Conversoes}}</td>
+                  <td width="12%" class="text-center">{{itemGrupos.TaxaDeConversao}} %</td>
+                </tr>
+
+                <tr 
+                  ng-show="itemGrupos.Show" 
+                  ng-repeat-end ng-repeat="itemPC in itemGrupos.ListaPalavrasChave | filter: filtro | orderBy: 'Impressoes' : true ">
+
+                  <td  width="5%" class="text-center"></td>
+                  <td  width="18%" class="text-center"></td>
+
+                  <td width="15%" class="text-center">{{itemPC.PalavraChave}}</td>
+                  <td width="10%" class="text-center">{{itemPC.Impressoes}}</td>
+                  <td width="10%" class="text-center">{{itemPC.Cliques}}</td>
+                  <td width="10%" class="text-center">R$ {{itemPC.CPC}}</td>
+                  <td width="10%" class="text-center">{{itemPC.CTR}} %</td>
+                  <td width="10%" class="text-center">{{itemPC.Conversoes}}</td>
+                  <td width="12%" class="text-center">{{itemPC.TaxaDeConversao}} %</td>
+                </tr>
+
+                <tr ng-repeat-end></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

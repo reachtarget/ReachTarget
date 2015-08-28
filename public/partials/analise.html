@@ -1,0 +1,169 @@
+<div class="row">
+  <div class="col-md-2">
+    <h1>Análise</h1>    
+    <div id="embed-api-auth-container"></div>
+  </div>
+
+  <div class="col-md-4">
+    <div id="popoverExampleTwoHiddenContent" >
+      <div class="row">
+        <div class="col-md-4">
+          <label>Realizado</label>
+
+          <br/>
+
+          <input type="radio" name="metricasRealizado" ng-model="filtroRealizado" value="a" ng-click="clickFiltroRealizado()">Acessos
+          <br/>
+          <input type="radio" name="metricasRealizado" ng-model="filtroRealizado" value="l" ng-click="clickFiltroRealizado()">Leads
+          <br/>
+          <input type="radio" name="metricasRealizado" ng-model="filtroRealizado" value="v" ng-click="clickFiltroRealizado()">Vendas
+          <br/>
+          <input type="radio" name="metricasRealizado" ng-model="filtroRealizado" value="i" ng-click="clickFiltroRealizado()">Investimentos
+        </div>
+
+        <div class="col-md-4">
+          <input type="radio" name="filtros" ng-model="filtroComparacaoOuProjecao" value="c" ng-click="clickRealizadoProjecao()">
+          <label>Comparação</label>
+
+          <br/>
+
+          <input type="radio" name="metricasComparacao" ng-model="filtroComparacao" value="a" ng-hide="filtroRealizado == 'a'">Acessos
+          <br/>
+          <input type="radio" name="metricasComparacao" ng-model="filtroComparacao" value="l" ng-hide="filtroRealizado == 'l'">Leads
+          <br/>
+          <input type="radio" name="metricasComparacao" ng-model="filtroComparacao" value="v" ng-hide="filtroRealizado == 'v'">Vendas
+          <br/>
+          <input type="radio" name="metricasComparacao" ng-model="filtroComparacao" value="i" ng-hide="filtroRealizado == 'i'" >Investimentos
+
+          <br/>
+          <br/>
+
+          <input type="checkbox" ng-model="exibirTaxas" >Exibir taxas
+        </div>
+
+        <div class="col-md-4">
+          <input type="radio" name="filtros" ng-model="filtroComparacaoOuProjecao" value="p" ng-click="clickRealizadoProjecao()">
+          <label>Projeção</label>
+        </div>
+      </div>
+
+      <br/>
+
+      <div class="row">
+        <div class="col-md-4">          
+        </div>
+
+        <div class="col-md-4">
+          <button class="btn btn-primary" ng-click="atualizarDadosSuperiores()">Aplicar</button>
+        </div>
+
+        <div class="col-md-4">          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="input-group">
+      <span class="input-group-addon glyphicon glyphicon-calendar"></span>
+      <input type="text" class="form-control" name="daterange" id="daterange" ng-model="inptuDataInicialFinal">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Acessos</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+          {{totalizadorAcessos}}
+        </h3>
+        <br/>
+        <h5 style="font-size: 20px;">
+          {{totalizadorTaxaNovosAcessos}} %
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Conversões</h3>
+      </div>
+      <div class="panel-body">
+      <h3>
+        {{totalizadorConversoes}}
+        </h3>
+        <br/>
+        <h5 style="font-size: 20px;">
+        {{totalizadorTaxaDeConversao}} %
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Vendas</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+        {{totalizadorVendas}}
+        </h3>
+        <h5 style="font-size: 20px;">
+        {{totalizadorTaxaDeFechamento}} %
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Investimentos</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+        R$ {{totalizadorInvestimentos}}
+        </h3>
+        <br/>
+        <h5 style="font-size: 20px;">
+        {{totalizadorROI}} %
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" >  
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading text-left">
+      	<div class="col-md-10">
+      		<h3 class="panel-title">{{tituloGrafico}}</h3>
+         </div>
+        
+        <div class="col-md-2">
+          	<select 
+            	class="form-control" 
+            	id="drop-campanhas"
+		        ng-model="diaSemanaMes"
+		        ng-change="filtroDiaMesAno(true)"
+		        ng-options="dsm.sigla as dsm.descricao for dsm in listaDiaSemanaMesSelecionada">>
+            </select>
+          </div>
+      </div>
+      
+      <div class="panel-body">
+        <canvas id="chartRealizadoComparativoProjetado" height="55" />
+
+        <div id='legendaGrafico' class='chart-legend'>
+      </div>
+    </div>
+  </div>
+</div>

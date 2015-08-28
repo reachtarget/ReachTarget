@@ -1,0 +1,62 @@
+<div class="panel-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default" id="panel-destaquefull">
+        <div class="panel-heading">
+          <h5 class="panel-title">Tráfego por fonte</h5>
+        </div>
+
+        <div class="panel-body">
+          <br/>
+
+          <div class="table-responsive" style="height: 245px;">
+            <table class="table table-hover table-striped">
+              <thead>
+                <tr>
+                  <th width="2%" class="text-center"> </th>
+                  <th width="14%" class="text-center">Fonte</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" ng-click="clicarColuna(1)">Acessos</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" >Conversão (%)</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" ng-click="clicarColuna(2)">Conversões</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" >Fechamento (%)</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" ng-click="clicarColuna(3)">Vendas</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" >ROI</th>
+                  <th width="12%" class="text-center" style="cursor:pointer" >Investimentos</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr ng-repeat="itemTrafegoPorFonte in listaTrafegoPorFonte | orderBy: 'acessos' : true">
+                  <td width="2%" class="text-center">
+                    <div class="text-center" style="border-radius:20%; background:{{itemTrafegoPorFonte.cor}}; width: 20px;   height: 20px; position: absolute; left: 40px;" >
+                    </div>
+                  </td>
+                  <td width="14%" class="text-center">{{itemTrafegoPorFonte.fonte}} </td>          
+                  <td width="12%" class="text-center">{{itemTrafegoPorFonte.acessos}} </a></td>
+                  <td width="12%" class="text-center">{{itemTrafegoPorFonte.taxaConversao}} %</td>
+                  <td width="12%" class="text-center">{{itemTrafegoPorFonte.conversoes}}</td>
+                  <td width="12%" class="text-center">{{itemTrafegoPorFonte.taxaFechamento}} %</td>
+                  <td width="12%" class="text-center">{{itemTrafegoPorFonte.vendas}}</td>
+                  <td width="12%" class="text-center">{{itemTrafegoPorFonte.roi}} %</td>
+                  <td width="12%" class="text-center">R$ {{itemTrafegoPorFonte.investimentos}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <br/>
+
+          <div class="row">
+            <div class="col-md-8">
+              <canvas id="chartEvolutivoTrafegoFonte"></canvas>
+            </div>
+
+            <div class="col-md-4">
+              <canvas id="chartRoscaTrafegoFonte"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

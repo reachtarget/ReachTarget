@@ -1,0 +1,247 @@
+<iframe id="txtArea1" style="display:none"></iframe>
+
+<div class="row">
+  <div class="col-md-2">
+    <h1>Leads</h1>    
+  </div>
+
+  <div class="col-md-4">
+  </div>
+
+  <div class="col-md-6">
+    <span class="input-group-addon glyphicon glyphicon-calendar"></span>
+    <input type="text" class="form-control" name="daterange" id="daterange" ng-model="inptuDataInicialFinal">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Leads</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+          {{totalizadorLeads}}
+        </h3>
+
+        <h5 style="font-size: 20px;">
+          {{totalizadorTaxaFechamento}} %
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Vendas</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+        {{totalizadorVendas}}
+        </h3>
+
+        <h5 style="font-size: 20px;">
+        {{totalizadorTimingVendas}} 
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Total de vendas</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+        {{totalizadorValorTotalVendas}}
+        </h3>
+
+        <h5 style="font-size: 20px;">
+        {{totalizadorCustoAquisicao}} 
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Principal canal</h3>
+      </div>
+      <div class="panel-body">
+        <h3>
+        {{totalizadorPrincipalCanalVenda}}
+        </h3>
+
+        <h5 style="font-size: 20px;">
+        {{totalizadorTotalVendasPorCanal}}
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{nome}}
+{{email}}
+{{cargo}}
+{{telefone}}
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">Leads</h3>
+      </div>
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-2">
+            <h5>Filtrar</h5>
+            <input 
+            	class="form-control" 
+            	ng-model="filtro"
+            	type="search" 
+            	placeholder="Pesquisar" 
+            	ng-blur="atualizarDadosSuperioresDeAcordoComFiltro()">
+          </div>
+
+          <div class="col-md-2">
+            <h5>Ordenação</h5>
+            
+            <select class="form-control"
+              ng-model="ordenacao"
+              ng-options="ordernar.campoOrdenacao as ordernar.descricao for ordernar in listaOrdenacao">
+            </select>
+
+			<button class="btn btn-primary" ng-click="crescenteDecrescente()"> </button>
+          </div>
+
+          <div class="col-md-2">
+            <h5>Interesse</h5>
+            <select class="form-control"
+              ng-model="filtroInteresse"
+              ng-options="interesse.filtro as interesse.descricao for interesse in listaFiltroInteresse"
+              ng-change="atualizarDadosSuperioresDeAcordoComFiltro()">
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <h5>Origem</h5>
+            <select class="form-control"
+              ng-model="filtroOrigem"
+              ng-options="origem.filtro as origem.descricao for origem in listaFiltroOrigem"
+              ng-change="atualizarDadosSuperioresDeAcordoComFiltro()">
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <h5>Status</h5>
+            <select class="form-control"
+              ng-model="filtroStatus"
+              ng-options="status.id as status.descricao for status in listaStatus"
+              ng-change="atualizarDadosSuperioresDeAcordoComFiltro()">
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <h5>Exportar</h5>
+            <button class="btn btn-primary" ng-click="exportar()">Excel</button>
+          </div>
+        </div>  
+
+        <br />
+        
+        <div class="row">
+	        <div class="col-md-12">
+	          <table class="table table-hover table-striped">
+	          	<thead>
+	            	<tr>
+                  <th ng-show="permiteExcluirLead" width="5%" ></th>
+		              <th width="20%" class="text-center">Empresa</th>
+	    	          <th width="5%" class="text-center">Conversões</th>
+	        	      <th width="8%" class="text-center">Data</th>
+	            	  <th width="12%" class="text-center">Interesse</th>
+		              <th width="12%" class="text-center">Origem</th>
+	    	          <th width="15%" class="text-center">Status</th>
+	        	      <th width="10%" class="text-center">Valor fechamento</th>
+		              <th width="8%" class="text-center">Data fechamento</th>
+	    	          <th width="5%" class="text-center"></th> 
+	        	    </tr>
+	        	</thead>
+
+	        	<tbody>
+		            <tr ng-repeat="itemLead in filtered = (listaLeads 
+	    	          | filter: { empresa: filtro, interesse: filtroInteresse, origem: filtroOrigem, status: filtroStatus }) 
+	        	      | orderBy: ordenacao : ordemTrueFalse">
+                  
+                  <td ng-show="permiteExcluirLead" width="5%">
+                    <button type="button" class="btn btn-primary" ng-click="excluirLead(itemLead)">X</button>
+                  </td>
+
+	            	  <td width="15%" class="text-center"> 
+	                	<h4 >
+		                  <a style="cursor: pointer;" ng-mouseover="tooltipLead(itemLead)" ng-click="fichaDoLead(itemLead)">
+	    	                {{itemLead.empresa}}
+	        	          </a>
+		                </h4>
+	    	          </td>
+
+		              <td width="5%" class="text-center"> {{itemLead.quantidadeConversoes}} </td>
+	    	          <td width="10%" class="text-center"> {{itemLead.data}} </td>
+	        	      <td width="15%" class="text-center"> {{itemLead.interesse}} </td>
+	            	  <td width="15%" class="text-center"> {{itemLead.origem}} </td>
+	              
+		              <td width="15%" class="text-center"> 
+	    	            <select class="form-control" id="propriedades"
+	        	          ng-model="itemLead.status"
+	            	      ng-options="status.id as status.descricao for status in listaStatus | filter: { mostrar: true } "
+	                	  ng-change="salvarLead(itemLead)">
+		                </select>
+	    	          </td>
+
+	        	      <td width="10%" class="text-center"> {{itemLead.valorFechamento}} </td>
+	            	  <td width="10%" class="text-center"> {{itemLead.dataFechamentoShow}} </td>
+		              <td width="5%" class="text-center"> 
+	    	            <button 
+	        	          ng-show="itemLead.status == 4" 
+	            	      class="btn btn-primary" 
+	                	  ng-click="editarValorDataFechamento(itemLead)">Editar</button> 
+		              </td>
+	    	        </tr>
+	            </tbody>
+	          </table>
+          </div>
+        </div>    
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalFechamento" class="modal fade">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Fechamento</h4>
+      </div>
+
+      <div class="modal-body">
+        Data de fechamento:
+        <br/>
+        <input type="date" class="form-control" ng-model="dataFechamento" />
+
+        <br />
+
+        Valor:
+        <br/>
+        <input type="number" min="0" step="2" class="form-control" ng-model="valorFechamento" />
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="salvarFechamento()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>

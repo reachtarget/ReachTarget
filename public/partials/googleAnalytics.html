@@ -1,0 +1,45 @@
+<h1>GA</h1>
+
+<div id="embed-api-auth-container"></div>
+
+<br/>
+
+<div >
+	<label>Contas</label>	
+	<br />
+	<select class="form-control" id="contas"
+		ng-model="contaSelecionada"
+		ng-options="conta.id as conta.nome for conta in accounts"
+		ng-change="popularWebPropertyId(contaSelecionada)">
+		<option value="">--Selecione uma conta--</option>
+	</select>
+</div>
+
+<br />
+
+<div ng-show="contaSelecionada">
+	<label>Propriedades</label>
+	<br />
+	<select class="form-control" id="propriedades"
+		ng-model="propriedadeSelecionada"
+		ng-options="webProperty.id as webProperty.nome for webProperty in webPropertyIds"
+		ng-change="popularProfileId(contaSelecionada, propriedadeSelecionada)">
+		<option value="">--Selecione uma propriedade--</option>
+	</select>
+</div>
+
+<br />
+
+<div ng-show="propriedadeSelecionada">
+	<label>Perfis</label>
+	<br />
+	<select class="form-control" id="perfil"
+		ng-model="perfilSelecionado"
+		ng-options="profile.id as profile.nome for profile in profileIds">
+		<option value="">--Selecione um perfil--</option>
+	</select>
+</div>
+
+<br />
+
+<button ng-show="perfilSelecionado" class="btn btn-primary" ng-click="gravarDadosAnalytics()">Gravar</button>

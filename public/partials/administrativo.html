@@ -1,0 +1,207 @@
+<div class="panel-body">
+  <div class="row">
+    <div class="col-md-8">
+      <button ng-show="clientesAtivos" class="btn btn-primary" ng-click="novoCliente()">Novo cliente</button>
+      <button ng-show="clientesAtivos" class="btn btn-primary" ng-click="GA()">{{botaoGA}}</button>
+      <button class="btn btn-primary" ng-click="tiposClientes()">{{botaoTipoClientes}}</button>
+    </div>
+
+    <div ng-show="clientesAtivos" class="col-md-1 ">
+      <button class="btn btn-primary" ng-click="retornarClientes()">Atualizar</button>
+    </div>
+
+    <div ng-show="clientesAtivos" class="col-md-3 pull-right">
+      <input type="text" class="form-control" name="daterange" id="daterange" ng-model="inptuDataInicialFinal">
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h5 class="panel-title">Clientes</h5>
+    </div>
+    
+    <div class="panel-body">
+      <input class="form-control" ng-model="filtro" type="search" placeholder="Pesquisar">
+
+      <br/>
+
+      <div ng-show="clientesAtivos" class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th width="11%" ></th>
+              <th ng-click="ordenarLista('Nome')">Cliente</th>
+              <th width="8%" class="text-center" ng-click="ordenarLista('Visualizacoes')">Visualizações</th>
+              <th width="8%" class="text-center" ng-click="ordenarLista('Visitantes')">Visitantes</th>
+              <th width="8%" class="text-center" ng-click="ordenarLista('Leads')">Leads</th>
+              <th width="8%" class="text-center" ng-click="ordenarLista('TaxaConversao')">Conversão</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-repeat-start="itemCliente in listaClientes | filter: filtro | orderBy: ordenacao : opcaoReverse ">
+              <td width="11%" class="text-center"> 
+                <button type="button" class="btn btn-default btn-editarCliente" ng-click="abrirCliente(itemCliente)"/>
+                <button type="button" class="btn btn-default btn-Visualizar" ng-click="abrirDashboard(itemCliente)"/>
+                <button type="button" class="btn btn-default btn-Email" ng-click="enviarEmailComent(itemCliente)"></button>
+                <button ng-show="MaasOuSiteina == 'M'" type="button" class="btn btn-default " ng-click="abrirDetalhes(itemCliente)"></button>
+              </td>
+
+              <td>
+                <b>{{itemCliente.Nome}}</b> <i style="font-size: 11px;">({{itemCliente.ID}})</i>
+              </td>
+
+              <td width="8%" class="text-center"> 
+                <b>
+                  {{itemCliente.Visualizacoes}} 
+                </b>
+              </td>
+
+              <td width="8%" class="text-center"> 
+                <b>
+                  {{itemCliente.Visitantes}} 
+                </b>
+              </td>
+
+              <td width="8%" class="text-center"> 
+                <b>
+                  {{itemCliente.Leads}} 
+                </b>
+              </td>
+
+              <td width="8%" class="text-center">
+                <b>
+                  {{itemCliente.TaxaConversao}} %
+                </b>
+              </td>
+            </tr>
+
+            
+            <tr ng-show="itemCliente.Show" ng-repeat-end ng-repeat="itemLP in itemCliente.ListaLP | orderBy: 'NomeLanding'">
+              <td  width="11%"></td>
+              <td >
+                {{itemLP.NomeLanding}} <i style="font-size: 11px;">({{itemLP.IDPage}})</i>
+              </td>
+
+              <td width="8%" class="text-center"> 
+                {{itemLP.Visualizacoes}} 
+              </td>
+
+              <td width="8%" class="text-center"> 
+                {{itemLP.Visitantes}} 
+              </td>
+
+              <td width="8%" class="text-center"> 
+                {{itemLP.Leads}} 
+              </td>
+
+              <td width="8%" class="text-center"> 
+                {{itemLP.TaxaConversao}} %
+              </td>
+            </tr>
+
+            <tr ng-repeat-end></tr>
+          </tbody>
+        </table>
+      </div>    
+
+
+      <div ng-hide="clientesAtivos" class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th width="92%" >Cliente</th>
+              <th width="8%" class="text-center"> </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-repeat="itemClienteInativo in listaClientesInativos | filter: filtro">
+              <td width="92%" > 
+                <b>{{itemClienteInativo.Nome}}</b> <i style="font-size: 11px;">({{itemClienteInativo.ID}})</i>
+              </td>
+
+              <td width="8%" class="text-center">
+                <button class="btn btn-primary" ng-click="ativarCliente(itemClienteInativo)">Ativar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> 
+
+    </div>    
+  </div>      
+</div>
+
+<div class="modal fade" id="modalEnvioResumo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        
+        <h6 class="modal-title">Envio resumo por e-mail</h6>
+      </div>
+
+      <div class="modal-body">
+      	<div class="row">
+          <div class="col-md-12">
+          	<table class="table table-hover table-striped">
+          		<thead>
+	            	<tr>
+	            		<th width="12%" class="text-center">Envio</th>
+	            		<th width="18%" class="text-center">Período</th>
+
+	            		<th width="10%" class="text-center">Acessos</th>
+	            		<th width="10%" class="text-center">Visualizações</th>
+	            		<th width="10%" class="text-center">Leads</th>
+	            		<th width="10%" class="text-center">Conversão</th>
+
+	            		<th width="30%" class="text-center">Comentário</th>
+	            	</tr>
+	            </thead>
+
+	            <tbody>
+	            	<tr ng-repeat="itemHistoricoResumo in listaHistoricoResumo">
+	            		<td width="12%" class="text-center">{{itemHistoricoResumo.DataEnvio}}</td>
+	            		<td width="18%" class="text-center">{{itemHistoricoResumo.Periodo}}</td>
+
+	            		<td width="10%" class="text-center">{{itemHistoricoResumo.Acessos}}</td>
+	            		<td width="10%" class="text-center">{{itemHistoricoResumo.Visualizacoes}}</td>
+	            		<td width="10%" class="text-center">{{itemHistoricoResumo.Leads}}</td>
+	            		<td width="10%" class="text-center">{{itemHistoricoResumo.Conversao}} %</td>
+
+	            		<td width="30%" class="text-center">{{itemHistoricoResumo.Comentario}}</td>
+	            	</tr>	            	  
+	            </tbody>
+          	</table>
+          </div>
+        </div>
+
+        <div ng-show="tipoEnvioEmailSelecionado == 'M'" class="row">
+          <div class="col-md-12">
+            <textarea style="height: 100px;" wrap="hard" class="form-control" form="form_id" placeholder="Insira aqui seu comentário" ng-model='comentario'/>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="row">
+          <div class="col-md-11">
+            <select
+              class="form-control"
+              ng-model="tipoEnvioEmailSelecionado" 
+              ng-options="tipo.id as tipo.descricao for tipo in listaTipoEnvioEmail">
+            </select>
+          </div>
+
+          <div class="col-md-1">
+            <button type="button" class="btn btn-primary" ng-click="enviarEmailResumo()">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
