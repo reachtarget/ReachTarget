@@ -355,12 +355,11 @@ angular.module('reachtarget')
 			$scope.administrador = false;
 			$scope.searchOuInbound = false;
 			
-
 			/*
 			var _novoLogin = new NovoLogin();
 
 			_novoLogin.email = 'henrique@siteina.com.br';
-			_novoLogin.login = 'siteina';
+			_novoLogin.login = 'maas';
 			_novoLogin.senha = 'siteina@67';
 			_novoLogin.tipo = 'A';
 			_novoLogin.status = 'A';

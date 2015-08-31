@@ -8,6 +8,11 @@ module.exports = function() {
 			ref: 'Login'
 		},
 
+		objectIdCampanha: {
+			type: mongoose.Schema.ObjectId,
+			ref: 'Unbounce'
+		},
+
 		dataPreenchimento:  {
 			type: Date
 		},

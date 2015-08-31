@@ -114,13 +114,13 @@ angular.module('reachtarget')
         });
 
 		$scope.novoCliente = function() {
-			$location.path('/novoCliente');
+			$location.path('/administrativo/novoCliente');
 		};
 
 		$scope.abrirCliente = function(cliente) {
 			ClienteService.objectIdCliente = cliente.ID;
 
-			$location.path('/cliente');
+			$location.path('/administrativo/cliente');
 		};
 
 		$scope.abrirTela = function() {

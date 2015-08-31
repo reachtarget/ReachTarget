@@ -19,13 +19,12 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h5 class="panel-title">Clientes</h5>
+      <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
     </div>
     
     <div class="panel-body">
-      <input class="form-control" ng-model="filtro" type="search" placeholder="Pesquisar">
-
       <br/>
-
+      
       <div ng-show="clientesAtivos" class="table-responsive">
         <table class="table table-hover table-striped">
           <thead>
@@ -53,27 +52,19 @@
               </td>
 
               <td width="8%" class="text-center"> 
-                <b>
-                  {{itemCliente.Visualizacoes}} 
-                </b>
+                <b>{{itemCliente.Visualizacoes}}</b>
               </td>
 
               <td width="8%" class="text-center"> 
-                <b>
-                  {{itemCliente.Visitantes}} 
-                </b>
+                <b>{{itemCliente.Visitantes}}</b>
               </td>
 
               <td width="8%" class="text-center"> 
-                <b>
-                  {{itemCliente.Leads}} 
-                </b>
+                <b>{{itemCliente.Leads}}</b>
               </td>
 
               <td width="8%" class="text-center">
-                <b>
-                  {{itemCliente.TaxaConversao}} %
-                </b>
+                <b>{{itemCliente.TaxaConversao}} %</b>
               </td>
             </tr>
 

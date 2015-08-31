@@ -1,7 +1,7 @@
 angular.module('reachtarget')
 	.controller('AdwordsMaaSController', function($scope, $location, $resource, ClienteService, LoginService) {
 		$scope.budgetConsumido = 0;
-		$scope.budgetDisponivel = 0;
+		$scope.cliques = 0;
 		$scope.cpcMedio = 0;
 		$scope.taxaDeConversao = 0;
 
@@ -24,7 +24,7 @@ angular.module('reachtarget')
 
 		$scope.zerarTotais = function() {
 			$scope.budgetConsumido = 0;
-			$scope.budgetDisponivel = 0;
+			$scope.cliques = 0;
 			$scope.cpcMedio = 0;
 			$scope.taxaDeConversao = 0;
 		};
@@ -44,6 +44,8 @@ angular.module('reachtarget')
 
 			$scope.listaGrupos = [];
 
+			console.log(LoginService.CampanhaSelecionada);
+
 			gapi.client.analytics.data.ga.get({
     			'ids': 'ga:' + LoginService.CampanhaSelecionada.ProfileID,
     			'start-date': LoginService.DataInicialFormat,
@@ -51,9 +53,12 @@ angular.module('reachtarget')
     			'dimensions': 'ga:adGroup,ga:keyword',
     			'metrics': 'ga:impressions,ga:adClicks,ga:CPC,ga:CTR,ga:goalCompletionsAll,ga:adCost',
     			'sort': 'ga:adGroup,ga:impressions,ga:adClicks',
-    			'filters': 'ga:adGroup!=(not set),ga:campaign==' + 'Guarulhos'    			
+    			'filters': 'ga:campaign==' + LoginService.CampanhaSelecionada.Nome
 			})
 			.execute(function(resultadoAnalytics) {   
+
+				console.log(resultadoAnalytics);
+
 
 				if (resultadoAnalytics.totalResults > 0) {
 
@@ -88,6 +93,7 @@ angular.module('reachtarget')
 							_conversoes = new Number(itemAnalytics[6]);
 							_custo = new Number(itemAnalytics[7]);
 							
+
 							$scope.listaGrupos[_i].Contador++;
 							$scope.listaGrupos[_i].Impressoes += _impressoes;
 							$scope.listaGrupos[_i].Cliques += _cliques;
@@ -95,8 +101,11 @@ angular.module('reachtarget')
 							$scope.listaGrupos[_i].CTR += _ctr;
 							$scope.listaGrupos[_i].Conversoes += _conversoes;
 							$scope.listaGrupos[_i].Custo += _custo;
+							
 
 							$scope.budgetConsumido += _custo;
+							$scope.cliques += _cliques;
+
 
 							$scope.listaGrupos[_i].ListaPalavrasChave.push({
 								PalavraChave: itemAnalytics[1],

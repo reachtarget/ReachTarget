@@ -80,6 +80,23 @@ angular.module('reachtarget', ['ngRoute', 'ngResource'])
 		});
 
 
+		$routeProvider.when('/administrativo', {
+			templateUrl: 'partials/administrativo.html',
+			controller: 'AdministrativoController'
+		});
+
+
+		$routeProvider.when('/administrativo/novoCliente', {
+			templateUrl: 'partials/novoCliente.html',
+			controller: 'NovoClienteController'
+		});
+
+		$routeProvider.when('/administrativo/cliente', {
+			templateUrl: 'partials/cliente.html',
+			controller: 'ClienteController'
+		});
+
+
 		$routeProvider.when('/leads', {
 			templateUrl: 'partials/leadsMaaS.html',
 			controller: 'LeadsMaaSController'
