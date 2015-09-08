@@ -43,8 +43,6 @@ angular.module('reachtarget')
 			var _conversoes = 0;
 
 			$scope.listaGrupos = [];
-			$scope.$apply();
-
 
 			gapi.client.analytics.data.ga.get({
     			'ids': 'ga:' + LoginService.CampanhaSelecionada.ProfileID,
@@ -53,7 +51,10 @@ angular.module('reachtarget')
     			'dimensions': 'ga:adGroup,ga:keyword',
     			'metrics': 'ga:impressions,ga:adClicks,ga:CPC,ga:CTR,ga:goalCompletionsAll,ga:adCost',
     			'sort': 'ga:adGroup,ga:impressions,ga:adClicks',
-    			'filters': 'ga:campaign==' + LoginService.CampanhaSelecionada.Adwords
+    			'filters': 
+    				(LoginService.CampanhaSelecionada.Adwords != '-')
+    					? 'ga:campaign==' + LoginService.CampanhaSelecionada.Adwords
+    					: 'ga:campaign!=(not set)'
 			})
 			.execute(function(resultadoAnalytics) {   
 

@@ -73,23 +73,44 @@ module.exports = function(app) {
 	};
 
 	controller.consultarLeadsMaaS = function(req, res) {
-		Lead
-			.find({ 
-				objectIdLogin: req.params.objectId,
-				data: { 
-					$gte: req.params.dataInicial, 
-					$lte: req.params.dataFinal 
-				},
-				pagina: req.params.pagina
-			})
-			.exec()
-			.then(
-				function (resultadoLead) {
-					res.json(resultadoLead);
-				},
-				function (error) {
-					console.log(error);
-				});
+		if (req.params.pagina != '-')
+		{
+			Lead
+				.find({ 
+					objectIdLogin: req.params.objectId,
+					data: { 
+						$gte: req.params.dataInicial, 
+						$lte: req.params.dataFinal 
+					},
+					pagina: req.params.pagina
+				})
+				.exec()
+				.then(
+					function (resultadoLead) {
+						res.json(resultadoLead);
+					},
+					function (error) {
+						console.log(error);
+					});
+
+		} else {
+			Lead
+				.find({ 
+					objectIdLogin: req.params.objectId,
+					data: { 
+						$gte: req.params.dataInicial, 
+						$lte: req.params.dataFinal 
+					}
+				})
+				.exec()
+				.then(
+					function (resultadoLead) {
+						res.json(resultadoLead);
+					},
+					function (error) {
+						console.log(error);
+					});
+		}
 	};
 
 	controller.consultarVendas = function(req, res) {

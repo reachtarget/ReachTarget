@@ -9,6 +9,7 @@ angular.module('reachtarget')
     $scope.timingVendas = 0;
     $scope.valorVendas = 0;
     $scope.filtro = "";
+    $scope.temCampanhaSelecionada = true;
 
     var NovoLead = $resource('/lead');
 	var ExcluirLead = $resource('/excluir/lead/:id');
@@ -73,6 +74,9 @@ angular.module('reachtarget')
 	};
 
 	$scope.consultarLeads = function() {
+		$scope.temCampanhaSelecionada = 
+			LoginService.CampanhaSelecionada.IDPagina != "-";
+
 		abrirLoader();
 		$scope.zerarTotais();
 

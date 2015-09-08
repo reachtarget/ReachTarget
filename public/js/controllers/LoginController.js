@@ -438,6 +438,7 @@ angular.module('reachtarget')
 		};
 
 		$scope.consultarCampanhasPorUsuario = function() {
+			var _todas = false;
 			LoginService.ListaCampanhas = [];
 
 			CampanhasPorUsuario.query({
@@ -446,20 +447,23 @@ angular.module('reachtarget')
 
 			}, function(resultadoCampanhasPorUsuario) {
 
-				/*
 				if (resultadoCampanhasPorUsuario.length > 1) {
 						
 					if (LoginService.ListaCampanhas.length == 0)
 					{
 						$('#campanhaSelecionada')[0].innerText = '<Todas>';
 
+						_todas = true;
+
 						LoginService.ListaCampanhas.push({
 							IDPagina: '-',
-							Nome: '<Todas>'
+							Nome: '<Todas>',
+							PagePath: '/',
+							ProfileID: '',
+							Adwords: '-'
 						});
 					}
 				}
-				*/
 
 				resultadoCampanhasPorUsuario.forEach(function(itemCampanha, indexCampanha, listaCampanha) {
 
@@ -470,8 +474,6 @@ angular.module('reachtarget')
 
 					}, function(resultadoGoogleAnalyticsPorCampanha) {
 
-						console.log(resultadoGoogleAnalyticsPorCampanha);
-
 						LoginService.ListaCampanhas.push({
 							IDPagina: itemCampanha.pageId,
 							Nome: itemCampanha.nome,
@@ -481,6 +483,9 @@ angular.module('reachtarget')
 						});
 
 						if (indexCampanha == listaCampanha.length-1) {
+							if (_todas)
+								LoginService.ListaCampanhas[0].ProfileID = LoginService.ListaCampanhas[1].ProfileID;
+
 							$('#campanhaSelecionada')[0].innerText = LoginService.ListaCampanhas[0].Nome;
 							LoginService.CampanhaSelecionada = LoginService.ListaCampanhas[0];
 							LoginService.SelectedIndex = 0;

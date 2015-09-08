@@ -55,7 +55,7 @@
 			<div class="panel panel-default" id="panel-destaque">
 		    <div class="panel-heading">
 		      <h5 class="panel-title">Leads</h5>
-		      <button id="littleButton" name="littleButton" class="btn btn-primary" ng-click="novoLead()" rel="popoverNovoLead"  />
+		      <button id="littleButton" name="littleButton" ng-show="temCampanhaSelecionada" class="btn btn-primary" ng-click="novoLead()" rel="popoverNovoLead"  />
 		      <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
 		    </div>
 		    
