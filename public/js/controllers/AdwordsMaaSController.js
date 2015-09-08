@@ -43,8 +43,8 @@ angular.module('reachtarget')
 			var _conversoes = 0;
 
 			$scope.listaGrupos = [];
+			$scope.$apply();
 
-			console.log(LoginService.CampanhaSelecionada);
 
 			gapi.client.analytics.data.ga.get({
     			'ids': 'ga:' + LoginService.CampanhaSelecionada.ProfileID,
@@ -56,9 +56,6 @@ angular.module('reachtarget')
     			'filters': 'ga:campaign==' + LoginService.CampanhaSelecionada.Adwords
 			})
 			.execute(function(resultadoAnalytics) {   
-
-				console.log(resultadoAnalytics);
-
 
 				if (resultadoAnalytics.totalResults > 0) {
 
@@ -172,6 +169,13 @@ angular.module('reachtarget')
 							}							
 						});
 				} else {
+					
+					$scope.budgetConsumido = '0,00';
+					$scope.cliques = 0;
+					$scope.cpcMedio = '0,00';
+					$scope.taxaDeConversao = '0.0';
+					
+					$scope.$apply();
 
 					fecharLoader();
 

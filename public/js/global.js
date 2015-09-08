@@ -135,6 +135,9 @@ function formatReal(mixed) {
         if (tmp.length > 6)
             tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
 
+        if (tmp.length == 3)
+            tmp = "0" + tmp;
+
         return tmp;
     }    
 };
