@@ -83,7 +83,7 @@ angular.module('reachtarget')
             $scope.inptuDataInicialFinal = 
             	retornarDataInicialFinal(_dataInicial, _dataFinal);
 
-			$('#daterange').daterangepicker({
+			$('#daterangeAdm').daterangepicker({
                 format: 'YYYY-MM-DD',
                 startDate: _dataInicialGA,
                 endDate: _dataFinalGA,
