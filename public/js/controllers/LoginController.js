@@ -37,7 +37,7 @@ angular.module('reachtarget')
 				.remove();
 
 			$("[data-toggle=popover]").popover({
-		        html : true,
+			    html : true,
 		        trigger: 'manual',
 
 		        content: function() {
@@ -52,6 +52,10 @@ angular.module('reachtarget')
 		    })
 		    .click(function() {
 				$("[data-toggle=popover]").popover('show');
+
+				$('.popover').css('width', '350px');
+				$('.popover').css('max-width', '350px');
+				$('.popover .arrow').css('left', '50px');
 
 				if ($('#selectCampanhas')[0].length <= 0) {
 					$scope.popularDadosDate();
@@ -68,6 +72,11 @@ angular.module('reachtarget')
 					if (LoginService.SelectedIndex) {
 						$('#selectCampanhas')[0].selectedIndex = LoginService.SelectedIndex;
 					}
+
+					$("#bttnFecharFiltros").click(
+						function(){
+							$("[data-toggle=popover]").popover('hide');
+						});
 
 					$("#bttnAtualizarFiltros").click(
 				    	function(){
@@ -86,7 +95,7 @@ angular.module('reachtarget')
 
 				    			if (item.IDPagina == e.options[e.selectedIndex].value) {
 				    				$("[data-toggle=popover]").popover('hide');
-
+				    				
 				    				LoginService.CampanhaSelecionada = item;
 				    				LoginService.clickAtualizarFiltro();
 				    			}
@@ -237,9 +246,14 @@ angular.module('reachtarget')
 		$scope.ajustarHeader = function(opcao) {
 			document.getElementById('headerNav').style.display = 'block';
 
+			if (opcao == 'adm') {
+				document.getElementById('logoCliente').style.display = 'none';
+				document.getElementById('divFiltros').style.display = 'none';
+				document.getElementById('menusStarterSearchInbound').style.display = 'none';
+			}
 			if (opcao == 'maas') {
 				document.getElementById('logoCliente').src = 'https://s3-ap-southeast-2.amazonaws.com/siteina/maas/logo-clientes/' + $scope.login + '.png';
-			}
+			} 
 			
 			/*
 			if (opcao == 'dash') {
@@ -399,8 +413,8 @@ angular.module('reachtarget')
 
 						} else {
 
-							$scope.searchOuInbound = 
-								resultadoLogin.tipo != 'S';
+							//$scope.searchOuInbound = 
+							//	resultadoLogin.tipo != 'S';
 							
 							if ($scope.lembrarDeMim) {
 								gravarCookie(
@@ -456,11 +470,14 @@ angular.module('reachtarget')
 
 					}, function(resultadoGoogleAnalyticsPorCampanha) {
 
+						console.log(resultadoGoogleAnalyticsPorCampanha);
+
 						LoginService.ListaCampanhas.push({
 							IDPagina: itemCampanha.pageId,
 							Nome: itemCampanha.nome,
 							PagePath: itemCampanha.pagePath,
-							ProfileID: resultadoGoogleAnalyticsPorCampanha.profileId
+							ProfileID: resultadoGoogleAnalyticsPorCampanha.profileId,
+							Adwords: resultadoGoogleAnalyticsPorCampanha.idAdwords
 						});
 
 						if (indexCampanha == listaCampanha.length-1) {

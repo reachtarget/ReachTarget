@@ -30,7 +30,7 @@ p {
 a {
 	.transition(all .2s linear);
 	color: @gray;
-	padding: 8px 13px;
+	padding: 8px 0px;
 	position: relative;
 
 	&:hover {
@@ -114,6 +114,7 @@ h6, .h6 {
 .container-fluid {
 	max-width: 1350px;
 }
+.no-gutter { padding: 0;}
 
 // Formulários
 .form-control {
@@ -206,6 +207,16 @@ h6, .h6 {
 .btn.btn-default.btn-editarCliente {
 	height: 20px;
 	background: url('../img/icons/edit.png') center no-repeat;
+}
+
+.btn.btn-default.btn-mais {
+	height: 20px;
+	background: url('../img/icons/plus-icon-15-rearden.png') center no-repeat;
+}
+
+.btn.btn-default.btn-menos {
+	height: 20px;
+	background: url('../img/icons/minus-icon-15-lighten-rearden.png') center no-repeat;
 }
 
 .btn.btn-default.btn-Email {
@@ -461,6 +472,28 @@ h6, .h6 {
 
 	img {
 		float: left;
+	}
+}
+
+.navbar-header {
+	
+	.btn-primary {
+		margin-left: ~'calc(100% - 86px)';
+	}
+	.popover-content {
+		padding: 20px 14px;
+	}
+	.input-group-addon {
+		background: none;
+		border: none;
+		font-size: 12px;
+		padding: 0 0 10px 0;
+	    text-align: left;
+	    text-transform: uppercase;
+	}
+	select, input {
+		margin: 0 !important;
+		margin-bottom: 20px !important;
 	}
 }
 
@@ -807,19 +840,23 @@ h6, .h6 {
 
 #alerta-login {
 	background: url('../img/icons/error.png') left center no-repeat;
-	bottom: 25px;
 	color: #c0392b;
 	font-size: 13px;
-	left: 30px;
+	left: 0px;
 	padding-left: 30px;
 	position: absolute;
+	top: 280px;
 }
 
 #lembrar {
-	padding-top: 4px;
+    color: #B0B0B0;
+    font-size: 11px;
+    margin: 0;
+    padding-top: 4px;
+    text-transform: uppercase;
 
 	input {
-		margin-top: 7px;
+		margin: 4px 10px 0 0;
 	}
 }
 
@@ -996,3 +1033,57 @@ chart-legend li span{
 	}
 	#label-visitantes:after { background-color: #dfdfdf;}
 }
+
+
+
+.close-marker {
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0px 1px 4px #757575;
+    color: #457487;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: cursive;
+    height: 30px;
+    left: -15px;
+    position: absolute;
+    top: -10px;
+    width: 30px;
+}
+.save-newlead, .save-button {
+    display: block;
+    margin: -10px 0 10px;
+    margin-left: ~'calc(100% - 69px)';
+}
+.login-styles {
+	#login-box input { margin-top: 10px; }	
+	.panel-body {	
+		label {
+			color: #B2B2B2;
+			font-size: 11px;
+			text-transform: uppercase;
+		}
+	} 
+}
+.tooltip-list {
+    list-style-type: none;
+    margin-bottom: 10px;
+    padding: 0;
+    .field {
+    	color: #999;
+    	font-family: @sans-serif;
+    	font-size: 14px;
+    }
+    #t-name.field {
+		font-weight: bold;
+		color: #457486;
+    }
+    #t-email.field, #t-telphone.field { font-size: 13px;}
+}
+
+
+
+
+
+

@@ -15,113 +15,116 @@
     </div>
   </div>
 
+  <div class="row" >  
+    <div class="col-md-12">
+      <div class="panel panel-default" id="panel-destaquefull">
+        <div class="panel-heading">
+          <h5 class="panel-title">Clientes</h5>
+          <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
+        </div>
+        
+        <div style="overflow-y: scroll; height: 82%; width: 100%; padding: 0 !important;"  class="panel-body">
+          <br/>
+          
+          <div ng-show="clientesAtivos" class="table-responsive">
+            <table class="table table-hover table-striped">
+              <thead>
+                <tr>
+                  <th width="11%" ></th>
+                  <th ng-click="ordenarLista('Nome')">Cliente</th>
+                  <th width="8%" class="text-center" ng-click="ordenarLista('Visualizacoes')">Visualizações</th>
+                  <th width="8%" class="text-center" ng-click="ordenarLista('Visitantes')">Visitantes</th>
+                  <th width="8%" class="text-center" ng-click="ordenarLista('Leads')">Leads</th>
+                  <th width="8%" class="text-center" ng-click="ordenarLista('TaxaConversao')">Conversão</th>
+                </tr>
+              </thead>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h5 class="panel-title">Clientes</h5>
-      <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
-    </div>
-    
-    <div class="panel-body">
-      <br/>
-      
-      <div ng-show="clientesAtivos" class="table-responsive">
-        <table class="table table-hover table-striped">
-          <thead>
-            <tr>
-              <th width="11%" ></th>
-              <th ng-click="ordenarLista('Nome')">Cliente</th>
-              <th width="8%" class="text-center" ng-click="ordenarLista('Visualizacoes')">Visualizações</th>
-              <th width="8%" class="text-center" ng-click="ordenarLista('Visitantes')">Visitantes</th>
-              <th width="8%" class="text-center" ng-click="ordenarLista('Leads')">Leads</th>
-              <th width="8%" class="text-center" ng-click="ordenarLista('TaxaConversao')">Conversão</th>
-            </tr>
-          </thead>
+              <tbody>
+                <tr ng-repeat-start="itemCliente in listaClientes | filter: filtro | orderBy: ordenacao : opcaoReverse ">
+                  <td width="11%" class="text-center"> 
+                    <button type="button" class="btn btn-default btn-editarCliente" ng-click="abrirCliente(itemCliente)"/>
+                    <button type="button" class="btn btn-default btn-Visualizar" ng-click="abrirDashboard(itemCliente)"/>
+                    <button type="button" class="btn btn-default btn-Email" ng-click="enviarEmailComent(itemCliente)"></button>
+                    <button ng-show="MaasOuSiteina == 'M'" type="button" class="btn btn-default " ng-click="abrirDetalhes(itemCliente)"></button>
+                  </td>
 
-          <tbody>
-            <tr ng-repeat-start="itemCliente in listaClientes | filter: filtro | orderBy: ordenacao : opcaoReverse ">
-              <td width="11%" class="text-center"> 
-                <button type="button" class="btn btn-default btn-editarCliente" ng-click="abrirCliente(itemCliente)"/>
-                <button type="button" class="btn btn-default btn-Visualizar" ng-click="abrirDashboard(itemCliente)"/>
-                <button type="button" class="btn btn-default btn-Email" ng-click="enviarEmailComent(itemCliente)"></button>
-                <button ng-show="MaasOuSiteina == 'M'" type="button" class="btn btn-default " ng-click="abrirDetalhes(itemCliente)"></button>
-              </td>
+                  <td>
+                    <b>{{itemCliente.Nome}}</b> <i style="font-size: 11px;">({{itemCliente.ID}})</i>
+                  </td>
 
-              <td>
-                <b>{{itemCliente.Nome}}</b> <i style="font-size: 11px;">({{itemCliente.ID}})</i>
-              </td>
+                  <td width="8%" class="text-center"> 
+                    <b>{{itemCliente.Visualizacoes}}</b>
+                  </td>
 
-              <td width="8%" class="text-center"> 
-                <b>{{itemCliente.Visualizacoes}}</b>
-              </td>
+                  <td width="8%" class="text-center"> 
+                    <b>{{itemCliente.Visitantes}}</b>
+                  </td>
 
-              <td width="8%" class="text-center"> 
-                <b>{{itemCliente.Visitantes}}</b>
-              </td>
+                  <td width="8%" class="text-center"> 
+                    <b>{{itemCliente.Leads}}</b>
+                  </td>
 
-              <td width="8%" class="text-center"> 
-                <b>{{itemCliente.Leads}}</b>
-              </td>
+                  <td width="8%" class="text-center">
+                    <b>{{itemCliente.TaxaConversao}} %</b>
+                  </td>
+                </tr>
 
-              <td width="8%" class="text-center">
-                <b>{{itemCliente.TaxaConversao}} %</b>
-              </td>
-            </tr>
+                
+                <tr ng-show="itemCliente.Show" ng-repeat-end ng-repeat="itemLP in itemCliente.ListaLP | orderBy: 'NomeLanding'">
+                  <td  width="11%"></td>
+                  <td >
+                    {{itemLP.NomeLanding}} <i style="font-size: 11px;">({{itemLP.IDPage}})</i>
+                  </td>
 
-            
-            <tr ng-show="itemCliente.Show" ng-repeat-end ng-repeat="itemLP in itemCliente.ListaLP | orderBy: 'NomeLanding'">
-              <td  width="11%"></td>
-              <td >
-                {{itemLP.NomeLanding}} <i style="font-size: 11px;">({{itemLP.IDPage}})</i>
-              </td>
+                  <td width="8%" class="text-center"> 
+                    {{itemLP.Visualizacoes}} 
+                  </td>
 
-              <td width="8%" class="text-center"> 
-                {{itemLP.Visualizacoes}} 
-              </td>
+                  <td width="8%" class="text-center"> 
+                    {{itemLP.Visitantes}} 
+                  </td>
 
-              <td width="8%" class="text-center"> 
-                {{itemLP.Visitantes}} 
-              </td>
+                  <td width="8%" class="text-center"> 
+                    {{itemLP.Leads}} 
+                  </td>
 
-              <td width="8%" class="text-center"> 
-                {{itemLP.Leads}} 
-              </td>
+                  <td width="8%" class="text-center"> 
+                    {{itemLP.TaxaConversao}} %
+                  </td>
+                </tr>
 
-              <td width="8%" class="text-center"> 
-                {{itemLP.TaxaConversao}} %
-              </td>
-            </tr>
-
-            <tr ng-repeat-end></tr>
-          </tbody>
-        </table>
-      </div>    
+                <tr ng-repeat-end></tr>
+              </tbody>
+            </table>
+          </div>    
 
 
-      <div ng-hide="clientesAtivos" class="table-responsive">
-        <table class="table table-hover table-striped">
-          <thead>
-            <tr>
-              <th width="92%" >Cliente</th>
-              <th width="8%" class="text-center"> </th>
-            </tr>
-          </thead>
+          <div ng-hide="clientesAtivos" class="table-responsive">
+            <table class="table table-hover table-striped">
+              <thead>
+                <tr>
+                  <th width="92%" >Cliente</th>
+                  <th width="8%" class="text-center"> </th>
+                </tr>
+              </thead>
 
-          <tbody>
-            <tr ng-repeat="itemClienteInativo in listaClientesInativos | filter: filtro">
-              <td width="92%" > 
-                <b>{{itemClienteInativo.Nome}}</b> <i style="font-size: 11px;">({{itemClienteInativo.ID}})</i>
-              </td>
+              <tbody>
+                <tr ng-repeat="itemClienteInativo in listaClientesInativos | filter: filtro">
+                  <td width="92%" > 
+                    <b>{{itemClienteInativo.Nome}}</b> <i style="font-size: 11px;">({{itemClienteInativo.ID}})</i>
+                  </td>
 
-              <td width="8%" class="text-center">
-                <button class="btn btn-primary" ng-click="ativarCliente(itemClienteInativo)">Ativar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div> 
+                  <td width="8%" class="text-center">
+                    <button class="btn btn-primary" ng-click="ativarCliente(itemClienteInativo)">Ativar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div> 
 
-    </div>    
+        </div>    
+      </div>      
+    </div>      
   </div>      
 </div>
 

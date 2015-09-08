@@ -25,7 +25,7 @@ angular.module('reachtarget')
     $scope.origemSelecionada = "";
    	$scope.listaOrigens = ['Adwords', 'Orgânica', 'Direta', 'Referência', 'Outros', 'Social', 'E-mail'];
 
-	$(document).ready(function() {
+   	$(document).ready(function() {
 		$('[data-toggle="tooltip"]').tooltip();
 
 		$scope.permiteExcluirLead = 
@@ -35,7 +35,7 @@ angular.module('reachtarget')
 			$scope.consultarLeads();
 		};
 	});
-	
+
 	$scope.zerarTotais = function() {
 		$scope.leads = 0;
     	$scope.vendas = 0;
@@ -66,7 +66,7 @@ angular.module('reachtarget')
 					$scope.timingVendas = (_diferenciaDias / $scope.vendas).toFixed(0);
 				}
 
-				$scope.valorVendas = $scope.valorVendas.toFixed(2);
+				$scope.valorVendas = formatReal($scope.valorVendas);
 				fecharLoader();
 			}
 		});
@@ -107,7 +107,7 @@ angular.module('reachtarget')
 						_fechamento = null;
 
 						if (lead.valorFechamento) {
-							_fechamento = 'R$ ' + lead.valorFechamento.toFixed(2);
+							_fechamento = 'R$ ' + formatReal(lead.valorFechamento);
 
 							_dataFechamento = new Date(lead.dataFechamento);
 
@@ -162,18 +162,25 @@ angular.module('reachtarget')
 	        	}
 			});
 
-			$('#propriedades' + leadAlteracao._id).popover('show');			
+			$('#propriedades' + leadAlteracao._id).popover('show');
+
+			$("#valorFechamento" + leadAlteracao._id).maskMoney({
+    				showSymbol: true, 
+    				prefix: "R$ ", 
+    				decimal: ",", 
+    				thousands: "."
+    		});
 
 			$('.popover .arrow').css('top', '50%');
 
 			$('#bttnSalvarLeadFechamento' + leadAlteracao._id).click(function() {
 
-				var _valor = new Number(document.getElementsByName('valorLeadFechamento' + leadAlteracao._id)[0].value);
-				var _data = new Date(document.getElementsByName('entradaLeadFechamento' + leadAlteracao._id)[0].value);
+				var _valor = $("#valorFechamento" + leadAlteracao._id).maskMoney('unmasked')[0];
+				var _data = new Date($('#dataFechamentoLead' + leadAlteracao._id).val());
 				_data.setDate(_data.getDate() + 1);
 
 				leadAlteracao.Valor = _valor;
-				leadAlteracao.ValorTabela = 'R$ ' + _valor.toFixed(2);
+				leadAlteracao.ValorTabela = 'R$ ' + formatReal(_valor);
 				leadAlteracao.DataFechamento = _data;
 				leadAlteracao.DataFechamentoTabela = lpad(_data.getDate(), 2) + "/" + lpad(new Number(_data.getMonth() + 1), 2) + "/" + _data.getFullYear();
 
@@ -235,6 +242,9 @@ angular.module('reachtarget')
 			var _origem = document.getElementsByName('novoLeadOrigem')[0];			
 			var _novoLead = new NovoLead();
 
+			var _data = new Date(document.getElementsByName('novoLeadEntrada')[0].value);
+			_data.setDate(_data.getDate() + 1);
+
 			_novoLead.objectIdLogin = LoginService.objectIdLogin;
 			_novoLead.dataEntrada = new Date(document.getElementsByName('novoLeadEntrada')[0].value);
 			_novoLead.nome = document.getElementsByName('novoLeadNome')[0].value;
@@ -243,9 +253,8 @@ angular.module('reachtarget')
 			_novoLead.cargo = document.getElementsByName('novoLeadCargo')[0].value;
 			_novoLead.telefone = document.getElementsByName('novoLeadTelefone')[0].value;
 			_novoLead.interesse = LoginService.CampanhaSelecionada.Nome;
-			_novoLead.origem = _origem.options[_origem.selectedIndex].text;
 			_novoLead.quantidadeConversoes = 1;
-			_novoLead.data = new Date(document.getElementsByName('novoLeadEntrada')[0].value);
+			_novoLead.data = _data;
 			_novoLead.status = 0;
 			_novoLead.dataFechamento = null;
 			_novoLead.valorFechamento = 0;
@@ -269,6 +278,7 @@ angular.module('reachtarget')
     	$('#empresa' + lead._id).popover({
 		    placement: 'top',
 		    trigger: 'manual',
+		    container : 'body',
 		    html: true,
 		    content: function() {
           		return $('#contentHover' + lead._id).html();
@@ -276,13 +286,10 @@ angular.module('reachtarget')
 		});
 
 		$('#empresa' + lead._id).popover('show');			
-
-		$('.popover').css('left', '34px');
-		$('.popover .arrow').css('left', '25px');
     };
 
     $scope.mouseLeave = function(lead) {
-	   	$('#empresa' + lead._id).popover('hide');
+    	$('#empresa' + lead._id).popover('hide');
     };
 
     $scope.consultarLeads();

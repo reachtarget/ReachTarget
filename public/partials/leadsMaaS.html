@@ -4,7 +4,7 @@
 	      <div class="panel panel-default">
 	        <div class="panel-heading">
 	          <h5 class="panel-title">Leads</h5>
-	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Quantidade de visitantes que preencheram formulário de interesse"/>
 	        </div>
 	        <div class="panel-body">
 	          <h4>{{leads}}</h4> 
@@ -16,7 +16,7 @@
 	      <div class="panel panel-default">
 	        <div class="panel-heading">
 	          <h5 class="panel-title">Vendas</h5>
-	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Quantidade de leads que foram fechados em vendas"/>
 	        </div>
 	        <div class="panel-body">
 	          <h4 >{{vendas}}</h4> 
@@ -28,7 +28,7 @@
 	      <div class="panel panel-default">
 	        <div class="panel-heading">
 	          <h5 class="panel-title">Timing de vendas</h5>
-	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Tempo médio de duração entre a entrada do lead e fechamento da venda"/>
 	        </div>
 	        <div class="panel-body">
 	          <h4>{{timingVendas}}</h4>
@@ -40,7 +40,7 @@
 	      <div class="panel panel-default">
 	        <div class="panel-heading">
 	          <h5 class="panel-title">Valor em vendas</h5>
-	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Nam sit amet nulla a nunc feugiat efficitur eget id diam"/>
+	          <button id="buttonTooltip" class="btn btn-primary" data-toggle="tooltip" data-placement="left" title="Soma do valor total de vendas no período"/>
 	        </div>
 	        <div class="panel-body">
 	          <h4 >R$ {{valorVendas}}</h4>
@@ -59,7 +59,7 @@
 		      <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
 		    </div>
 		    
-		    <div class="panel-body">
+		    <div style="overflow-y: scroll; height: 94%; width: 100%; padding: 0 !important;"  class="panel-body">
 		      <br/>
 
 		      <div class="table-responsive">
@@ -67,35 +67,34 @@
 		          <thead>
 		            <tr>
 		              <th width="3%" ng-show="permiteExcluirLead" ></th>
-		              <th width="30%">Empresa</th>
-		              <th width="17%">Interesse</th>
-		              <th width="10%">Entrada</th>
-		              <th width="20%">Status</th>
-		              <th width="10%">Valor venda</th>
-		              <th width="10%">Fechamento</th>
+		              <th width="27%">Empresa</th>
+		              <th width="16%">Interesse</th>
+		              <th width="11%" class="text-center">Entrada</th>
+		              <th width="20%" class="text-center">Status</th>
+		              <th width="14%" class="text-right">Valor venda</th>
+		              <th width="11%" class="text-center">Fechamento</th>
 		            </tr>
 		          </thead>
 
 		          <tbody>
-		            <tr ng-repeat="itemLead in listaLeads | filter: filtro | orderBy: ordenacao : opcaoReverse ">
+		            <tr ng-repeat="itemLead in listaLeads | filter: filtro | orderBy: 'Entrada' : opcaoReverse ">
 		              <td ng-show="permiteExcluirLead" width="3%">
 		                <button type="button" class="btn btn-primary" ng-click="excluirLead(itemLead)">X</button>
 		              </td>
 
-		              <td style="cursor: pointer; position: absolute;" rel="popover" width="30%" id="empresa{{itemLead._id}}" ng-mouseover="mouseOver(itemLead)" ng-mouseleave="mouseLeave(itemLead)">{{itemLead.Empresa}}
+		              <td style="cursor: pointer;" rel="popover" width="27%" id="empresa{{itemLead._id}}" ng-mouseover="mouseOver(itemLead)" ng-mouseleave="mouseLeave(itemLead)">{{itemLead.Empresa}}
 		              	<div class="hidden" id="contentHover{{itemLead._id}}" name="contentHover{{itemLead._id}}">
-		                	{{itemLead.Nome}}
-		                	<br/>
-		                	{{itemLead.Cargo}}
-		                	<br/>
-		                	{{itemLead.Email}}
-		                	<br/>
-		                	{{itemLead.Telefone}}
+		                	<ul class="tooltip-list">
+		                		<li id="t-name" class="field">{{itemLead.Nome}}</li>
+								<li id="t-role" class="field">{{itemLead.Cargo}}</li>
+								<li id="t-email" class="field">{{itemLead.Email}}</li>
+								<li id="t-telphone" class="field">{{itemLead.Telefone}}</li>
+		                	</ul>
 		                </div>
 		              </td>
 
-		              <td width="17%">{{itemLead.Interesse}}</td>
-		              <td width="10%">{{itemLead.DataEntrada}}</td>
+		              <td width="16%">{{itemLead.Interesse}}</td>
+		              <td width="11%" class="text-center">{{itemLead.DataEntrada}}</td>
 		              
 		              <td width="20%" class="text-center"> 
 	    	            <select 
@@ -109,18 +108,18 @@
 		                </select>
 
 		                <div class="hidden" id="contentLeadFechamento{{itemLead._id}}" name="contentLeadFechamento{{itemLead._id}}">
-		                	<input id="teste" class="form-control" name="valorLeadFechamento{{itemLead._id}}" placeholder="R$ 0,00" >
-        					<input id="teste" type="date" class="form-control" name="entradaLeadFechamento{{itemLead._id}}" >
+		                	<input id="valorFechamento{{itemLead._id}}" class="form-control" name="valorLeadFechamento{{itemLead._id}}" placeholder="R$ 0,00" >
+        					<input id="dataFechamentoLead{{itemLead._id}}" type="date" class="form-control" name="dataFechamentoLead{{itemLead._id}}" >
         					<br/>
 		                	<button
 		                		id="bttnSalvarLeadFechamento{{itemLead._id}}" 
 		                		name="bttnSalvarLeadFechamento{{itemLead._id}}" 
-		                		class="btn btn-primary">Salvar</button>
+		                		class="btn btn-primary save-button">Salvar</button>
 		                </div>
 	    	          </td>
 
-		              <td width="10%">{{itemLead.ValorTabela}} </td>
-		              <td width="10%">{{itemLead.DataFechamentoTabela}} </td>
+		              <td width="14%" class="text-right">{{itemLead.ValorTabela}} </td>
+		              <td width="11%" class="text-center">{{itemLead.DataFechamentoTabela}} </td>
 		            </tr>
 		          </tbody>
 		        </table>
@@ -135,6 +134,7 @@
         <input id="teste" class="form-control" name="novoLeadCargo" placeholder="Cargo" >
         <input id="teste" class="form-control" name="novoLeadEmail" placeholder="E-mail" >
         <input id="teste" class="form-control" name="novoLeadTelefone" placeholder="Telefone" >
+        <!--
         <select 
         	id="teste"
         	class="form-control" 
@@ -142,10 +142,11 @@
         	ng-model="origemSelecionada"
 	        ng-options="origem as origem for origem in listaOrigens">
 		</select>
+		-->
         <input id="teste" type="date" class="form-control" name="novoLeadEntrada" placeholder="Data entrada" >
         <br />
-        <button id="bttnSalvarNovoLead" name="bttnSalvarNovoLead" class="btn btn-primary">Salvar</button>
-        <button id="bttnFecharNovoLead" name="bttnFecharNovoLead" class="btn btn-primary">Fechar</button>
+        <button id="bttnSalvarNovoLead" name="bttnSalvarNovoLead" class="btn btn-primary save-newlead">Salvar</button>
+        <button id="bttnFecharNovoLead" name="bttnFecharNovoLead" class="close-marker">X</button>
       </div>
 	</div>	
 </div>

@@ -119,3 +119,35 @@ var _metodoDeAtualizacao;
 clickAtualizar = function() {
     _metodoDeAtualizacao();
 };
+
+function formatReal(mixed) {
+    if (mixed == 0) {
+
+        return '0,00';
+        
+    } else {
+
+        var int = parseInt(mixed.toFixed(2).toString().replace(/[^\d]+/g, ''));
+        var tmp = int + '';
+
+        tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+
+        if (tmp.length > 6)
+            tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+
+        return tmp;
+    }    
+};
+
+function formatarValor(valor){
+    var _auxiliar = valor;
+    var tam = valor.toString().length;
+
+    if (tam >= 4) {
+        _auxiliar = 
+            valor.toString().substr(0, tam - 3) + '.' + 
+            valor.toString().substr(tam - 3, tam);
+    }
+
+    return _auxiliar;
+}

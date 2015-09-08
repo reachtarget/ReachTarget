@@ -83,14 +83,14 @@
                     </div>
 
                     <div class="hidden" id="a1">
-                        <div class="popover-body" bs-popover>
-                            <label >Campanhas</label>
-                            
+                        <div class="popover-body" bs-popover id="popoverFiltros" name="popoverFiltros">
+                            <label class="input-group-addon" >Campanhas</label>
                             <select id="selectCampanhas" name="selectCampanhas" class="form-control" ng-options="item.IDPagina as item.Nome for item in listaCampanhas" ng-model="selected"></select>
 
-                            <label >Período</label>
-                            <input type="text" class="form-control" name="daterange" id="daterange">                        
+                            <label class="input-group-addon" >Período</label>
+                            <input type="text" class="form-control" name="daterange" id="daterange">   
 
+                            <button id="bttnFecharFiltros" name="bttnFecharFiltros" class="close-marker">X</button>
                             <button id="bttnAtualizarFiltros" name="bttnAtualizarFiltros" class="btn btn-primary" >Atualizar</button>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
 
                 <div class="pull-right" ng-hide="administrador">
                     <nav role="nav-menu" class="nav">
-                        <ul class="main-menu">
+                        <ul id="menusStarterSearchInbound" class="main-menu">
 
                             <li id='leads'>
                                 <a class="dropdown-toggle" aria-expanded="true" href="#/leads">Leads</a>
@@ -116,11 +116,11 @@
                                             <a href="#/resultados/estatisticas"><i class="fa fa-fw fa-signal"></i> Estatísticas</a>
                                         </li>
 
-                                        <li role="subitem">
+                                        <li ng-show="searchOuInbound" role="subitem"> <!-- HABILITAR -->
                                             <a href="#/resultados/leads"><i class="fa fa-fw fa-signal"></i> Leads</a>
                                         </li>
 
-                                        <li ng-show="searchOuInbound" role="subitem">
+                                        <li ng-show="searchOuInbound" role="subitem"> <!-- HABILITAR -->
                                             <a href="#/resultados/canais"><i class="fa fa-fw fa-signal"></i> Canais</a>
                                         </li>                                        
                                     </ul>
@@ -149,7 +149,7 @@
                                 </div>
                             </li>
 
-                            <li id="estrategia">
+                            <li ng-show="searchOuInbound" id="estrategia">  <!-- HABILITAR -->
                                 <div class="dropdown">
                                     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                     Estratégia
@@ -178,15 +178,15 @@
                                     </a>
 
                                     <ul role="submenu" class="dropdown-menu dropdown-menu-right" id="preferences-drop">
-                                        <li id='menuDadosCadastraisMaaS' role="subitem">
-                                            <a href="#/configuracoes/dadosCadastrais"><i class="fa fa-fw fa-signal"></i> Dados cadastrais</a>
+                                        <li ng-show="searchOuInbound" id='menuDadosCadastraisMaaS' role="subitem">
+                                            <a href="#/configuracoes/dadosCadastrais"><i class="fa fa-fw fa-signal"></i> Dados cadastrais</a> <!-- HABILITAR -->
                                         </li>
 
-                                        <li id='menuFaturasMaaS' role="subitem">
-                                            <a ><i class="fa fa-fw fa-money"></i> Faturas</a>
+                                        <li ng-show="searchOuInbound" id='menuFaturasMaaS' role="subitem">
+                                            <a ><i class="fa fa-fw fa-money"></i> Faturas</a> <!-- HABILITAR -->
                                         </li>
 
-                                        <li id='menuDivider' class="divider"></li>
+                                        <li ng-show="searchOuInbound" id='menuDivider' class="divider"></li> <!-- HABILITAR -->
 
                                         <li role="subitem">
                                             <a ng-click="sair()">Sair</a>
@@ -206,7 +206,7 @@
             <div class="container-fluid">
                 <div class="content-middle" ng-view></div>
 
-                <h6 id="textoMaaS" name="textoMaaS">O Marketing as a Service (MaaS) é uma plataforma de marketing da Siteina - Todos os direitos reservados - <b>Termos e condições</b></h6>
+                <h6 id="textoMaaS" name="textoMaaS">O Marketing as a Service (MaaS) é uma plataforma de marketing da Siteina - Todos os direitos reservados - <a href="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/termos/termos-e-condicoes-marketing-as-a-service.pdf" target="_blank"><b>Termos e condições<b/></a></h6>
             </div>
         </div>
     </div>
@@ -243,7 +243,6 @@
   		</div>
 	</div>
 
-
     <script src="vendor/jquery/dist/jquery.js"></script>
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="vendor/bootstrap-daterangepicker-master/moment.js"></script>
@@ -266,6 +265,9 @@
     <!-- Javascript Runner -->
     <script src="js/main.js"></script>
     <script src="js/global.js"></script>
+
+    <!-- MaskMoney -->
+    <script src="vendor/mask-money/jquery.maskMoney.js"></script>
     
     <!-- App Controllers -->
     <script src="js/controllers/AdministrativoController.js"></script>

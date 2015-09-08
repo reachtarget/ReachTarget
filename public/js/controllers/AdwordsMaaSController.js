@@ -53,7 +53,7 @@ angular.module('reachtarget')
     			'dimensions': 'ga:adGroup,ga:keyword',
     			'metrics': 'ga:impressions,ga:adClicks,ga:CPC,ga:CTR,ga:goalCompletionsAll,ga:adCost',
     			'sort': 'ga:adGroup,ga:impressions,ga:adClicks',
-    			'filters': 'ga:campaign==' + LoginService.CampanhaSelecionada.Nome
+    			'filters': 'ga:campaign==' + LoginService.CampanhaSelecionada.Adwords
 			})
 			.execute(function(resultadoAnalytics) {   
 
@@ -75,6 +75,7 @@ angular.module('reachtarget')
 									Show: false,
 									Contador: 0,
 									Impressoes: 0,
+									ImpressoesShow: '0',
 									Cliques: 0,
 									CPC: 0,
 									CTR: 0,
@@ -110,8 +111,9 @@ angular.module('reachtarget')
 							$scope.listaGrupos[_i].ListaPalavrasChave.push({
 								PalavraChave: itemAnalytics[1],
 								Impressoes: _impressoes,
+								ImpressoesShow: formatarValor(_impressoes),
 								Cliques: _cliques,
-								CPC: _cpc.toFixed(2),
+								CPC: formatReal(_cpc),
 								CTR: _ctr.toFixed(2),
 								Conversoes: _conversoes,
 								Custo: _custo,
@@ -133,9 +135,16 @@ angular.module('reachtarget')
 										_cliques += itemGrupo.Cliques;
 										_conversoes += itemGrupo.Conversoes;
 										
-										
+										itemGrupo.Impressoes = 
+											itemGrupo.Impressoes;
+
+										itemGrupo.ImpressoesShow = 
+											formatarValor(itemGrupo.Impressoes);
+
 										itemGrupo.CPC = 
-											(itemGrupo.Cliques > 0) ? (itemGrupo.Custo / itemGrupo.Cliques).toFixed(2) : '0.00';
+											(itemGrupo.Cliques > 0) 
+												? formatReal(itemGrupo.Custo / itemGrupo.Cliques)
+												: '0,00';
 										
 										itemGrupo.CTR = 
 											(itemGrupo.Contador > 0) ? (itemGrupo.CTR / itemGrupo.Contador).toFixed(2) : '0.00';
@@ -147,10 +156,9 @@ angular.module('reachtarget')
 										if (indexGrupo == listaGrupo.length-1) {
 
 											$scope.budgetConsumido = 
-												$scope.budgetConsumido.toFixed(2);
+												formatReal($scope.budgetConsumido);
 
-											$scope.cpcMedio = 
-												(_custo / _cliques).toFixed(2);
+											$scope.cpcMedio = formatReal(_custo / _cliques);
 
 											if (_cliques > 0)
 												$scope.taxaDeConversao =
@@ -172,9 +180,7 @@ angular.module('reachtarget')
 		};
 
 		$scope.abrirPalavrasChave = function(itemPalavraChave) {
-
 			itemPalavraChave.Show = !itemPalavraChave.Show;
-
 		};
 
 		$scope.consultarDadosAdwords();
