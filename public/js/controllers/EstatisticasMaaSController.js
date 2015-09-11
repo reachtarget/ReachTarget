@@ -475,6 +475,9 @@ angular.module('reachtarget')
                         	drawScaleStroke: [0,1]
 						});
 
+			$scope.acessos = formatarValor($scope.acessos);
+			$scope.visitantes = formatarValor($scope.visitantes);
+
 			fecharLoader();
 		};
 

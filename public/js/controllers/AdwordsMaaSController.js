@@ -153,6 +153,9 @@ angular.module('reachtarget')
 
 										if (indexGrupo == listaGrupo.length-1) {
 
+											$scope.cliques = 
+												formatarValor($scope.cliques);
+
 											$scope.budgetConsumido = 
 												formatReal($scope.budgetConsumido);
 

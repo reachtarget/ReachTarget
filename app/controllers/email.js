@@ -26,7 +26,7 @@ module.exports = function(app) {
             var message = {
                 from: 'MaaS <' + _usuarioEmail + '>',
                 to: cliente.Email,
-                bcc: 'Henrique <henrique@siteina.com.br>',
+                bcc: 'Henrique <henrique@siteina.com.br>, Guilherme <guilherme.casimiro@siteina.com.br>',
                 html: ''
             };
 
@@ -122,7 +122,7 @@ module.exports = function(app) {
             var message = {
                 from: 'MaaS <' + _usuarioEmail + '>',
                 to: _to,
-                bcc: 'Henrique <henrique@siteina.com.br>',
+                bcc: 'Henrique <henrique@siteina.com.br>, Guilherme <guilherme.casimiro@siteina.com.br>',
                 subject: 'Novo lead',            
                 headers: {
                     'X-Laziness-level': 1000
@@ -169,7 +169,7 @@ module.exports = function(app) {
         var message = {
             from: 'MaaS <' + _usuarioEmail + '>',
             to: _to,
-            bcc: 'Henrique <henrique@siteina.com.br>',            
+            bcc: 'Henrique <henrique@siteina.com.br>, Guilherme <guilherme.casimiro@siteina.com.br>',
             subject: 'Seu login',            
             headers: {
                 'X-Laziness-level': 1000

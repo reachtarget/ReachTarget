@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <link type="text/css" href="vendor/bootstrap/less/bootstrap.less" rel="stylesheet/less">
+    <link type="text/css" href="vendor/bootstrap/less/bootstrap.css" rel="stylesheet">
     <script type="text/javascript" src="vendor/bootstrap/js/less.min.js"></script>
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap-daterangepicker-master/daterangepicker-bs3.css" />
 
@@ -70,7 +70,7 @@
     </div>
 
     <div ng-controller="LoginController">
-        <header id='headerNav' role="top-menu" class="header" >
+        <header id='headerNav' style="display: none;" role="top-menu" class="header"  >
             <div class="navbar navbar-default navbar-static-top">
                 <div class="navbar-header" >
                     <img id="logoTopo" class="navbar-brand" />
@@ -199,49 +199,51 @@
                 </div>
             </div>
         </header>
-    </div>
-    
-    <div id="wrapper">
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <div class="content-middle" ng-view></div>
 
-                <h6 id="textoMaaS" name="textoMaaS">O Marketing as a Service (MaaS) é uma plataforma de marketing da Siteina - Todos os direitos reservados - <a href="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/termos/termos-e-condicoes-marketing-as-a-service.pdf" target="_blank"><b>Termos e condições<b/></a></h6>
+        <div id="wrapper">
+            <div id="page-wrapper">
+                <div class="container-fluid">
+                    <div class="content-middle" ng-view></div>
+
+                    <h6 id="textoMaaS" name="textoMaaS">O Marketing as a Service (MaaS) é uma plataforma de marketing da Siteina - Todos os direitos reservados - <a href="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/termos/termos-e-condicoes-marketing-as-a-service.pdf" target="_blank"><b>Termos e condições<b/></a></h6>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalAlterarSenha" class="modal fade" ng-controller="LoginController">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Alterar senha</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            Atual:
+                            <br/>
+                            <input class="form-control" ng-model="senhaAnterior" />
+                            <br />
+
+                            Nova:
+                            <br/>
+                            <input class="form-control" ng-model="novaSenha" />
+                        </div>
+                    </div>
+
+                    <div ng-show="usuarioSenhaInvalido" role="alert" id="alerta-login">
+                        {{mensagemUsuarioSenhaInvalido}}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="salvarNovaSenha()">Salvar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <div id="modalAlterarSenha" class="modal fade" ng-controller="LoginController">
-  		<div class="modal-dialog modal-sm">
-    		<div class="modal-content">
-		    	<div class="modal-header">
-		    		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        			<h4 class="modal-title">Alterar senha</h4>
-      			</div>
-
-	      		<div class="modal-body">
-	      			<div class="row">
-		        		Atual:
-		        		<br/>
-		        		<input class="form-control" ng-model="senhaAnterior" />
-				        <br />
-
-		        		Nova:
-		        		<br/>
-		        		<input class="form-control" ng-model="novaSenha" />
-		        	</div>
-	      		</div>
-
-	      		<div ng-show="usuarioSenhaInvalido" role="alert" id="alerta-login">
-        			{{mensagemUsuarioSenhaInvalido}}
-      			</div>
-
-	      		<div class="modal-footer">
-	        		<button type="button" class="btn btn-primary" ng-click="salvarNovaSenha()">Salvar</button>
-	      		</div>
-    		</div>
-  		</div>
-	</div>
+    
+    
 
     <script src="vendor/jquery/dist/jquery.js"></script>
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
