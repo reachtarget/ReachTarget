@@ -477,6 +477,7 @@ angular.module('reachtarget')
 
 			$scope.acessos = formatarValor($scope.acessos);
 			$scope.visitantes = formatarValor($scope.visitantes);
+			$scope.conversoes = formatarValor($scope.conversoes);
 
 			fecharLoader();
 		};
