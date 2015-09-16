@@ -1,0 +1,64 @@
+<div class="panel-body">
+	<div class="row">
+
+		<div ng-show="BemVindo" class="col-md-12">
+			Seja bem-vindo ao Marketing as a Service
+			<br/>
+			Vamos iniciar o preenchimento de seu briefing?
+			<br/>
+			<br/>
+			<button class="btn btn-primary" ng-click="iniciarBriefing()">Iniciar</button>
+		</div>
+
+		<div ng-show="Ofertas" class="col-md-12">
+			{{NomeDaOferta}}
+			<br/>
+			({{OfertaAtual}}/{{TotalOfertas}})
+			<br/>
+			<br/>
+			<button class="btn btn-primary" ng-click="iniciarPerguntas()">Iniciar</button>
+		</div>
+
+		<div ng-show="Perguntas" class="col-md-12">
+			<div class="panel panel-default" id="panel-destaquefull">
+		        <div class="panel-heading">
+		        	<h5 class="panel-title">{{NomeDaOferta}} ({{OfertaAtual}}/{{TotalOfertas}})</h5>
+		        </div>
+
+		        <div style="overflow-y: scroll; height: 94%; width: 100%; padding: 0 !important;" class="panel-body" >
+		        	<div class="row" style="margin: 0px; margin-top: 10px;">
+		        		<div class="col-md-11">
+		        			<h5 style="top: 14px; position: relative;">{{Pergunta}}</h5>  
+		        		</div>
+
+		        		<div class="col-md-1">
+		        			<div style="float: right; left: -13px; position: relative;">
+			        			<h4>{{PerguntaAtual}}</h4><h5 style="top: 14px; position: relative;">/{{TotalPerguntas}}</h5>
+			        		</div>
+		        		</div>
+		        	</div>
+
+		        	<div class="row" style="margin: 0px;">
+		        		<div class="col-md-12">
+		        			<textarea id="txtAreaResposta" style="height: 290px; width: 99%" wrap="hard" class="form-control" placeholder="{{Placeholder}}" ng-model="Resposta" required/>
+		        		</div>
+		        	</div>
+
+		        	<div class="row" style="margin: 0px;">
+		        		<div class="col-md-12" style="margin-top: 20px;">
+			        		<button ng-disabled="PerguntaAtual == 1" class="btn btn-primary" ng-click="voltar()">Voltar</button>
+	  						<button ng-disabled="Resposta == null" class="btn btn-primary" ng-click="avancar()">{{ProximaOuSalvar}}</button>
+		        		</div>		        		
+		        	</div>
+		        </div>
+		    </div>
+		</div>
+
+		<div ng-show="Obrigado" class="col-md-12">
+			Muito obrigado pelo preenchimento do Briefing!
+			<br/>
+			Etc...
+			<br/>
+		</div>
+	</div>
+</div>

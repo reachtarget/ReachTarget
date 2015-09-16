@@ -16,8 +16,9 @@ module.exports = function() {
 			type: String	
 		},
 
-		// 'A' Ativo
-		// 'I' Inativo
+		// 'A' - Ativo
+		// 'I' - Inativo
+		// 'B' - Briefing
 		status: {
 			type: String
 		},

@@ -8,72 +8,6 @@ angular.module('reachtarget', ['ngRoute', 'ngResource'])
 		});
 		*/
 
-		/*
-
-		$routeProvider.when('/novoCliente', {
-			templateUrl: 'partials/novoCliente.html',
-			controller: 'NovoClienteController'
-		});
-
-		$routeProvider.when('/projecao', {
-			templateUrl: 'partials/projecao.html',
-			controller: 'ProjecaoController'
-		});
-
-		
-		$routeProvider.when('/administrativo', {
-			templateUrl: 'partials/administrativo.html',
-			controller: 'AdministrativoController'
-		});
-
-		$routeProvider.when('/analise', {
-			templateUrl: 'partials/analise.html',
-			controller: 'AnaliseController'
-		});
-
-
-		$routeProvider.when('/campanhas', {
-			templateUrl: 'partials/campanhas.html',
-			controller: 'CampanhasController'
-		});
-
-		$routeProvider.when('/cliente', {
-			templateUrl: 'partials/cliente.html',
-			controller: 'ClienteController'
-		});
-
-		$routeProvider.when('/dashboard', {
-			templateUrl: 'partials/dashboard.html',
-			controller: 'DashboardController'
-		});
-
-		$routeProvider.when('/fichaLead', {
-			templateUrl: 'partials/fichaLead.html',
-			controller: 'FichaLeadController'
-		});
-
-		$routeProvider.when('/googleAnalytics', {
-			templateUrl: 'partials/googleAnalytics.html',
-			controller: 'GoogleAnalyticsController'
-		});
-
-		$routeProvider.when('/historico', {
-			templateUrl: 'partials/historico.html',
-			controller: 'HistoricoController'
-		});
-
-		$routeProvider.when('/investimento', {
-			templateUrl: 'partials/investimento.html',
-			controller: 'InvestimentoController'
-		});
-
-		$routeProvider.when('/leads', {
-			templateUrl: 'partials/leads.html',
-			controller: 'LeadsController'
-		});
-		*/
-
-
 		$routeProvider.when('/login', {
 			templateUrl: 'partials/login.html',
 			controller: 'LoginController'
@@ -94,6 +28,12 @@ angular.module('reachtarget', ['ngRoute', 'ngResource'])
 		$routeProvider.when('/administrativo/cliente', {
 			templateUrl: 'partials/cliente.html',
 			controller: 'ClienteController'
+		});
+
+
+		$routeProvider.when('/briefing', {
+			templateUrl: 'partials/briefingMaaS.html',
+			controller: 'BriefingMaaSController'
 		});
 
 

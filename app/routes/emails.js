@@ -11,4 +11,7 @@ module.exports = function(app) {
 
 	app.route('/email/novo/login')
 		.post(controller.enviarEmailNovoLogin);
+
+	app.route('/email/ofertas/briefing')
+		.post(controller.enviarEmailBriefing);
 }

@@ -13,14 +13,6 @@ module.exports = function() {
 			ref: 'Unbounce'
 		},
 
-		dataPreenchimento:  {
-			type: Date
-		},
-
-		nomeEmpresa:  {
-			type: String
-		},
-
 		emailRecebeLeads:  {
 			type: String
 		},

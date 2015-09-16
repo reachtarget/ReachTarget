@@ -1,7 +1,7 @@
 angular.module('reachtarget')
 	.controller('LoginController', function($scope, $location, $resource, LoginService, $rootScope) {
-		$scope.login = 'guardeaqui';
-		$scope.senha = '123';
+		$scope.login = 'h';
+		$scope.senha = '1';
 
 		$scope.TituloDaPagina = "Marketing as a Service";
 		$scope.lembrarDeMim = false;
@@ -23,6 +23,7 @@ angular.module('reachtarget')
 		var NovoLogin = $resource('/login');
 		var Login = $resource('/login/:login');
 		var EnviarEmailLogin = $resource('/email/novo/login');
+		var ComplementoLogin = $resource('/complementoLogin/:objectIdLogin');
 
 		var TokenGoogle = $resource('/google/:objectIdLogin');
 		var RefreshToken = $resource('/token/analytics/:accessToken/:refreshToken/:id');
@@ -255,24 +256,6 @@ angular.module('reachtarget')
 				document.getElementById('logoCliente').src = 'https://s3-ap-southeast-2.amazonaws.com/siteina/maas/logo-clientes/' + $scope.login + '.png';
 			} 
 			
-			/*
-			if (opcao == 'dash') {
-
-
-			} else if (opcao == 'adm') {				
-
-				document.getElementById('logoCliente').style.display = 'none';
-
-			} else if (opcao == 'maas') {
-
-				document.getElementById('logoCliente').src = 'https://s3-ap-southeast-2.amazonaws.com/siteina/maas/logo-clientes/' + $scope.login + '.png';
-
-			} else if (opcao == 'estrategia') {
-
-				document.getElementById('logoCliente').style.display = 'none';
-			}
-			*/
-			
 			LoginService.AbriuPeloLogin = true;
 		};
 
@@ -369,26 +352,13 @@ angular.module('reachtarget')
 			$scope.administrador = false;
 			$scope.searchOuInbound = false;
 			
-			/*
-			var _novoLogin = new NovoLogin();
-
-			_novoLogin.email = 'henrique@siteina.com.br';
-			_novoLogin.login = 'maas';
-			_novoLogin.senha = 'siteina@67';
-			_novoLogin.tipo = 'A';
-			_novoLogin.status = 'A';
-
-			_novoLogin.$save();
-			return;
-			*/
-			
-
 			Login.get({ 
 
 				login: $scope.login 
 
 			}, function(resultadoLogin){
-				if ((resultadoLogin) && (resultadoLogin.senha == $scope.senha) && (resultadoLogin.status == "A")) {
+				if ((resultadoLogin) && (resultadoLogin.senha == $scope.senha) && 
+					((resultadoLogin.status == "A") || (resultadoLogin.status == "B"))) {
 					LoginService.login = resultadoLogin;
 
 					LoginService.objectIdLogin = resultadoLogin._id;
@@ -402,6 +372,17 @@ angular.module('reachtarget')
 
 					} else {
 
+						ComplementoLogin.get({
+
+							objectIdLogin: LoginService.objectIdLogin
+
+						}, function(resultadoComplemento){
+							
+							if (resultadoComplemento)
+								LoginService.nomeEmpresa = resultadoComplemento.nome;
+
+						});
+
 						$scope.logado = true;
 
 						if (resultadoLogin.tipo == 'A') {
@@ -411,11 +392,13 @@ angular.module('reachtarget')
 							$scope.ajustarHeader('adm');
 							$location.path('/administrativo');
 
+						} else if (resultadoLogin.status == 'B') {
+
+							$scope.ajustarHeader('adm');
+							$location.path('/briefing');
+
 						} else {
 
-							//$scope.searchOuInbound = 
-							//	resultadoLogin.tipo != 'S';
-							
 							if ($scope.lembrarDeMim) {
 								gravarCookie(
 									'rtmaassiteinaloginsenha', 

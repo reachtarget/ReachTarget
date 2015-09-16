@@ -5,6 +5,7 @@ angular.module('reachtarget')
 		var objectIdLogin = "";
 		var accountIDUnbounce = "";
 		var tipoLogin = "";
+		var nomeEmpresa = "";
 
 		var TipoAdministrativo = "";
 		var PermiteExcluirLead;

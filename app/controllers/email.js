@@ -193,6 +193,44 @@ module.exports = function(app) {
         }); 
     };
 
+    controller.enviarEmailBriefing = function(req, res) {
+        var _cliente = req.body.nomeCliente;
+        var _oferta = req.body.nomeOferta;
+        var _briefing = req.body.briefing;
+
+        var transporter = 
+            nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: _usuarioEmail,
+                    pass: _senhaEmail
+                }
+            });
+
+        var message = {
+            from: 'MaaS <' + _usuarioEmail + '>',
+            to: 'Henrique <henrique@siteina.com.br>',
+            subject: '[Briefing] ' + _cliente + ' (' + _oferta + ')',            
+            headers: {
+                'X-Laziness-level': 1000
+            },            
+            html: 
+                htmlEstrutura(
+                'BRIEFING', 
+                null, {
+                    Briefing: _briefing                    
+                })
+        };
+
+        transporter.sendMail(message, function(error, info) {
+            if (error) {
+                return;
+            } else {
+                res.json('ok');
+            }
+        }); 
+    };
+
 
     htmlEstrutura = function(mensalSemanalLead, lista, estruturaAuxiliar, periodo, comentario) {
         var _textoAuxiliar = '';
@@ -235,6 +273,8 @@ module.exports = function(app) {
             _textoAuxiliar = 'Novo lead'; 
         else if (mensalSemanalLead == 'NL')
             _textoAuxiliar = 'Login / Senha'; 
+        else if (mensalSemanalLead == 'BRIEFING')
+            _textoAuxiliar = 'Briefing'; 
         else 
             _textoAuxiliar = periodo;
 
@@ -262,7 +302,7 @@ module.exports = function(app) {
                 estruturaAuxiliar.TaxaDeConversao);
 
             if (comentario)
-                _html += htmlComentario(comentario);
+                _html += htmlComentario('COMENTÁRIOS', comentario);
 
         } else if (mensalSemanalLead == 'M') {
 
@@ -276,16 +316,16 @@ module.exports = function(app) {
 
                 if (indexLP == listaForeachLP.length-1) {
                     if (comentario)
-                        _html += htmlComentario(comentario);
+                        _html += htmlComentario('COMENTÁRIOS', comentario);
 
                    _html += htmlFinal(mensalSemanalLead);
                 }
             });            
-        } else if ((mensalSemanalLead == 'L') || (mensalSemanalLead == 'NL')) {
+        } else if ((mensalSemanalLead == 'L') || (mensalSemanalLead == 'NL') || (mensalSemanalLead == 'BRIEFING')) {
         	if (mensalSemanalLead == 'NL')
             	_html += htmlTextoNovoLogin();
 
-            _html += htmlCabecalhoTable();
+            _html += htmlCabecalhoTable('BRIEFING');
         }
 
         if ((mensalSemanalLead == 'S') || (mensalSemanalLead == 'C')) {
@@ -335,6 +375,24 @@ module.exports = function(app) {
 
             _html += htmlFinalTable();
             _html += htmlFinal(mensalSemanalLead);
+        } else if (mensalSemanalLead == 'BRIEFING') {
+
+            _html += htmlComentario('Qual e-mail deverá receber os leads das campanhas ?', estruturaAuxiliar.Briefing.emailRecebeLeads);
+            _html += htmlComentario('Qual produtos/serviço será trabalhado ?', estruturaAuxiliar.Briefing.produtoServicosTrabalhados);
+            _html += htmlComentario('Qual a abrangência geográfica que o produto/serviço atende ?', estruturaAuxiliar.Briefing.abrangenciaGeografica);
+            _html += htmlComentario('Qual o orçamento de Adwords para este produto/serviço a ser trabalhado ?', estruturaAuxiliar.Briefing.orcamentoAdwords);
+            _html += htmlComentario('Qual o principal atributo do produto/serviço trabalhado ?', estruturaAuxiliar.Briefing.atributosTrabalhados);
+            _html += htmlComentario('Quem é o público deste produto/serviço que será oferecido ?', estruturaAuxiliar.Briefing.publicoAlvo);
+            _html += htmlComentario('Como você imagina que seus clientes procuram este produto/serviço no Google ?', estruturaAuxiliar.Briefing.comoClientesProcuramGoogle);
+            _html += htmlComentario('Qual principais diferenciais da sua empresa ?', estruturaAuxiliar.Briefing.pricipaisDiferenciais);
+            _html += htmlComentario('Quem são seus principais clientes ?', estruturaAuxiliar.Briefing.clientes);
+            _html += htmlComentario('Quem são seus principais parceiros ?', estruturaAuxiliar.Briefing.parceiros);
+            _html += htmlComentario('Quem são seus principais concorrentes ?', estruturaAuxiliar.Briefing.concorrentes);
+            _html += htmlComentario('Existe alguma referência visual que você queira indicar ?', estruturaAuxiliar.Briefing.referenciaVisual);
+
+            _html += htmlFinalTable();
+            _html += htmlFinal(mensalSemanalLead);
+
         }
 
         return _html;
@@ -494,7 +552,7 @@ module.exports = function(app) {
         return _htmlQuadroResumos;
     };
 
-    htmlCabecalhoTable = function() {
+    htmlCabecalhoTable = function(paramText) {
         var _htmlCabecalhoTable = '';
 
         _htmlCabecalhoTable += '      <tr>';
@@ -506,7 +564,12 @@ module.exports = function(app) {
         _htmlCabecalhoTable += '                        <tr>';
         _htmlCabecalhoTable += '                            <td width="20"></td>';
         _htmlCabecalhoTable += '                            <td width="560">';
-        _htmlCabecalhoTable += '                                <table style="display: inline-table; border: 1px solid #ececec;" align="left" border="0" cellpadding="0" cellspacing="0" width="560">';
+
+        if (paramText == 'BRIEFING')
+            _htmlCabecalhoTable += '                                <table style="display: inline-table; border: 0px solid #ececec;" align="left" border="0" cellpadding="0" cellspacing="0" width="560">';
+        else 
+            _htmlCabecalhoTable += '                                <table style="display: inline-table; border: 1px solid #ececec;" align="left" border="0" cellpadding="0" cellspacing="0" width="560">';
+
         _htmlCabecalhoTable += '                                    <tbody>';
 
         return _htmlCabecalhoTable;
@@ -528,11 +591,11 @@ module.exports = function(app) {
         return _htmlTextoNovoLogin;
     };
 
-    htmlComentario = function(paramComentario) {
+    htmlComentario = function(paramTexto, paramComentario) {
         var _htmlComentario = "";
 
         _htmlComentario += '      <tr>';
-        _htmlComentario += '        <table style="display:inline-table" align="left" border="0" cellpadding="0" cellspacing="0" width="600">';
+        _htmlComentario += '        <table style="display:inline-table; margin-bottom: 10px;" align="left" border="0" cellpadding="0" cellspacing="0" width="600">';
         _htmlComentario += '          <tbody>';
         _htmlComentario += '            <tr>';
         _htmlComentario += '              <td width="20">';
@@ -550,12 +613,12 @@ module.exports = function(app) {
         _htmlComentario += '                     </tr>';
         _htmlComentario += '                     <tr>   ';            
         _htmlComentario += '                       <td align="left" height="18" valign="bottom"> ';
-        _htmlComentario += '                         <font color="#999" size="1" face="Arial">&nbsp;&nbsp; COMENTÁRIOS </font>';
+        _htmlComentario += '                         <font color="#999" size="1" face="Arial">&nbsp;&nbsp; ' + paramTexto + '</font>';
         _htmlComentario += '                       </td>              ';
         _htmlComentario += '                     </tr>              ';
         _htmlComentario += '                     <tr>               ';
         _htmlComentario += '                       <td height="10">';
-        _htmlComentario += '                         <img name="14de822b7d46e05f_divider" src="https://ci4.googleusercontent.com/proxy/oS_cAW5vvVMEgXPp7dUFS9YKDZwexBfUd1Mx3-PYPwJypj1onWBX_2JrgpVgZzYiWvpDa52L5txx1nwkVmcVZwTMD4vZcYTFpdYkkKbgwYTr1mc9aAhsunD4=s0-d-e1-ft#https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/divider.jpg" width="560" height="3" border="0" alt="Visitas" class="CToWUd">';
+        _htmlComentario += '                         <img name="14de822b7d46e05f_divider" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/divider.jpg" width="560" height="3" border="0" alt="Visitas" class="CToWUd">';
         _htmlComentario += '                       </td>              ';
         _htmlComentario += '                     </tr>';
         _htmlComentario += '                     <tr>               ';
@@ -681,65 +744,75 @@ module.exports = function(app) {
     htmlFinal = function(maasOuSiteina) {
         var _htmlFim = "";
 
-        _htmlFim += '      <tr>';
-        _htmlFim += '       <td height="30"></td>';
-        _htmlFim += '      </tr>';
-        _htmlFim += '      <tr>';
-        _htmlFim += '       <td><table style="display: inline-table;" align="left" border="0" cellpadding="0" cellspacing="0" width="600">';
-        _htmlFim += '          <tbody><tr>';
-        _htmlFim += '           <td width="200"></td>';
-        _htmlFim += '           <td>';
-        _htmlFim += '                <table style="display: inline-table;" align="left" border="0" cellpadding="0" cellspacing="0" width="200">';
-        _htmlFim += '                    <tbody>';
-        _htmlFim += '                        <tr>';
-        _htmlFim += '                            <td>';
+        if (maasOuSiteina != "BRIEFING") {
+            _htmlFim += '      <tr>';
+            _htmlFim += '      <td height="30"></td>';
+            _htmlFim += '      </tr>';
 
-        if (maasOuSiteina == 'C')
-            _htmlFim += '                                <a href="http://app.siteina.com.br/" target="_blank" title="Acesse seu dashboard">';
-        else 
-            _htmlFim += '                                <a href="http://app.marketingasaservice.com.br/" target="_blank" title="Acesse seu dashboard">';
+            _htmlFim += '      <tr>';
+            _htmlFim += '       <td>';
+            _htmlFim += '       <table style="display: inline-table;" align="left" border="0" cellpadding="0" cellspacing="0" width="600">';
+            _htmlFim += '          <tbody><tr>';
+            _htmlFim += '           <td width="200"></td>';
+            _htmlFim += '           <td>';
+            _htmlFim += '                <table style="display: inline-table;" align="left" border="0" cellpadding="0" cellspacing="0" width="200">';
+            _htmlFim += '                    <tbody>';
+            _htmlFim += '                        <tr>';
+            _htmlFim += '                            <td>';
 
-        _htmlFim += '                                    <img name="botao-dashboard-a" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/button-a.gif" width="200" height="13" border="0" alt="Acesse seu dashboard" style="display: block;">';
-        _htmlFim += '                                </a>';
-        _htmlFim += '                            </td>';
-        _htmlFim += '                        </tr>';
-        _htmlFim += '                        <tr>';
-        _htmlFim += '                            <td>';
+            if (maasOuSiteina == 'C')
+                _htmlFim += '                                <a href="http://app.siteina.com.br/" target="_blank" title="Acesse seu dashboard">';
+            else 
+                _htmlFim += '                                <a href="http://app.marketingasaservice.com.br/" target="_blank" title="Acesse seu dashboard">';
 
-        if (maasOuSiteina == 'C')
-            _htmlFim += '                                <a href="http://app.siteina.com.br/" target="_blank" title="Acesse seu dashboard">';
-        else 
-            _htmlFim += '                                <a href="http://app.marketingasaservice.com.br/" target="_blank" title="Acesse seu dashboard">';
+            _htmlFim += '                                    <img name="botao-dashboard-a" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/button-a.gif" width="200" height="13" border="0" alt="Acesse seu dashboard" style="display: block;">';
+            _htmlFim += '                                </a>';
+            _htmlFim += '                            </td>';
+            _htmlFim += '                        </tr>';
+            _htmlFim += '                        <tr>';
+            _htmlFim += '                            <td>';
 
-        _htmlFim += '                                    <img name="botao-dashboard-b" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/button-b.gif" width="200" height="13" border="0" alt="Acesse seu dashboard" style="display: block;">';
-        _htmlFim += '                                </a>';
-        _htmlFim += '                            </td>';
-        _htmlFim += '                        </tr>';
-        _htmlFim += '                        <tr>';
-        _htmlFim += '                            <td>';
+            if (maasOuSiteina == 'C')
+                _htmlFim += '                                <a href="http://app.siteina.com.br/" target="_blank" title="Acesse seu dashboard">';
+            else 
+                _htmlFim += '                                <a href="http://app.marketingasaservice.com.br/" target="_blank" title="Acesse seu dashboard">';
 
-        if (maasOuSiteina == 'C')
-            _htmlFim += '                                <a href="http://app.siteina.com.br/" target="_blank" title="Acesse seu dashboard">';
-        else 
-            _htmlFim += '                                <a href="http://app.marketingasaservice.com.br/" target="_blank" title="Acesse seu dashboard">';
+            _htmlFim += '                                    <img name="botao-dashboard-b" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/button-b.gif" width="200" height="13" border="0" alt="Acesse seu dashboard" style="display: block;">';
+            _htmlFim += '                                </a>';
+            _htmlFim += '                            </td>';
+            _htmlFim += '                        </tr>';
+            _htmlFim += '                        <tr>';
+            _htmlFim += '                            <td>';
 
-        _htmlFim += '                                    <img name="botao-dashboard-c" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/button-c.gif" width="200" height="13" border="0" alt="Acesse seu dashboard" style="display: block;">';
-        _htmlFim += '                                </a>';
-        _htmlFim += '                            </td>';
-        _htmlFim += '                        </tr>';
-        _htmlFim += '                    </tbody>';
-        _htmlFim += '                </table>';
-        _htmlFim += '            </td>';
-        _htmlFim += '            <td></td>';
-        _htmlFim += '          </tr>';
-        _htmlFim += '        </tbody></table></td>';
-        _htmlFim += '      </tr>';
-        _htmlFim += '      <tr>';
-        _htmlFim += '       <td height="40"></td>';
-        _htmlFim += '      </tr>';
+            if (maasOuSiteina == 'C')
+                _htmlFim += '                                <a href="http://app.siteina.com.br/" target="_blank" title="Acesse seu dashboard">';
+            else 
+                _htmlFim += '                                <a href="http://app.marketingasaservice.com.br/" target="_blank" title="Acesse seu dashboard">';
+
+            _htmlFim += '                                    <img name="botao-dashboard-c" src="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/mail/button-c.gif" width="200" height="13" border="0" alt="Acesse seu dashboard" style="display: block;">';
+            _htmlFim += '                                </a>';
+            _htmlFim += '                            </td>';
+            _htmlFim += '                        </tr>';
+            _htmlFim += '                    </tbody>';
+            _htmlFim += '                </table>';
+            _htmlFim += '            </td>';
+            _htmlFim += '            <td></td>';
+            _htmlFim += '          </tr>';
+            _htmlFim += '        </tbody></table></td>';
+            _htmlFim += '      </tr>';
+            _htmlFim += '      <tr>';
+            _htmlFim += '       <td height="40"></td>';
+            _htmlFim += '      </tr>';
+        } else {
+            _htmlFim += '      <tr>';
+            _htmlFim += '       <td height="20"></td>';
+            _htmlFim += '      </tr>';
+        }
+
         _htmlFim += '      <tr>';
         _htmlFim += '       <td height="15" bgcolor="#E1E1E1"></td>';
         _htmlFim += '      </tr>';
+        
         _htmlFim += '      <tr>';
 
         if (maasOuSiteina == 'C'){

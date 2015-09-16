@@ -1,21 +1,102 @@
 <div class="panel-body">
-  Empresa
-  <input class="form-control" ng-model="empresa" placeholder="">
+  <div class="tabbable">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="javascript:#pnlDadosCadastrais" data-toggle="tab">Dados cadastrais</a></li>
+      <li><a href="javascript:#pnlOfertas" data-toggle="tab">Ofertas</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="pnlDadosCadastrais" class="tab-pane active">
+        <div class="panel panel-default" id="panel-destaque">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <input class="form-control" style="margin-top: 0px;" ng-model="empresa" placeholder="Empresa">
+              <br/>
+
+              <input class="form-control" style="margin-top: 0px;" ng-model="email" placeholder="E-mail">
+              <br/>
+
+              <input class="form-control" style="margin-top: 0px;" ng-model="login" placeholder="Login">
+              <br/>
+
+              <input class="form-control" style="margin-top: 0px;" ng-model="senha" placeholder="Senha">
+              <br/>
+
+              <select 
+                class="form-control" 
+                style="margin-top: 0px; padding: 6px;"
+                ng-model="tipoCliente"
+                ng-options="tipo.id as tipo.descricao for tipo in listaTipos">
+              </select>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="pnlOfertas" class="tab-pane">
+        <div class="panel panel-default" id="panel-destaque">
+          <div class="panel-body">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-9">
+                  <input class="form-control" ng-model="nomeEntradaOferta">
+                </div>
+
+                <div class="col-md-2">
+                  <input type="date" class="form-control" ng-model="dataEntradaOferta">
+                </div>
+
+                <div class="col-md-1">
+                  <button class="btn btn-primary" ng-click="adicionarOfertas()">Adicionar</button>
+                </div>                      
+              </div>
+
+              <div class="row">
+                <table class="table table-hover" style="overflow: auto; height: 100px;">
+                  <thead>
+                    <tr>
+                      <th width="80%">Nome</th>
+                      <th width="20%" class="text-center">Data entrada</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr ng-repeat="item in listaOfertas">
+                      <td width="80%">{{item.Nome}}</td>
+                      <td width="20%" class="text-center">{{item.DataEntradaShow}}</td>      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <br/>
 
-  E-mail
-  <input class="form-control" ng-model="email" placeholder="">
-  <br/>
+  <button class="btn btn-primary" ng-click="salvar()">Salvar alterações</button>
+  <button class="btn btn-primary" ng-click="voltar()">Voltar</button>
+</div>
 
-  Login
-  <input class="form-control" ng-model="login" placeholder="">
-  <br/>
+    
 
-  Senha
-  <input class="form-control" ng-model="senha" placeholder="">
-  <br/>
 
-  <br/>
+
+
+
+
+
+
+
+
+
+<!--
+<div class="panel-body">
+  
 
   <div ng-show="tipoSelecionado == 'M'">
     <div class="panel panel-default">
@@ -195,3 +276,4 @@
     </div>
   </div>
 </div>
+-->
