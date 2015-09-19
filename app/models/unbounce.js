@@ -29,6 +29,10 @@ module.exports = function() {
 
 		dataEntrada: {
 			type: Date
+		},
+
+		url: {
+			type: String	
 		}
 	});
 

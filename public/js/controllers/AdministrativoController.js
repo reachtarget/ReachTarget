@@ -6,7 +6,6 @@ angular.module('reachtarget')
 		$scope.ordenacao = "Nome";
 		$scope.opcaoReverse = false;
 
-		$scope.botaoTipoClientes = "Clientes inativos";
 		$scope.clientesAtivos = true;
 		$scope.listaClientesInativos = [];
 
@@ -46,17 +45,10 @@ angular.module('reachtarget')
 		var _refresh = false;
 
 
-		var _dia = new Date();
-		var _diaDaSemana = _dia.getDay();
-
-		var _dataInicial = new Date();
-		var _dataInicialGA = "";
-		var _dataFinal = new Date();
-		var _dataFinalGA = new Date();
-
-
 		var ClientesSiteinaMaaS = $resource('/siteinaMaas/:tipo');
 		var ClientesInativos = $resource('/clientesInativos');
+		var ClientesBriefing = $resource('/clientesBriefing');
+
 		var ComplementoLogin = $resource('/complementoLogin/:objectIdLogin');
 		var TokenGoogle = $resource('/google/:objectIdLogin');
 		var RefreshToken = $resource('/token/analytics/:accessToken/:refreshToken/:id');		
@@ -71,49 +63,31 @@ angular.module('reachtarget')
     	var ConsultarHistoricoResumo = $resource('/historicoResumo/:objectIdLogin');
     	var AlterarLogin = $resource('/login');
 
+    	$(document).ready(function() {
+			document.getElementById('divFiltros').style.display = 'block';
+			$('[data-toggle="tooltip"]').tooltip();
 
-		$(document).ready(function() {
-			_dataInicial = moment().startOf('week')._d;
-            _dataInicialGA = moment().startOf('week').format('YYYY-MM-DD');
+			_metodoDeAtualizacao = function(){
+				if (LoginService.CampanhaSelecionada.IDPagina == "A") {
+					
+					$scope.clientesAtivos = true;
+					$scope.retornarClientes();
 
-            _dataFinal = moment().endOf('week')._d;
-            _dataFinalGA = moment().endOf('week').format('YYYY-MM-DD');
+				} else if (LoginService.CampanhaSelecionada.IDPagina == "B") {
+					
+					$scope.clientesAtivos = false;
+					$scope.retornarClientesBriefing();
 
-
-            $scope.inptuDataInicialFinal = 
-            	retornarDataInicialFinal(_dataInicial, _dataFinal);
-
-			$('#daterangeAdm').daterangepicker({
-                format: 'YYYY-MM-DD',
-                startDate: _dataInicialGA,
-                endDate: _dataFinalGA,
-                opens: 'left',
-                ranges: {
-                    'Hoje': [moment(), moment()],
-                    'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Esta semana': [moment().startOf('week'), moment().endOf('week')],
-                    'Semana passada': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-                    'Últimos 7 dias': [moment().subtract(6, 'days'), moment()],
-                    'Últimos 30 dias': [moment().subtract(29, 'days'), moment()],
-                    'Este mês': [moment().startOf('month'), moment().endOf('month')],
-                    'Mês passado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                }
-            }, 
-            function(start, end, label) {
-            	_dataInicial = start._d;
-                _dataInicialGA = start.format('YYYY-MM-DD');
-
-                _dataFinal = end._d;
-                _dataFinalGA = end.format('YYYY-MM-DD');
-
-                $scope.inptuDataInicialFinal = 
-    				retornarDataInicialFinal(start._d, end._d);
-
-                $scope.retornarClientes();
-            });
-        });
+				} else {
+					$scope.clientesAtivos = false;					
+					$scope.retornarClientesInativos();
+				}
+			};			
+		});
 
 		$scope.novoCliente = function() {
+			ClienteService.objectIdCliente = null;
+
 			$location.path('/administrativo/novoCliente');
 		};
 
@@ -153,9 +127,15 @@ angular.module('reachtarget')
 
 		$scope.popularDadosCliente = function(item) {
 			
+			console.log(item);
+
 			ComplementoLogin.get({
+
 				objectIdLogin: item._id
+
 				}, function(resComplementoLogin){
+
+					console.log(resComplementoLogin);
 
 					var _cliente = {
 						Show: false,
@@ -194,8 +174,8 @@ angular.module('reachtarget')
 							
 							gapi.client.analytics.data.ga.get({
 	    						'ids': 'ga:' + resultadoTokenGoogle.profileId,
-    							'start-date': _dataInicialGA,
-    							'end-date': _dataFinalGA,
+    							'start-date': LoginService.DataInicialFormat,
+    							'end-date': LoginService.DataFinalFormat,
     							'metrics': 'ga:sessions,ga:users',
 							})
 							.execute(function(resGAPI) {   
@@ -234,8 +214,8 @@ angular.module('reachtarget')
     									ConsultarLeads.query({
 
     										objectId: _cliente.ID,
-              								dataInicial: _dataInicial,
-	          								dataFinal: _dataFinal
+              								dataInicial: LoginService.DataInicial,
+	          								dataFinal: LoginService.DataFinal
 
     									}, function(resultadoLeads) {
 
@@ -289,8 +269,8 @@ angular.module('reachtarget')
 										
 										gapi.client.analytics.data.ga.get({
 											'ids': 'ga:' + _landing.ProfileID,
-											'start-date': _dataInicialGA,
-											'end-date': _dataFinalGA,
+											'start-date': LoginService.DataInicialFormat,
+											'end-date': LoginService.DataFinalFormat,
 											'metrics': 'ga:sessions,ga:users,ga:uniquePageviews',
 											'dimensions': 'ga:pagePath'											
 										})
@@ -384,8 +364,8 @@ angular.module('reachtarget')
 									ConsultarLeadsMaaS.query({
 
 										objectId: _cliente.ID,
-										dataInicial: _dataInicial,		
-										dataFinal: _dataFinal,
+										dataInicial: LoginService.DataInicial,
+										dataFinal: LoginService.DataFinal,
 										pagina: itemPagina.pageId
 
 									}, function(resultadoLeadsPaginaUnbounce) {
@@ -435,7 +415,6 @@ angular.module('reachtarget')
 			_listaAnalytics = [];
 			_listaProfilesID = [];
 
-			$scope.botaoTipoClientes = "Clientes inativos";
 			document.getElementById('loaderIndex').style.display = 'block';
 
 			$scope.listaClientes = [];
@@ -445,6 +424,9 @@ angular.module('reachtarget')
 				.query({
 					tipo: LoginService.TipoAdministrativo
 				}, function(resClientes) {
+
+					console.log(resClientes);
+
 					if (resClientes.length == 0) {
 
 						document.getElementById('loaderIndex').style.display = 'none';
@@ -588,8 +570,8 @@ angular.module('reachtarget')
 				Leads: parametroCliente.Leads,
 				Taxa: parametroCliente.TaxaConversao,
 				
-				DataInicial: _dataInicial,
-				DataFinal: _dataFinal,
+				DataInicial: LoginService.DataInicial,
+				DataFinal: LoginService.DataFinal,
 
 				Paginas: parametroCliente.ListaLP,
 				ListaLeads: parametroCliente.ListaLeads
@@ -645,8 +627,8 @@ angular.module('reachtarget')
 
 			_envioEmailConsultoria.Periodo =
 				($scope.tipoEnvioEmailSelecionado == 'S')
-					? formarData(_dataInicial) + " até " + formarData(_dataFinal)
-					: $scope.retornarMes(_dataInicial.getMonth()) + "/" + _dataInicial.getFullYear();
+					? formarData(LoginService.DataInicial) + " até " + formarData(LoginService.DataFinal)
+					: $scope.retornarMes(LoginService.DataInicial.getMonth()) + "/" + LoginService.DataFinal.getFullYear();
 
 
 			var _enviarEmail = new EnviarEmail();
@@ -684,23 +666,6 @@ angular.module('reachtarget')
 			$scope.opcaoReverse = !$scope.opcaoReverse;
 		};
 
-		$scope.tiposClientes = function() {
-			if ($scope.clientesAtivos) {
-
-				$scope.clientesAtivos = false;
-				$scope.botaoTipoClientes = "Clientes ativos";
-				
-				$scope.retornarClientesInativos();
-
-			} else {
-
-				$scope.clientesAtivos = true;
-				$scope.botaoTipoClientes = "Clientes inativos";
-
-				$scope.retornarClientes();
-			}
-		};
-
 		$scope.retornarClientesInativos = function()  {
 			abrirLoader();
 			$scope.listaClientesInativos = [];
@@ -725,6 +690,40 @@ angular.module('reachtarget')
 								}
 							});
 						});
+					} else {
+						fecharLoader();
+					}
+			});
+		};
+
+		$scope.retornarClientesBriefing = function()  {
+			abrirLoader();
+			$scope.listaClientesInativos = [];
+
+			ClientesBriefing.query(
+				function(resultado){
+					if (resultado.length > 0) {
+						resultado.forEach(function(cliente, index, array){
+
+							ComplementoLogin.get({
+
+								objectIdLogin: cliente._id
+
+							}, function(resComplementoLogin){
+
+								$scope.listaClientesInativos.push({
+									ObjectId: cliente,
+									ID: cliente._id,
+									Nome: resComplementoLogin.nome									
+								});
+
+								if (index == array.length-1) {
+									fecharLoader();
+								}
+							});
+						});
+					} else {
+						fecharLoader();
 					}
 			});
 		};

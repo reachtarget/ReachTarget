@@ -4,14 +4,28 @@ module.exports = function(app) {
 	var controller = {};
 
 	controller.salvar = function(req, res) {
-		ComplementoLogin.create(req.body)
-			.then(
-				function (login) {
-					res.status(201).json(login);
-				},
-				function (error) {
-					console.log(error);
-				});
+		var _id = req.body._id;
+
+		if (_id) {
+			ComplementoLogin.findByIdAndUpdate(_id, req.body)
+				.exec()	
+				.then(
+					function (resultado) {
+						res.json(resultado);
+					},
+					function (error) {
+						console.log(error);
+					});
+		} else {
+			ComplementoLogin.create(req.body)
+				.then(
+					function (complementoLogin) {
+						res.status(201).json(complementoLogin);
+					},
+					function (error) {
+						console.log(error);
+					});
+		}
 	};
 
 	controller.complementoLoginPorID = function(req, res) {

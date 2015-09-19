@@ -1,360 +1,365 @@
 <div class="panel-body">
-  <div class="tabbable">
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="javascript:#pnlDadosCadastrais" data-toggle="tab">Dados cadastrais</a></li>
-      <li><a href="javascript:#pnlCampanhas" data-toggle="tab">Campanhas</a></li>
-      <li><a href="javascript:#pnlBriefing" data-toggle="tab">Briefing</a></li>
-      <li><a href="javascript:#pnlAdwords" data-toggle="tab">Budget</a></li>
-    </ul>
-
-    <div class="tab-content">
-      <div id="pnlDadosCadastrais" class="tab-pane active">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <div class="col-md-12">
-              <input type="checkbox" ng-model="status"> Ativo
-              <br/>
-              <br/>
-
-              Empresa
-              <input class="form-control" ng-model="empresa" placeholder="">
-              <br/>
-
-              E-mail
-              <input class="form-control" ng-model="email" placeholder="">
-              <br/>
-
-              Login
-              <input class="form-control" ng-model="login" placeholder="">
-              <br/>
-
-              Senha
-              <input class="form-control" ng-model="senha" placeholder="">
-              <br/>
-
-
-              <div ng-show="tipo == 'S'">
-                Adwords
-                <input class="form-control" ng-model="adwords" placeholder="">
-                <br/>
-
-                API Key (Mailchimp)
-                <input class="form-control" ng-model="apikeymailchimp" placeholder="">
-                <br/>
-
-
-                <div >
-                  Contas
-                  <select class="form-control" id="contas"
-                    ng-model="contaSelecionada"
-                    ng-options="conta.id as conta.nome for conta in accounts"
-                    ng-change="popularListaWebPropertyId()">
-                    <option value="">--Selecione uma conta--</option>
-                  </select>
-                </div>
-
-                <br />
-
-                <div ng-show="contaSelecionada">
-                  Propriedades
-                  <select class="form-control" id="propriedades"
-                    ng-model="propriedadeSelecionada"
-                    ng-options="webProperty.id as webProperty.nome for webProperty in webPropertyIds"
-                    ng-change="popularListaProfileId()">
-                    <option value="">--Selecione uma propriedade--</option>
-                  </select>
-                </div>
-
-                <br />
-
-                <div ng-show="propriedadeSelecionada">
-                  Visualizar
-                  <select class="form-control" id="perfil"
-                    ng-model="perfilSelecionado"
-                    ng-options="profile.id as profile.nome for profile in profileIds">
-                    <option value="">--Selecione um perfil--</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="pnlCampanhas" class="tab-pane">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <div class="col-md-12">
-              <div class="row">
-                <button class="btn btn-primary" ng-click="selecionar()">Adicionar</button>
-              </div>
-
-              <div class="row">
-                <table class="table table-hover" style="overflow: auto; height: 100px;">
-                  <thead>
-                    <tr>
-                      <th width="40" class="text-center"></th>
-                      <th width="40" class="text-center">Status</th>
-                      <th class="text-center">PageID</th>
-                      <th class="text-center">LandingPage</th>
-                      <th class="text-center">PagePath</th>
-                      <th class="text-center">Adwords</th>
-                      <th class="text-center">Conta</th>
-                      <th class="text-center">Propriedade</th>
-                      <th class="text-center">Visualizar</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr ng-repeat="item in lista">
-                      <td width="40"> 
-                        <button class="btn btn-primary" ng-click="apagar(item)">X</button>
-                      </td>
-
-                      <td width="40" class="text-center"> 
-                        <input class="form-control" type="checkbox" ng-model="item.Check" >
-                      </td>
-
-                      <td>
-                        <input class="form-control" ng-model="item.IDPagina" >
-                      </td>
-
-                      <td>
-                        <input class="form-control" ng-model="item.Nome" >
-                      </td>
-
-                      <td>
-                        <input class="form-control" ng-model="item.PagePath" >
-                      </td>
-
-                      <td>
-                        <input class="form-control" ng-model="item.Adwords" >
-                      </td>
-
-                      <td>
-                        <select class="form-control" ng-model="item.ContaSelecionada" ng-options="conta.id as conta.nome for conta in item.accounts" ng-change="popularListaWebPropertyId(false, item, true)">
-                          <option value="">--Selecione uma conta--</option>
-                        </select>
-                      </td>
-
-                      <td>
-                        <select class="form-control" ng-model="item.PropriedadeSelecionada" ng-options="webProperty.id as webProperty.nome for webProperty in item.webPropertyIds" ng-change="popularListaProfileId(false, item, true)">
-                          <option value="">--Selecione uma propriedade--</option>
-                        </select>
-                      </td>
-
-                      <td>
-                        <select class="form-control" ng-model="item.PerfilSelecionado" ng-options="profile.id as profile.nome for profile in item.profileIds">
-                          <option value="">--Selecione um perfil--</option>
-                        </select>
-                      </td>              
-                    </tr>
-                  </tbody>
-                </table>
-              </div>  
-            </div>
-          </div>  
-        </div>
-      </div>
-
-      <div id="pnlBriefing" class="tab-pane">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <div class="col-md-12">
-              <h5>1. Qual o nome da sua empresa?</h5>   
-              <input class="form-control" placeholder="Escreva na grafia correta, da forma como devemos usar nas landingpages." ng-model="nomeEmpresa" required>
-
-              <br/>
-
-              <h5>2. Qual e-mail deverá receber os leads das campanhas?</h5>  
-              <input class="form-control" placeholder="Esse e-mail será utilizado para o login no dashboard e receberá todos os formulários que forem preenchidos e os relatórios de desempenho." ng-model="emailRecebeLeads" required>
-
-              <br/>
-
-              <h5>3. Quais os produtos/serviços que serão trabalhados?</h5> 
-              <input class="form-control" placeholder="É indicado trabalhar uma única oferta por campanha, ou seja, um único serviço, produto ou linha de produtos." ng-model="produtoServicosTrabalhados" required>
-
-              <br/>
-
-              <h5>4. Qual a abrangência geográfica que os produtos/serviços atendem?</h5> 
-              <input class="form-control" placeholder="Mencione os estados e cidades que lhe interessa gerar demanda para seus produtos/serviços." ng-model="abrangenciaGeografica" required>
-
-              <br/>
-
-              <h5>5. Qual o orçamento de Adwords para cada produto/serviço a ser trabalhado?</h5> 
-              <input class="form-control" placeholder="Recomendamos um orçamento a parte para cada campanha, considerando a concorrência do que está oferecido e da região escolhida." ng-model="orcamentoAdwords" required>
-
-              <br/>
-
-              <h5>6. Quais os principais atributos dos produtos/serviços que serão trabalhados?</h5>  
-              <input class="form-control" placeholder="Destaque as principais características, pontos fortes e os benefícios que mais chamam a atenção dos clientes." ng-model="atributosTrabalhados" required>
-
-              <br/>
-
-              <h5>7. Quem é o público alvo de cada produto/serviço que será oferecido?</h5> 
-              <input class="form-control" placeholder="Mencione características, cargo, segmento de atuação da empresa etc." ng-model="publicoAlvo" required>
-
-              <br/>
-
-              <h5>8. Como você imagina que seus clientes procuram seus produtos/serviços no Google?</h5>  
-              <input class="form-control" placeholder="Quais palavras-chave você imagina que eles procuram." ng-model="comoClientesProcuramGoogle" required>
-
-              <br/>
-
-              <h5>9. Quais principais diferenciais da sua empresa?</h5> 
-              <input class="form-control" placeholder="O que faz sua empresa ser especial e diferente da concorrência." ng-model="pricipaisDiferenciais" required>
-
-              <br/>
-
-              <h5>10. Quem são seus principais clientes?</h5> 
-              <input class="form-control" placeholder="Importante para dar destaque em sua campanha." ng-model="clientes" required>
-
-              <br/>
-
-              <h5>11. Quem são seus principais parceiros?</h5>  
-              <input class="form-control" placeholder="Importante para dar força em sua campanha." ng-model="parceiros" required>
-
-              <br/>
-
-              <h5>12. Quem são seus principais concorrentes?</h5> 
-              <input class="form-control" placeholder="Importante para podermos estudar o seu mercado e contextualizá-lo na criação." ng-model="concorrentes" required>
-
-              <br/>
-
-              <h5>13. Existe alguma referência visual que você queira indicar?</h5> 
-              <input class="form-control" placeholder="Envie links de sites ou nomes de marcas que você admira e poderia nos servir de inspiração." ng-model="referenciaVisual" required>
-            </div>
-          </div>
-        </div>          
-      </div>
-
-      <div id="pnlAdwords" class="tab-pane">
-      </div> 
-
-      <div id="pnlCampanhas" class="tab-pane">
-         <div class="panel-body">
-            <div class="col-md-12">
-              <div class="row">
-                <button class="btn btn-primary" ng-click="novaCampanha()">Nova campanha</button>
-              </div>
-          </div>
-        </div> 
-      </div>
-
+  <div class="row">
+    <div class="col-md-12" style="height: 63px;"> 
+      <h2 style="cursor: pointer;" ng-hide="editarNomeEmpresa" ng-mouseover="mouseOver('empresa')" ng-mouseleave="mouseLeave('empresa')" ng-click="editNomeEmpresa()">{{empresa}}</h2>
+      <button ng-show="botaoEditarNomeEmpresa" style="left: 15px; top: 28px; position: relative; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+      <input style="position: relative; top: 17px;" ng-show="editarNomeEmpresa" ng-blur="editNomeEmpresa()" class="form-control" ng-model="empresa" placeholder="Novo cliente">
     </div>
   </div>
 
-  <br/>
+  <div class="row">
+    <div class="col-md-12">
+      <div style="height: 333px;" class="panel panel-default" >
+        <div class="col-md-12">
+          <div class="row">
 
-  <button class="btn btn-primary" ng-click="salvar()">Salvar alterações</button>
-  <button class="btn btn-primary" ng-click="voltar()">Voltar</button>
-</div>
+            <!-- Menu lateral -->
+            <div class="col-md-2">
+              <div class="row" style="width: 100%;">
+                <div class="col-md-12">
+                  <h5 style="cursor: pointer; text-align: right; width: 100%;" ng-class="{bold: menuDadosCadastrais}" ng-click="clickMenu('dc')">Dados cadastrais</h5>
+                </div>
+              </div>
+              
+              <div class="row" style="width: 100%;">
+                <div class="col-md-12">
+                  <h5 style="cursor: pointer; text-align: right; width: 100%;" ng-class="{bold: menuOfertas}" ng-click="clickMenu('o')">Ofertas</h5>
+                </div>
+              </div>
 
+              <!-- 
+              <div class="row" style="width: 100%;">
+                <div class="col-md-12">
+                  <h5 style="cursor: pointer; text-align: right; width: 100%;" ng-class="{bold: menuSEO}" ng-click="clickMenu('seo')">SEO</h5>
+                </div>
+              </div>
 
-<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h6 class="modal-title">Incluir páginas</h6>
-      </div>
+              <div class="row" style="width: 100%;">
+                <div class="col-md-12">
+                  <h5 style="cursor: pointer; text-align: right; width: 100%;" ng-class="{bold: menuMetas}" ng-click="clickMenu('m')">Metas</h5>
+                </div>
+              </div>
+              -->
 
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-            
-            Nome
-            <input class="form-control" id="login" name="login" ng-model="paginaNome" required>
-
-            <br />
-
-            PageID
-            <input class="form-control" id="login" name="login" ng-model="paginaPageID" required>
-
-            <br />
-
-            PagePath
-            <input class="form-control" id="login" name="login" ng-model="paginaPagePath" required>
-
-            <br />
-
-            Adwords
-            <input class="form-control" id="login" name="login" ng-model="paginaAdwords" required>
-
-            <br />
-
-            <div >
-              Contas
-              <select class="form-control" id="contas"
-                ng-model="contaSelecionada"
-                ng-options="conta.id as conta.nome for conta in accounts"
-                ng-change="popularListaWebPropertyId()">
-                <option value="">--Selecione uma conta--</option>
-              </select>
             </div>
+            <!-- Menu lateral -->
 
-            <br />
 
-            <div ng-show="contaSelecionada">
-              Propriedades
-              <select class="form-control" id="propriedades"
-                ng-model="propriedadeSelecionada"
-                ng-options="webProperty.id as webProperty.nome for webProperty in webPropertyIds"
-                ng-change="popularListaProfileId()">
-                <option value="">--Selecione uma propriedade--</option>
-              </select>
-            </div>
+            <div class="col-md-10" >
+              <div style="margin-top: 10px;" class="row">
 
-            <br />
+                <!-- Dados Cadastrais -->
+                <div ng-show="menuDadosCadastrais" class="row">
+                  <div class="col-md-12" >
+                    <div class="row">
+                      <div class="col-md-12" style="height: 30px;">
+                        <h6 style="text-align: left !important; margin: 0px;">Tipo</h6>
+                        <h5 ng-hide="editarTipo" ng-mouseover="mouseOver('tipo')" ng-mouseleave="mouseLeave('tipo')" ng-click="editTipo()" style="cursor: pointer; margin-top: 5px;">{{tipoCliente}}</h5>
+                        <button ng-show="botaoEditarTipo" style="position: relative; left: 10px; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+                        <select ng-show="editarTipo" style="position: relative; top: -31px; padding: 4px; font-size: 13px;" class="form-control" ng-blur="editTipo()" ng-model="tipo" ng-options="tipo.id as tipo.descricao for tipo in listaTipos" >
+                          <option value="">--Selecione um tipo--</option>
+                        </select>
+                      </div>
+                    </div>
 
-            <div ng-show="propriedadeSelecionada">
-              Visualizar
-              <select class="form-control" id="perfil"
-                ng-model="perfilSelecionado"
-                ng-options="profile.id as profile.nome for profile in profileIds">
-                <option value="">--Selecione um perfil--</option>
-              </select>
+                    <div class="row">
+                      <div class="col-md-12" style="height: 30px;">
+                        <h6 style="text-align: left !important; margin: 0px;">Status</h6>
+                        <h5 ng-hide="editarStatus" ng-mouseover="mouseOver('status')" ng-mouseleave="mouseLeave('status')" ng-click="editStatus()" style="cursor: pointer; margin-top: 5px;">{{statusDescricao}}</h5>
+                        <button ng-show="botaoEditarStatus" style="position: relative; left: 10px; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+                        <select ng-show="editarStatus" style="position: relative; top: -31px; padding: 4px; font-size: 13px;" class="form-control" ng-blur="editStatus()" ng-model="status" ng-options="status.id as status.descricao for status in listaStatus" >
+                          <option value="">--Selecione um status--</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12" style="height: 30px;">
+                        <h6 style="text-align: left !important; margin: 0px;">Contato</h6>
+                        <h5 ng-hide="editarContato" ng-mouseover="mouseOver('contato')" ng-mouseleave="mouseLeave('contato')" ng-click="editContato()" style="cursor: pointer; margin-top: 5px;">{{contato}}</h5>
+                        <button ng-show="botaoEditarContato" style="position: relative; left: 10px; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+                        <input ng-show="editarContato" style="position: relative; top: -31px; padding: 6px; font-size: 13px;" class="form-control" ng-model="contato" ng-blur="editContato()">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12" style="height: 30px;">
+                        <h6 style="text-align: left !important; margin: 0px;">Login</h6>
+                        <h5 ng-hide="editarLogin" ng-mouseover="mouseOver('login')" ng-mouseleave="mouseLeave('login')" ng-click="editLogin()" style="cursor: pointer; margin-top: 5px;">{{login}}</h5>
+                        <button ng-show="botaoEditarLogin" style="position: relative; left: 10px; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+                        <input ng-show="editarLogin" style="position: relative; top: -31px; padding: 6px; font-size: 13px;" class="form-control" ng-model="login" ng-blur="editLogin()" >
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12" style="height: 30px;">
+                        <h6 style="text-align: left !important; margin: 0px;">Senha</h6>
+                        <h5 ng-hide="editarSenha" ng-mouseover="mouseOver('senha')" ng-mouseleave="mouseLeave('senha')" ng-click="editSenha()" style="cursor: pointer; margin-top: 5px;">{{senha}}</h5>
+                        <button ng-show="botaoEditarSenha" style="position: relative; left: 10px; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+                        <input ng-show="editarSenha" style="position: relative; top: -31px; padding: 6px; font-size: 13px;" class="form-control" ng-model="senha" ng-blur="editSenha()" >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Dados Cadastrais -->
+
+                <!-- Ofertas -->
+                <div ng-show="menuOfertas" class="row">
+                  <div class="col-md-12" >
+                    <div class="row" style="margin-bottom: 0px;">
+                      <div class="col-md-12" >
+                        <div class="panel panel-default" style="height: 286px; margin-bottom: 0px;" >
+                          <div class="panel-heading">
+                            <h5 class="panel-title">Ofertas</h5>
+                            <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
+                          </div>
+                        
+                          <div class="panel-body">
+                            <div class="row">
+                              <div class="col-md-12" >
+                                <button style="position: relative; top: 7px;" class="btn btn-primary" ng-click="adicionarNovaLandingpage()">Adicionar</button>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-12" >
+                                <div class="table-responsive">
+                                  <table class="table table-hover table-striped">
+                                    <thead>
+                                      <tr>
+                                        <th width="10%"></th>
+                                        <th width="90%">Landingpage</th>
+                                      </tr>
+                                    </thead>
+
+                                    <tbody>
+                                      <tr ng-repeat="oferta in listaOfertas | filter: filtro">
+                                        <td width="10%" class="text-center"> 
+                                          <button type="button" class="btn btn-default btn-editarCliente" ng-click="editarLandingPage(oferta)" />
+                                          <button type="button" class="btn btn-default btn-Email" ng-click="editarBriefing(oferta)"/>
+                                          <button type="button" class="btn btn-default btn-excluir" />
+                                        </td>
+
+                                        <td width="90%" >{{oferta.Nome}}</td>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Ofertas -->
+
+                <!-- SEO -->
+                <!-- 
+                <div ng-show="menuSEO" class="row">
+                  <div class="col-md-12" >                    
+                  </div>
+                </div>
+                 -->
+                <!-- SEO -->
+
+                <!-- Metas -->
+                <!-- 
+                <div ng-show="menuMetas" class="row">
+                  <div class="col-md-12" >                    
+                  </div>
+                </div>
+                 -->
+                <!-- Metas -->
+
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="modal-footer">
-        <button ng-disabled="perfilSelecionado == ''" type="button" class="btn btn-primary" ng-click="fecharModal()">Salvar</button>
-      </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button class="btn btn-primary" ng-click="salvar()">Salvar</button>
+      <button class="btn btn-primary" ng-click="voltar()">Voltar</button>
     </div>
   </div>
 </div>
 
 
-
-<div class="modal fade" id="modalNovaCampanha" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<!-- Modal LandingPage -->
+<div id="modalLandingPage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;" >
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        
-        <h6 class="modal-title">Nova campanha</h6>
       </div>
+
 
       <div class="modal-body">
-        <div class="row">
+        <div class="row" style="margin: 0px;">
           <div class="col-md-12">
-            <input class="form-control" placeholder="Nome da campanha">
-          </div>
-        </div>
 
-        <div class="row">
-          <button type="button" class="btn btn-primary">Mailchimp</button>
-          <button type="button" class="btn btn-primary">Unbounce</button>
+            <!-- Nome da landingpage -->
+            <div class="row" style="margin: 0px;">
+              <div class="col-md-12" style="height: 33px;">
+                <h2 ng-hide="editarNomeLandingPage" style="position: relative; top: -26px; margin: 0px; left: -17px; cursor: pointer;" ng-mouseover="mouseOver('oferta')" ng-mouseleave="mouseLeave('oferta')" ng-click="editNomeLandingpage()">{{NomeLandingpage}}</h2>
+                <button ng-show="botaoEditarNomeLandingpage" style="position: relative; top: -17px; border: 0;" type="button" class="btn btn-default btn-editarCliente" />
+                <input id="salvarEdicaoCampo" style="left: -15px; position: relative; top: -23px; width: 738px;" ng-show="editarNomeLandingPage" ng-blur="editNomeLandingpage()" class="form-control" ng-model="NomeLandingpage">
+              </div>
+            </div>
+            <!-- Nome da landingpage -->
+
+            <!-- ID Página -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="pageID">ID da página</label>
+                  <input class="form-control" id="pageID" name="pageID" ng-model="pageID" required>
+                </div>
+              </div>
+            </div>
+            <!-- ID Página -->
+
+            <!-- PagePath / URL -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="pagePath">Page path</label>
+                  <input class="form-control" id="pagePath" name="pagePath" ng-model="pagePath" required>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="urlAcesso">URL de acesso</label>
+                  <input class="form-control" id="urlAcesso" name="urlAcesso" ng-model="urlAcesso" required>
+                </div>
+              </div>
+            </div>
+            <!-- PagePath / URL -->
+
+            <!-- Campanha Adwords -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="campanhaAdwords">Campanha Adwords</label>
+                  <input class="form-control" id="pageID" name="campanhaAdwords" ng-model="campanhaAdwords" required>
+                </div>
+              </div>
+            </div>
+            <!-- Campanha Adwords -->
+
+
+            <!-- Dados do Analytics -->
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="contaAnalytics">Conta</label>
+
+                  <select class="form-control" id="contaAnalytics" ng-model="contaAnalytics" ng-options="conta.id as conta.nome for conta in listaContasAnalytics | orderBy: 'nome'" ng-change="alterarConta()">
+                    <option value="">--Selecione uma conta--</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="propriedadeAnalytics">Propriedade</label>
+
+                  <select class="form-control" id="propriedadeAnalytics" ng-model="propriedadeAnalytics" ng-options="conta.id as conta.nome for conta in listaPropriedadesAnalytics | orderBy: 'nome'" 
+                    ng-change="alterarPropriedade()">
+                    <option value="">--Selecione uma propriedade--</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="vistaAnalytics">Vista da propriedade</label>
+
+                  <select class="form-control" id="vistaAnalytics" ng-model="vistaAnalytics" ng-options="conta.id as conta.nome for conta in listaVistasAnalytics | orderBy: 'nome'" >
+                    <option value="">--Selecione uma vista--</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- Dados do Analytics -->
+            
+          </div>
         </div>
       </div>
 
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="fecharNovaCampanha()">Salvar</button>
+        <button style="position: relative; left: -14px;" type="button" class="btn btn-primary" ng-click="salvarLandingPage()">Salvar</button>
       </div>
     </div>
   </div>
 </div>
+<!-- Modal LandingPage -->
+
+
+
+<!-- Modal Breifing -->
+<div id="modalBriefing" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 800px;" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row" style="margin: 0px;">
+          <div class="col-md-12">
+
+            <!-- Briefing -->
+            <div class="row" style="margin: 0px;">
+              <div class="col-md-12" style="height: 33px;">
+                <h2 style="position: relative; top: -26px; margin: 0px; left: -17px; cursor: pointer;">Briefing</h2>
+              </div>
+            </div>
+            <!-- Briefing -->
+
+
+            <!-- Perguntas -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+
+                  <div class="col-md-11">
+                    <label style="position: relative; top: -8px; text-align: left; left: -26px;" class="input-group-addon" for="pageID">{{perguntaBriefing}}</label>
+                  </div>
+
+                  <div class="col-md-1" style="height: 34px;">
+                    <div style="float: right; left: 57px; position: relative;">
+                      <label style="position: relative; font-size: 25px; font-weight: bold; top: -20px; left: -10px;" class="input-group-addon">{{perguntaAtualBriefing}}</label>                  
+                      <label style="position: relative; top: -15px; left: -30px;" class="input-group-addon">/ {{totalPerguntasBriefing}}</label>                  
+                    </div>
+                  </div>
+
+                  <textarea id="txtAreaResposta" style="height: 150px;" wrap="hard" class="form-control" placeholder="{{placeholderBriefing}}" ng-model="respostaBriefing" required/>
+                </div>
+              </div>
+            </div>
+            <!-- Pergunta-->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button ng-disabled="perguntaAtualBriefing == 1" ng style="float: left;" type="button" class="btn btn-primary" ng-click="voltarBriefing()">Voltar</button>
+        <button ng-disabled="perguntaAtualBriefing == 12" style="float: left;" type="button" class="btn btn-primary" ng-click="avancarBriefing()">Avançar</button>
+
+        <button style="position: relative; left: -14px;" type="button" class="btn btn-primary" ng-click="salvarBriefing()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Breifing -->

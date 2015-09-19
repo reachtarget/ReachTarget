@@ -153,4 +153,35 @@ function formatarValor(valor){
     }
 
     return _auxiliar;
+};
+
+function removerCaracterEspecial(texto) {
+    var _texto = texto;
+    var er = /[^a-z0-9]/gi;
+    _texto = _texto.replace(er, "");
+
+    return _texto;
+};
+
+function gerarSenha() {
+    var _senha = "";
+    var _quantidaDeCaracteres = 6;
+
+    for (i = 0; i < 6; i++) { 
+        _senha += this.caracterRandomico();
+    }
+
+    return _senha;
 }
+
+function caracterRandomico() {
+    var ascii = [[48, 57],[64,90],[97,122]];
+    var i = Math.floor(Math.random()*ascii.length);
+
+    return String.fromCharCode(Math.floor(Math.random()*(ascii[i][1]-ascii[i][0]))+ascii[i][0]);    
+}
+
+
+
+
+

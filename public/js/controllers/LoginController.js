@@ -1,7 +1,7 @@
 angular.module('reachtarget')
 	.controller('LoginController', function($scope, $location, $resource, LoginService, $rootScope) {
-		$scope.login = 'h';
-		$scope.senha = '1';
+		$scope.login = 'maas';
+		$scope.senha = 'siteina@67';
 
 		$scope.TituloDaPagina = "Marketing as a Service";
 		$scope.lembrarDeMim = false;
@@ -236,11 +236,6 @@ angular.module('reachtarget')
 
 			document.getElementById('headerNav').style.display = 'none';
 			
-			/*
-			document.getElementById('logoTopo').style.display = 'block';
-			document.getElementById('logoCliente').style.display = 'block';
-			*/
-
 			$scope.abrirTela();
 		};
 
@@ -249,7 +244,6 @@ angular.module('reachtarget')
 
 			if (opcao == 'adm') {
 				document.getElementById('logoCliente').style.display = 'none';
-				document.getElementById('divFiltros').style.display = 'none';
 				document.getElementById('menusStarterSearchInbound').style.display = 'none';
 			}
 			if (opcao == 'maas') {
@@ -392,6 +386,8 @@ angular.module('reachtarget')
 							$scope.ajustarHeader('adm');
 							$location.path('/administrativo');
 
+							$scope.incluirFiltrosAdministrativos();
+
 						} else if (resultadoLogin.status == 'B') {
 
 							$scope.ajustarHeader('adm');
@@ -418,6 +414,42 @@ angular.module('reachtarget')
 
 				}
 			});
+		};
+
+		$scope.incluirFiltrosAdministrativos = function() {
+			LoginService.ListaCampanhas = [];
+
+			$('#campanhaSelecionada')[0].innerText = 'Clientes ativos';
+
+			LoginService.ListaCampanhas.push({
+				IDPagina: 'A',
+				Nome: 'Clientes ativos',
+				PagePath: '/',
+				ProfileID: '',
+				Adwords: '-'
+			});
+
+			LoginService.ListaCampanhas.push({
+				IDPagina: 'B',
+				Nome: 'Cliente em ativação',
+				PagePath: '/',
+				ProfileID: '',
+				Adwords: '-'
+			});
+
+			LoginService.ListaCampanhas.push({
+				IDPagina: 'I',
+				Nome: 'Clientes inativos',
+				PagePath: '/',
+				ProfileID: '',
+				Adwords: '-'
+			});
+
+			LoginService.CampanhaSelecionada = LoginService.ListaCampanhas[0];
+			LoginService.SelectedIndex = 0;
+
+			$scope.popularDadosDate();
+			$scope.atualizarPopover();
 		};
 
 		$scope.consultarCampanhasPorUsuario = function() {

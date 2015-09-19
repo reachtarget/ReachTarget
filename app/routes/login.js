@@ -17,4 +17,7 @@ module.exports = function(app) {
 
 	app.route('/clientesInativos')
 		.get(controller.retornarLoginsInativos);
+
+	app.route('/clientesBriefing')
+		.get(controller.retornarLoginsBriefing);
 }

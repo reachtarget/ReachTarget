@@ -43,6 +43,24 @@ module.exports = function(app) {
 				});
 	};
 
+	controller.briefingPorLoginEOferta = function(req, res) {
+		Briefing
+			.findOne({ 
+
+				objectIdLogin: req.params.objectIdLogin,
+				objectIdCampanha: req.params.objectIdCampanha
+
+			})
+			.exec()
+			.then(
+				function (campanha) {
+					res.json(campanha);
+				},
+				function (error) {
+					console.log(error);
+				});
+	};
+
 
 	return controller;
 }

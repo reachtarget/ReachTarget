@@ -1,840 +1,762 @@
 angular.module('reachtarget')
 	.controller('ClienteController', function($scope, $location, $resource, ClienteService, LoginService) {
-		$scope.TituloCampanhaOuLanding = '';
-		$scope.CampanhaOuLanding = '';
-		$scope.filtro = '';
 
-		$scope.status = false;
-		$scope.empresa = '';
-		$scope.email = '';
-		$scope.login = '';
-		$scope.senha = '';
-		$scope.empresa = '';
-		$scope.tipo = 'S';
-		$scope.paginaNome = "";
-		$scope.paginaPageID = "";
-		$scope.paginaPagePath = "";
-		$scope.paginaAdwords = "";
+		$scope.menuDadosCadastrais = true;
+		$scope.menuOfertas = false;
+		$scope.menuSEO = false;
+		$scope.menuMetas = false;
 
-		$scope.accounts = null;
-		$scope.webPropertyIds = null;
-		$scope.profileIds = null;		
+		$scope.editarNomeEmpresa = false;
+		$scope.botaoEditarNomeEmpresa = false;
+		$scope.empresa = "Novo cliente";
 
-		$scope.adwords = '';
-		$scope.contaSelecionada = '';
-		$scope.propriedadeSelecionada = '';
-		$scope.perfilSelecionado = '';		
-		$scope.apikeymailchimp = '';
+		$scope.editarTipo = false;
+		$scope.botaoEditarTipo = false;
+		$scope.tipo = "M";
+		$scope.tipoCliente = "Starter";
 
-		$scope.nomeEmpresa = null;
-		$scope.emailRecebeLeads = null;
-		$scope.produtoServicosTrabalhados = null;
-		$scope.abrangenciaGeografica = null;
-		$scope.orcamentoAdwords = null;
-		$scope.atributosTrabalhados = null;
-		$scope.publicoAlvo = null;
-		$scope.comoClientesProcuramGoogle = null;
-		$scope.pricipaisDiferenciais = null;
-		$scope.clientes = null;
-		$scope.parceiros = null;
-		$scope.concorrentes = null;
-		$scope.referenciaVisual = null;
+		$scope.editarStatus = false;
+		$scope.botaoEditarStatus = false;	
+		$scope.status = "A";
+		$scope.statusDescricao = "Ativo";
 
-		$scope.dataInicialBudget = null;
-		$scope.dataFinalBudget = null;
-		$scope.budgetDisponivel = 0;
-		$scope.budgetConsumido = 0;
-		$scope.listaBudgetAdwords = [];
+		$scope.editarContato = false;
+		$scope.botaoEditarContato = false;
+		$scope.contato = "E-mail para contato";
 
-		$scope.lista = [];
-		$scope.listaSelecionar = [];
+		$scope.editarLogin = false;
+		$scope.botaoEditarLogin = false;
+		$scope.login = "";
 
+		$scope.editarSenha = false;
+		$scope.botaoEditarSenha = false;
+		$scope.senha = "";
 
-		var _login;
-		var _google;
-		var _mc;
-		var _listaItensExcluir = [];
-		var _idLoginToken;
-    	var _accessToken;
-    	var _refreshToken;
-    	var _totalPaginas;
-    	var _itemListaPopulado;
-    	var _idBriefing = null;
-    	var _idAdwords = null;
+		var _landingPage = null;
+		$scope.editarNomeLandingPage = false;
+		$scope.botaoEditarNomeLandingpage = false;
+		$scope.NomeLandingpage = null;
+		$scope.pageID = null;
+		$scope.pagePath = null;
+		$scope.urlAcesso = null;
+		$scope.campanhaAdwords = null; 
+		$scope.contaAnalytics = null; 
+		$scope.propriedadeAnalytics = null; 
+		$scope.vistaAnalytics = null; 
+
+		$scope.perguntaBriefing = "Qual e-mail deverá receber os leads das campanhas ?";
+		$scope.perguntaAtualBriefing = 1;
+		$scope.totalPerguntasBriefing = 12;
+		$scope.placeholderBriefing = "Esse e-mail será utilizado para o login no dashboard e receberá todos os formulários que forem preenchidos e os relatórios de desempenho.";
+		$scope.respostaBriefing = "";
+
+		$scope.listaOfertas = [];
+		$scope.listaContasAnalytics = [];
+		$scope.listaPropriedadesAnalytics = [];
+		$scope.listaVistasAnalytics = [];
 
 
+		$scope.listaTipos = [
+	        { id: 'M', descricao: 'Starter' },
+	        { id: 'S', descricao: 'Search' },
+	        { id: 'I', descricao: 'Inbound' }
+    	];
 
-		var TokenGoogle = $resource('/google/:objectIdLogin');
-		var RefreshToken = $resource('/token/analytics/:accessToken/:refreshToken/:id');
-		
+    	$scope.listaStatus = [
+	        { id: 'A', descricao: 'Ativo' },
+	        { id: 'B', descricao: 'Briefing' },
+	        { id: 'I', descricao: 'Inativo' }
+    	];
+
+
+    	var _listaPerguntasBriefing = [
+            { Pergunta: 'Qual e-mail deverá receber os leads das campanhas ?', Placeholder: 'Esse e-mail será utilizado para o login no dashboard e receberá todos os formulários que forem preenchidos e os relatórios de desempenho.', Resposta: null }, 
+            { Pergunta: 'Qual produtos/serviço será trabalhado ?', Placeholder: 'É indicado trabalhar uma única oferta por campanha, ou seja, um único serviço, produto ou linha de produtos.', Resposta: null },
+            { Pergunta: 'Qual a abrangência geográfica que o produto/serviço atende ?', Placeholder: 'Mencione os estados e cidades que lhe interessa gerar demanda para seu produto/serviço.', Resposta: null }, 
+            { Pergunta: 'Qual o orçamento de Adwords para este produto/serviço a ser trabalhado ?', Placeholder: 'Conside o que está sendo oferecido pela concorrência e região escolhida.', Resposta: null }, 
+            { Pergunta: 'Qual o principal atributo do produto/serviço trabalhado ?', Placeholder: 'Destaque as principais características, pontos fortes e os benefícios que mais chamam a atenção dos clientes.', Resposta: null }, 
+            { Pergunta: 'Quem é o público deste produto/serviço que será oferecido ?', Placeholder: 'Mencione características, cargo, segmento de atuação da empresa etc.', Resposta: null }, 
+            { Pergunta: 'Como você imagina que seus clientes procuram este produto/serviço no Google ?', Placeholder: 'Quais palavras-chave você imagina que eles procuram.', Resposta: null }, 
+            { Pergunta: 'Qual principais diferenciais da sua empresa ?', Placeholder: 'O que faz sua empresa ser especial e diferente da concorrência.', Resposta: null }, 
+            { Pergunta: 'Quem são seus principais clientes ?', Placeholder: 'Importante para dar destaque em sua campanha.', Resposta: null }, 
+            { Pergunta: 'Quem são seus principais parceiros ?', Placeholder: 'Importante para dar força em sua campanha.', Resposta: null }, 
+            { Pergunta: 'Quem são seus principais concorrentes ?', Placeholder: 'Importante para podermos estudar o seu mercado e contextualizá-lo na criação.', Resposta: null }, 
+            { Pergunta: 'Existe alguma referência visual que você queira indicar ?', Placeholder: 'Envie links de sites ou nomes de marcas que você admira e poderia nos servir de inspiração.', Resposta: null }
+        ];
+
+		var _inclusaoDeCliente = false;
+		var _novaLandingPage = false;
+
+		var _dadosLogin = null;
+		var _dadosComplemento = null;
+
+		var _idLoginToken = null;
+    	var _accessToken = null;
+    	var _refreshToken = null;
+
     	var NovoLogin = $resource('/login');
-		var Login = $resource('/login/id/:objectIdLogin');
-		var ComplementoLogin = $resource('/complementoLogin/:objectIdLogin');
+    	var NovoComplemento = $resource('/complementoLogin');
+		var LoginPorObjectIDLogin = $resource('/login/id/:objectIdLogin');
+		var ComplementoObjectIDLogin = $resource('/complementoLogin/:objectIdLogin');
 		
-    	var NovoGoogle = $resource('/google');
-		var Google = $resource('/google/:objectIdLogin');
-		var GooglePorUnbouncePage = $resource('/google/:objectIdLogin/:unbouncePageId');
-		var GooglePorCampanha = $resource('/google/campanha/:objectIdLogin/:campaignId');
-    	var DeleteGoogle = $resource('/excluir/google/:id');
+		var NovoUnbounce = $resource('/unbounce');
+		var OfertasPorObjectID = $resource('/unbounce/:objectId');
 
-    	var NovoMailChimp = $resource('/mailchimp');
-		var MailChimp = $resource('/mailchimp/:objectIdLogin');
-		var ListaCampanhasMailChimp = $resource('/mailchimp/listas/retornarTodas/:apikey');
-
-    	var NovoUnbounce = $resource('/unbounce');
-		var Unbounce = $resource('/unbounce/:objectId');
-    	var DeleteUnbounce = $resource('/excluir/unbounce/:id');
-
-    	var NovaCampanha = $resource('/campanha');
-    	var ListaCampanha = $resource('/campanha/:objectIdLogin');
-		var DeleteCampanha = $resource('/excluir/campanha/:id');
+		var NovoGoogle = $resource('/google');
+		var DadosGooglePorOferta = $resource('/google/:objectIdLogin/:unbouncePageId');
 
 		var Briefing = $resource('/briefing');
-		var BriefingPorLogin = $resource('/briefing/:objectIdLogin');
+		var BriefingPorOferta = $resource('/briefing/:objectIdLogin/:objectIdCampanha');
+			
+ 
+		$scope.clickMenu = function(menu) {
 
-		var BudgetAdwords = $resource('/budgetAdwords');
-		var BudgetAdwordsPorLogin = $resource('/budgetAdwords/:objectIdLogin');
+			$scope.menuDadosCadastrais = (menu == 'dc');
+			$scope.menuOfertas = (menu == 'o');
+			$scope.menuSEO = (menu == 'seo');
+			$scope.menuMetas = (menu == 'm');
 
+		};
 
 		$scope.abrirTela = function() {
-			document.getElementById('loaderIndex').style.display = 'block';
+			abrirLoader();
+			document.getElementById('divFiltros').style.display = 'none';	
 
-    		TokenGoogle.get({
+			_inclusaoDeCliente = !ClienteService.objectIdCliente;
 
-    			objectIdLogin: LoginService.objectIdLogin
-    			
-    		}, function(resTokenGoogle) {
-    			_idLoginToken = resTokenGoogle._id;
-    			_accessToken = resTokenGoogle.accessToken;
-    			_refreshToken = resTokenGoogle.refreshToken;
-
-				$scope.validarGAPI(true);	
-    		});
-		};
-
-		$scope.validarGAPI = function(token) {
-			if (token) {		
-				gapi.client.setApiKey(LoginService.ApiKey);
-
-    			gapi.auth.setToken({
-					access_token: _accessToken
-				});
-			}	
-
-			gapi.client.load('analytics', 'v3', function(){
-				var _data = new Date();
-				var _dataTesteGA = _data.getFullYear() + "-" + lpad(new Number(_data.getMonth() + 1), 2) + "-" + lpad(_data.getDate(), 2);
-
-				gapi.client.analytics.data.ga.get({
-                	'ids': 'ga:60998176',
-                	'start-date': _dataTesteGA,
-                	'end-date': _dataTesteGA,
-                	'metrics': 'ga:sessions',
-            	})
-            	.execute(function(resultado) {   
-            		if ((resultado.code) && (resultado.code == 401)) {
-						$scope.refreshToken();
-            		} else {
-            			$scope.consultarCliente();
-            		}
-            	});
-			});	
-		};
-
-		$scope.refreshToken = function() {
-			RefreshToken.get({
-				accessToken: _accessToken,
-				refreshToken: _refreshToken,
-				id: _idLoginToken
-			}, function(resRefreshToken){
-				_accessToken = resRefreshToken.accessToken;
-				_refreshToken = resRefreshToken.refreshToken;
-
-				gapi.client.setApiKey(LoginService.ApiKey);
-
-    			gapi.auth.setToken({
-					access_token: _accessToken
-				});
-
-    			setTimeout(function() {
-					$scope.validarGAPI(false);	
-				},
-				5000);    
-			});
-		};
-
-		$scope.voltar = function() {
-			$location.path('/administrativo');
+			if (!_inclusaoDeCliente)
+				$scope.consultarCliente();
+			else
+				fecharLoader();
 		};
 
 		$scope.consultarCliente = function() {
-			_totalPaginas = 0;
-    		_itemListaPopulado = 0;
+			LoginPorObjectIDLogin.get({
 
-			Login.get({
 				objectIdLogin: ClienteService.objectIdCliente
-			}, function(resLogin) {
-				_login = resLogin;
 
-				$scope.status = (resLogin.status == 'A');
-				$scope.tipo = resLogin.tipo;
-				$scope.email = resLogin.email;
+			}, function(resLogin) {
+				_dadosLogin = resLogin;
+
+				$scope.contato = resLogin.email;
 				$scope.login = resLogin.login;
 				$scope.senha = resLogin.senha;
 
-				ComplementoLogin.get({
+				ComplementoObjectIDLogin.get({
+
 					objectIdLogin: ClienteService.objectIdCliente
+
 				}, function(resComplementoLogin){
+
+					_dadosComplemento = resComplementoLogin;
+
 					$scope.empresa = resComplementoLogin.nome;
 
-					if (resLogin.tipo == 'S') {
+					OfertasPorObjectID.query({
 
-						Google.get({
-							objectIdLogin: ClienteService.objectIdCliente
-						}, function(resGoogle) {
-							$scope.adwords = resGoogle.idAdwords;
-							$scope.contaSelecionada = resGoogle.accountId;
-							$scope.propriedadeSelecionada = resGoogle.webPropertyId;
-							$scope.perfilSelecionado = resGoogle.profileId;
+						objectId: ClienteService.objectIdCliente
 
-							_google = resGoogle;
+					}, function(resOfertas){
 
+						$scope.listaOfertas = [];
 
-							MailChimp.get({
-								objectIdLogin: ClienteService.objectIdCliente
-							}, function(mc){
-								$scope.apikeymailchimp = mc.apiKey;
-								_mc = mc;
+						resOfertas.forEach(function(oferta, indexOferta, lista){
+
+							$scope.listaOfertas.push({
+								Objeto: oferta,
+								Nome: oferta.nome,
+								Google: null,
+								Briefing: null
 							});
 
-
-							ListaCampanha.query({
-
-								objectIdLogin: ClienteService.objectIdCliente
-
-							}, function(listaCampanhas){
-								$scope.lista = [];
-
-								_totalPaginas = listaCampanhas.length;
-
-								listaCampanhas.forEach(function(campanha){
-
-									var _item = {
-											
-										Objeto: campanha,
-										ObjetoGoogle: null,
-										Check: campanha.status == 'A',
-										DataEntrada: '',
-
-										IDPagina: campanha.campaignId,
-										Nome: '',
-										URL: '',
-
-										Adwords: '',
-										NomeShow: campanha.nome,
-
-										PageID: '',
-
-										accounts: [],
-										webPropertyIds: [],
-										profileIds: [],
-
-										ContaSelecionada: '',
-										PropriedadeSelecionada: '',
-										PerfilSelecionado: ''
-									};
-
-									GooglePorCampanha.get({
-
-										objectIdLogin: ClienteService.objectIdCliente,
-										campaignId: campanha.campaignId
-
-									}, function(resGooglePorCampanha){
-
-										if (resGooglePorCampanha) {
-
-											_item.ObjetoGoogle = resGooglePorCampanha;
-											_item.Adwords = resGooglePorCampanha.idAdwords;
-											_item.PageID = resGooglePorCampanha.unbouncePageId;
-											_item.accounts = [];
-											_item.webPropertyIds = [];
-											_item.profileIds = [];
-											_item.ContaSelecionada = resGooglePorCampanha.accountId;
-											_item.PropriedadeSelecionada = resGooglePorCampanha.webPropertyId;
-											_item.PerfilSelecionado = resGooglePorCampanha.profileId;
-
-											if (resGooglePorCampanha.accountId)
-												$scope.popularListaAccounts(true, _item, false);
-
-										} else {
-
-											$scope.lista.push(_item);
-
-										}
-									});									
-								});
-							});
-
-
-							$scope.popularListaAccounts(true);
-						});
-					} else {
-						BriefingPorLogin.get({
-
-							objectIdLogin: ClienteService.objectIdCliente
-
-						}, function(resultadoBriefingPorLogin) {
-
-							if (resultadoBriefingPorLogin._id) {
-
-								_idBriefing = resultadoBriefingPorLogin._id;
-
-								$scope.nomeEmpresa = resultadoBriefingPorLogin.nomeEmpresa;
-								$scope.emailRecebeLeads = resultadoBriefingPorLogin.emailRecebeLeads;
-								$scope.produtoServicosTrabalhados = resultadoBriefingPorLogin.produtoServicosTrabalhados;
-								$scope.abrangenciaGeografica = resultadoBriefingPorLogin.abrangenciaGeografica;
-								$scope.orcamentoAdwords = resultadoBriefingPorLogin.orcamentoAdwords;
-								$scope.atributosTrabalhados = resultadoBriefingPorLogin.atributosTrabalhados;
-								$scope.publicoAlvo = resultadoBriefingPorLogin.publicoAlvo;
-								$scope.comoClientesProcuramGoogle = resultadoBriefingPorLogin.comoClientesProcuramGoogle;
-								$scope.pricipaisDiferenciais = resultadoBriefingPorLogin.pricipaisDiferenciais;
-								$scope.clientes = resultadoBriefingPorLogin.clientes;
-								$scope.parceiros = resultadoBriefingPorLogin.parceiros;
-								$scope.concorrentes = resultadoBriefingPorLogin.concorrentes;
-								$scope.referenciaVisual = resultadoBriefingPorLogin.referenciaVisual;
-
-							}
-
-						});
-
-
-						BudgetAdwordsPorLogin.query({
-
-							objectIdLogin: ClienteService.objectIdCliente
-
-						}, function(resultadoAdwordsPorLogin) {
-
-							if (resultadoAdwordsPorLogin.length > 0) {
-
-								resultadoAdwordsPorLogin.forEach(function(itemBudgetAdwords){
-
-									$scope.listaBudgetAdwords.push(
-										{
-											id: itemBudgetAdwords._id,
-											dataShow: formarData(itemBudgetAdwords.data),
-
-											dataInicial: itemBudgetAdwords.dataInicial,
-											dataInicialShow: formarData(itemBudgetAdwords.dataInicial),
-
-											dataFinal: itemBudgetAdwords.dataFinal,
-											dataFinalShow: formarData(itemBudgetAdwords.dataFinal),
-
-											budgetConsumido: itemBudgetAdwords.budgetConsumido,
-											budgetDisponivel: itemBudgetAdwords.budgetDisponivel											
-										});
-								});
+							if (indexOferta == lista.length-1) {
+								fecharLoader();
 							}
 						});
-						
-
-						Unbounce.query({
-
-							objectId: ClienteService.objectIdCliente
-
-						}, function(resUnbounce){
-
-							$scope.lista = [];
-							_totalPaginas = resUnbounce.length;
-
-							resUnbounce.forEach(function(page){
-
-								GooglePorUnbouncePage.get({
-									
-									objectIdLogin: ClienteService.objectIdCliente,
-									unbouncePageId: page.pageId
-
-								}, function(resGooglePorUnbouncePage){
-
-									var _item = {
-
-										Objeto: page,
-										ObjetoGoogle: resGooglePorUnbouncePage,
-										Check: page.status == 'A',
-										DataEntrada: new Date(page.dataEntrada),
-										PagePath: page.pagePath,
-										IDPagina: page.pageId,
-										Nome: page.nome,
-										URL: page.url,
-										Adwords: resGooglePorUnbouncePage.idAdwords,
-
-										accounts: [],
-										webPropertyIds: [],
-										profileIds: [],
-
-										ContaSelecionada: resGooglePorUnbouncePage.accountId,
-										PropriedadeSelecionada: resGooglePorUnbouncePage.webPropertyId,
-										PerfilSelecionado: resGooglePorUnbouncePage.profileId
-									};
-
-									$scope.popularListaAccounts(true, _item, false);
-									
-								});
-							});
-						});
-					}
+					});
 				});
 			});			
 		};
 
-		$scope.popularListaAccounts = function(incluir, itemListaPaginas, alteracao) {
-			gapi.client.analytics.management.accounts.list().execute(
-    			function(resultadosAccounts) {
-    				if (itemListaPaginas) {
-    					itemListaPaginas.accounts = [];
-    				} else {
-    					$scope.accounts = [];	
-    				}
-
-      				resultadosAccounts.items
-        				.forEach(function(item, index, array)
-        				{
-        					if (itemListaPaginas) {
-	          					itemListaPaginas.accounts.push({
-        	    					"id": item.id,
-            						"nome": item.name + ' (' + item.id + ')'
-          						});
-	          				} else {
-	          					$scope.accounts.push({
-        	    					"id": item.id,
-            						"nome": item.name + ' (' + item.id + ')'
-          						});	          					
-	          				}
-
-				        	if (index == array.length-1) {
-				        		if (incluir)
-				        			$scope.popularListaWebPropertyId(incluir, itemListaPaginas, alteracao);
-          					}
-        				});
-    		});
+		$scope.mouseOver = function(campoDeEdicao) {
+			if (campoDeEdicao == 'empresa')
+				$scope.botaoEditarNomeEmpresa = true;
+			else if (campoDeEdicao == 'oferta')
+				$scope.botaoEditarNomeLandingpage = true;
+			else if (campoDeEdicao == 'tipo')
+				$scope.botaoEditarTipo = true;
+			else if (campoDeEdicao == 'status')
+				$scope.botaoEditarStatus = true;
+			else if (campoDeEdicao == 'contato')
+				$scope.botaoEditarContato = true;
+			else if (campoDeEdicao == 'login')
+				$scope.botaoEditarLogin = true;
+			else if (campoDeEdicao == 'senha')
+				$scope.botaoEditarSenha = true;
 		};
 
-		$scope.popularListaWebPropertyId = function(incluir, itemListaPaginas, alteracao) {
-			gapi.client.analytics.management.webproperties.list(
-    		{ 
-      			'accountId': ((itemListaPaginas) ? itemListaPaginas.ContaSelecionada : $scope.contaSelecionada)
-    		})
-    		.execute(function (resultadosWebPropertyIds) {
-    			if (itemListaPaginas) {
-    				itemListaPaginas.webPropertyIds = []
-    				itemListaPaginas.profileIds = [];
-    			} else {
-    				$scope.webPropertyIds = [];	
-    			}      			
+		$scope.mouseLeave = function(campoDeEdicao) {
+			if (campoDeEdicao == 'empresa')
+				$scope.botaoEditarNomeEmpresa = false;
+			else if (campoDeEdicao == 'oferta')
+				$scope.botaoEditarNomeLandingpage = false;
+			else if (campoDeEdicao == 'tipo')
+				$scope.botaoEditarTipo = false;
+			else if (campoDeEdicao == 'status')
+				$scope.botaoEditarStatus = false;
+			else if (campoDeEdicao == 'contato')
+				$scope.botaoEditarContato = false;
+			else if (campoDeEdicao == 'login')
+				$scope.botaoEditarLogin = false;
+			else if (campoDeEdicao == 'senha')
+				$scope.botaoEditarSenha = false;
+		};
 
-			    resultadosWebPropertyIds.items
-        			.forEach(function(item, index, array)
-        			{
-        				if (itemListaPaginas) {
-        					itemListaPaginas.webPropertyIds.push(
-          					{
-	            				"id": item.id,
-    	        				"nome": item.name + ' (' + item.id + ')'
-        	  				});
-        				}
-        				else {
-          					$scope.webPropertyIds.push(
-          					{
-	            				"id": item.id,
-    	        				"nome": item.name + ' (' + item.id + ')'
-        	  				});
-          				}
+		$scope.editNomeEmpresa = function(){
+			if (($scope.empresa) && ($scope.empresa != null) && ($scope.empresa != ''))
+				$scope.editarNomeEmpresa = !$scope.editarNomeEmpresa;
 
-          				if (index == array.length-1) {
-          					if (incluir)
-				        		$scope.popularListaProfileId(incluir, itemListaPaginas);
-          				}
+			if ($scope.editarNomeEmpresa) {
+
+				if ($scope.empresa == "Novo cliente")
+					$scope.empresa = null;
+			}
+			else {
+				if (_inclusaoDeCliente) {
+					$scope.login = removerCaracterEspecial($scope.empresa).toLowerCase();
+					$scope.senha = gerarSenha();
+				}
+			}
+		};
+
+		$scope.editNomeLandingpage = function(){
+			if (($scope.NomeLandingpage) && ($scope.NomeLandingpage != null) && ($scope.NomeLandingpage != ''))
+				$scope.editarNomeLandingPage = !$scope.editarNomeLandingPage;
+		};
+
+		$scope.editTipo = function(){
+			$scope.editarTipo = !$scope.editarTipo;
+
+			$scope.listaTipos.forEach(function(itemTipo){
+				if (itemTipo.id == $scope.tipo)
+					$scope.tipoCliente = itemTipo.descricao;
+			});
+		};
+
+		$scope.editStatus = function(){
+			$scope.editarStatus = !$scope.editarStatus;
+
+			$scope.listaStatus.forEach(function(itemStatus){
+				if (itemStatus.id == $scope.status)
+					$scope.statusDescricao = itemStatus.descricao;
+			});
+		};
+
+		$scope.editContato = function(){
+			$scope.editarContato = !$scope.editarContato;
+
+			if ($scope.editarContato) {
+
+				if ($scope.contato == "E-mail para contato")
+					$scope.contato = null;
+			}
+		};
+
+		$scope.editLogin = function(){
+			$scope.editarLogin = !$scope.editarLogin;
+
+			if ($scope.editarLogin) {
+
+				if ($scope.login == "Escolha um login")
+					$scope.login = null;
+			}
+		};
+
+		$scope.editSenha = function(){
+			$scope.editarSenha = !$scope.editarSenha;
+
+			if ($scope.editarSenha) {
+
+				if ($scope.senha == "Digite uma senha")
+					$scope.senha = null;
+			}
+		};
+
+		$scope.adicionarNovaLandingpage = function() {
+
+			_novaLandingPage = true;
+			$scope.editarNomeLandingPage = true;
+
+			$scope.NomeLandingpage = null;
+			$scope.pageID = null;
+			$scope.pagePath = null;
+			$scope.urlAcesso = null;
+			$scope.campanhaAdwords = null;
+			$scope.contaAnalytics = null;
+			$scope.propriedadeAnalytics = null;
+			$scope.vistaAnalytics = null;
+
+			$scope.abrirModalLandingPage();
+			$scope.popularListaContas();
+		};
+
+		$scope.editarLandingPage = function(paramOferta) {
+			abrirLoader();
+
+			_landingPage = paramOferta;
+
+			_novaLandingPage = false;
+
+			$scope.NomeLandingpage = paramOferta.Nome;
+			$scope.pageID = paramOferta.Objeto.pageId;
+			$scope.pagePath = paramOferta.Objeto.pagePath;
+			$scope.urlAcesso = paramOferta.Objeto.url;
+
+			if (paramOferta.Google) {
+
+				$scope.campanhaAdwords = paramOferta.Google.idAdwords;
+				$scope.contaAnalytics = paramOferta.Google.accountId;
+				$scope.propriedadeAnalytics = paramOferta.Google.webPropertyId;
+				$scope.vistaAnalytics = paramOferta.Google.profileId;
+
+				$scope.abrirModalLandingPage();
+				$scope.popularListaContas();
+
+			} else {
+
+				DadosGooglePorOferta.get({
+
+					objectIdLogin: ClienteService.objectIdCliente,
+					unbouncePageId: paramOferta.Objeto.pageId
+
+				}, function(resDadosGooglePorOferta) {
+
+					if (resDadosGooglePorOferta) {
+						paramOferta.Google = resDadosGooglePorOferta;
+
+						$scope.campanhaAdwords = resDadosGooglePorOferta.idAdwords;
+
+						if ((resDadosGooglePorOferta.accountId) && 
+							(resDadosGooglePorOferta.webPropertyId) && 
+							(resDadosGooglePorOferta.profileId)) {
+
+							$scope.contaAnalytics = resDadosGooglePorOferta.accountId;
+							$scope.propriedadeAnalytics = resDadosGooglePorOferta.webPropertyId;
+							$scope.vistaAnalytics = resDadosGooglePorOferta.profileId;
+
+							$scope.abrirModalLandingPage();
+							$scope.popularListaContas();
+
+						} else {
+
+							$scope.abrirModalLandingPage();
+							$scope.popularListaContas();
+
+						}
+
+					} else {
+
+						$scope.abrirModalLandingPage();
+						$scope.popularListaContas();
+
+					}
+				});
+			}
+		};
+
+		$scope.abrirModalLandingPage = function() {
+			if (!_novaLandingPage)
+				$scope.editarNomeLandingPage = false;
+
+			fecharLoader();
+			$('#modalLandingPage').modal('show');
+		};
+
+		$scope.alterarConta = function() {
+
+			$scope.listaPropriedadesAnalytics = [];
+			$scope.listaVistasAnalytics = [];
+
+			$scope.propriedadeAnalytics = null;
+			$scope.vistaAnalytics = null;
+
+			$scope.popularListaPropriedades();
+
+		};
+
+		$scope.popularListaContas = function() {
+			abrirLoader();
+
+			gapi.client.analytics.management.accounts.list().execute(
+
+    			function(resultadosAccounts) {
+    				$scope.listaContasAnalytics = [];	
+    				
+      				resultadosAccounts.items.forEach(function(item, index, array) {
+
+  						$scope.listaContasAnalytics.push({
+    	    				"id": item.id,
+        					"nome": item.name + ' (' + item.id + ')'
+      					});	          
+
+			        	if (index == array.length-1) {
+
+			        		fecharLoader();
+
+			        		$scope.$apply();
+
+			        		if ($scope.propriedadeAnalytics)
+			        			$scope.popularListaPropriedades(); 			        			
+      					}
         			});
     		});
 		};
 
-		$scope.popularListaProfileId = function(incluir, itemListaPaginas, alteracao) {
-			gapi.client.analytics.management.profiles.list(
-  			{ 
-    			'accountId': (itemListaPaginas) ? itemListaPaginas.ContaSelecionada : $scope.contaSelecionada,
-    			'webPropertyId': (itemListaPaginas) ? itemListaPaginas.PropriedadeSelecionada : $scope.propriedadeSelecionada
-  			})
-  			.execute(function (resultadosProfileIds) {
-  				if (itemListaPaginas) {
-  					itemListaPaginas.profileIds = [];
-  				} else {
-  					$scope.profileIds = [];	
-  				}    			
+		$scope.alterarPropriedade = function() {
 
-    			resultadosProfileIds.items
-      				.forEach(function(item, index, array)
-      				{
-      					if (itemListaPaginas) {
-      						itemListaPaginas.profileIds.push(
-        					{
-          						"id": item.id,
-          						"nome": item.name + ' (' + item.id + ')'
-        					});
-      					}
-      					else {
-        					$scope.profileIds.push(
-        					{
-          						"id": item.id,
-          						"nome": item.name + ' (' + item.id + ')'
-        					});
-        				}
+			$scope.listaVistasAnalytics = [];
+			$scope.vistaAnalytics = null;
+
+			$scope.popularListaVistasDaPropriedade();
+
+		};
+
+		$scope.popularListaPropriedades = function() {
+			abrirLoader();
+
+			gapi.client.analytics.management.webproperties.list({ 
+
+      			'accountId': $scope.contaAnalytics
+
+    		}).execute(
+
+    			function (resultadosWebPropertyIds) {
+
+	    			$scope.listaPropriedadesAnalytics = [];
+
+	    			resultadosWebPropertyIds.items.forEach(function(item, index, array) {
+
+	    				$scope.listaPropriedadesAnalytics.push({
+		    				"id": item.id,
+	    					"nome": item.name + ' (' + item.id + ')'
+	  					});	          
+
+			        	if (index == array.length-1) {
+
+			        		fecharLoader();
+
+			        		$scope.$apply();
+
+			        		if ($scope.vistaAnalytics)
+			        			$scope.popularListaVistasDaPropriedade();
+	  					}
+
+	    			});
+    		});
+		};
+
+		$scope.popularListaVistasDaPropriedade = function() {
+			abrirLoader();
+
+			gapi.client.analytics.management.profiles.list({ 
+
+    			'accountId': $scope.contaAnalytics,
+    			'webPropertyId': $scope.propriedadeAnalytics
+
+  			}).execute(
+
+  				function (resultadosProfileIds) {
+
+  					$scope.listaVistasAnalytics = [];
+
+    				resultadosProfileIds.items.forEach(function(item, index, array) {
+
+    					$scope.listaVistasAnalytics.push({
+		    				"id": item.id,
+	    					"nome": item.name + ' (' + item.id + ')'
+	  					});	
 
         				if (index == array.length-1) {
-        					if ((!alteracao) && (incluir) && (itemListaPaginas)) {
-        						$scope.lista.push(itemListaPaginas);	
+        					
+        					fecharLoader();
+        					$scope.$apply();
 
-        						_itemListaPopulado++;
-
-        						if (_itemListaPopulado == _totalPaginas) {
-        							document.getElementById('loaderIndex').style.display = 'none';
-        						}
-        					}
-				        
-				        	document.getElementById('loaderIndex').style.display = 'none';	
-				        	$scope.$apply();
           				}
  				    });
   			});
 		};
 
-		$scope.selecionar = function() {
-			if ($scope.tipo == 'M') { 
-				$scope.paginaNome = "";
-				$scope.paginaPageID = "";
-				$scope.paginaPagePath = "";
-				$scope.paginaAdwords = "";
-				$scope.contaSelecionada = "";
-				$scope.propriedadeSelecionada = "";
-				$scope.perfilSelecionado = "";
+		$scope.salvarLandingPage = function() {
+			abrirLoader();
 
-				$scope.popularListaAccounts(false);
+			if (_novaLandingPage) {
 
-				$('#modal').modal('show');
-			}
-			else {
+				$scope.listaOfertas.push({
+					Nome: $scope.NomeLandingpage,
 
-				if ($scope.listaSelecionar.length <= 0) {
-					
-					document.getElementById('loaderIndex').style.display = 'block';	
+					Objeto: {
+						nome: $scope.NomeLandingpage,
+						pageId: $scope.pageID,
+						pagePath: $scope.pagePath,
+						url: $scope.urlAcesso
+					},
 
-					if ($scope.tipo == 'S') { 
-
-						ListaCampanhasMailChimp.query({
-
-							apikey: $scope.apikeymailchimp
-
-						}, function(resListaCampanhasMailChimp){
-
-							resListaCampanhasMailChimp.forEach(function(campanha, indexCampanha, listaCamp){
-
-								if ((campanha.authenticate) && (campanha.status == 'sent')) {
-
-									$scope.listaSelecionar.push({
-										Check: false,
-
-										IDPagina: campanha.id,
-										Nome: campanha.title,
-										URL: campanha.subject,
-										DataEntrada: new Date(),
-
-										Adwords: '',
-										NomeShow: '',
-
-										PageID: '',
-
-										accounts: [],
-										webProperty: [],
-										profileIds: [],
-
-										ContaSelecionada: '',
-										PropriedadeSelecionada: '',
-										PerfilSelecionado: ''
-									});
-								}
-
-								if (indexCampanha == listaCamp.length-1) {
-
-									document.getElementById('loaderIndex').style.display = 'none';	
-									$('#modal').modal('show');
-
-								}
-							});
-						});
+					Google: {
+						unbouncePageId: $scope.pageID,
+						idAdwords: $scope.campanhaAdwords,
+						accountId: $scope.contaAnalytics,
+						webPropertyId: $scope.propriedadeAnalytics,
+						profileId: $scope.vistaAnalytics
 					}
-				} else {
-					$('#modal').modal('show');
-				}
-			}
-		};
-
-		$scope.novaCampanha = function() {
-			$('#modalNovaCampanha').modal('show');
-		};
-
-		$scope.fecharNovaCampanha = function() {
-			$('#modalNovaCampanha').modal('hide');
-		};
-
-		$scope.apagar = function(itemListaPaginas) {
-			_listaItensExcluir.push(itemListaPaginas);
-
-			$scope.lista = 
-				$.grep($scope.lista, function(val, index){
-					return val != itemListaPaginas;
 				});
-		};
 
-		$scope.salvar = function() {
-			var _alterarLogin = new NovoLogin();
-
-			_alterarLogin._id = _login._id;
-			_alterarLogin.status = $scope.status ? "A" : "I";
-			_alterarLogin.empresa = $scope.empresa;
-			_alterarLogin.email = $scope.email;
-			_alterarLogin.login = $scope.login;
-			_alterarLogin.senha = $scope.senha;
-			_alterarLogin.tipo = _login.tipo;
-
-			_alterarLogin.$save();
-
-
-			if ($scope.tipo == 'S') {
-				var _novoGoogle = new NovoGoogle();
-
-				_novoGoogle._id = _google._id;
-				_novoGoogle.objectIdLogin = _google.objectIdLogin;
-				_novoGoogle.idAdwords = $scope.adwords;
-				_novoGoogle.accountId = $scope.contaSelecionada;
-				_novoGoogle.webPropertyId = $scope.propriedadeSelecionada;
-				_novoGoogle.profileId = $scope.perfilSelecionado;
-
-				_novoGoogle.$save();
-
-
-				var _novoMailChimp = new NovoMailChimp();
-
-				_novoMailChimp._id = _mc._id;
-				_novoMailChimp.objectIdLogin = _mc.objectIdLogin;
-				_novoMailChimp.apiKey = $scope.apikeymailchimp;
-
-				_novoMailChimp.$save();				
-
-
-
-				$scope.lista.forEach(function(pagina, indexPagina, listaPagina) {
-					var _novaCampanha = new NovaCampanha();
-
-					if (pagina.Objeto) {
-						_novaCampanha._id = pagina.Objeto._id;
-					} 
-
-					_novaCampanha.status = pagina.Check ? 'A' : 'I';
-					_novaCampanha.objectIdLogin = ClienteService.objectIdCliente;
-					_novaCampanha.campaignId = pagina.IDPagina;
-					_novaCampanha.nome = pagina.NomeShow;
-					_novaCampanha.$save();
-
-
-
-					var _novoGoogle = new NovoGoogle();
-
-					if (pagina.ObjetoGoogle) {
-						_novoGoogle._id = pagina.ObjetoGoogle._id;
-					} 
-
-					_novoGoogle.objectIdLogin = ClienteService.objectIdCliente;
-					_novoGoogle.campaignId = pagina.IDPagina;
-					_novoGoogle.unbouncePageId = pagina.PageID;
-					_novoGoogle.idAdwords = pagina.Adwords;
-					_novoGoogle.accountId = pagina.ContaSelecionada;
-					_novoGoogle.webPropertyId = pagina.PropriedadeSelecionada;
-					_novoGoogle.profileId = pagina.PerfilSelecionado;
-
-					_novoGoogle.$save();
-
-				});
+				$scope.fecharModalLandingPage();
 
 			} else {
-				var _briefing = new Briefing();
+				$scope.listaOfertas.forEach(function(item) {
 
-				if (_idBriefing)
-					_briefing._id = _idBriefing;				
+					if (item.Objeto._id == _landingPage.Objeto._id) {
 
-				_briefing.objectIdLogin = ClienteService.objectIdCliente;
-				_briefing.dataPreenchimento = new Date();
-				_briefing.nomeEmpresa = $scope.nomeEmpresa;
-				_briefing.emailRecebeLeads = $scope.emailRecebeLeads;
-				_briefing.produtoServicosTrabalhados = $scope.produtoServicosTrabalhados;
-				_briefing.abrangenciaGeografica = $scope.abrangenciaGeografica;
-				_briefing.orcamentoAdwords = $scope.orcamentoAdwords;
-				_briefing.atributosTrabalhados = $scope.atributosTrabalhados;
-				_briefing.publicoAlvo = $scope.publicoAlvo;
-				_briefing.comoClientesProcuramGoogle = $scope.comoClientesProcuramGoogle;
-				_briefing.pricipaisDiferenciais = $scope.pricipaisDiferenciais;
-				_briefing.clientes = $scope.clientes;
-				_briefing.parceiros = $scope.parceiros;
-				_briefing.concorrentes = $scope.concorrentes;
-				_briefing.referenciaVisual = $scope.referenciaVisual;
+						item.Nome = $scope.NomeLandingpage;
+						item.Objeto.nome = $scope.NomeLandingpage;
+						
+						item.Objeto.pageId = $scope.pageID;
+						item.Objeto.pagePath = $scope.pagePath;
+						item.Objeto.url = $scope.urlAcesso;
 
-				_briefing.$save();
+						item.Google.unbouncePageId = $scope.pageID;
+						item.Google.idAdwords = $scope.campanhaAdwords;
+						item.Google.accountId = $scope.contaAnalytics;
+						item.Google.webPropertyId = $scope.propriedadeAnalytics;
+						item.Google.profileId = $scope.vistaAnalytics;
 
-
-				$scope.listaBudgetAdwords.forEach(
-					function(budgetAdwords, indexBudgetAdwords, listaBudgetAdwords) {
-
-						if (!budgetAdwords.id) {
-
-							var _budgetAdwords = new BudgetAdwords();
-							
-							_budgetAdwords.objectIdLogin = ClienteService.objectIdCliente;
-							_budgetAdwords.data = new Date();
-							_budgetAdwords.dataInicial = budgetAdwords.dataInicial;
-							_budgetAdwords.dataFinal = budgetAdwords.dataFinal;
-							_budgetAdwords.budgetDisponivel = budgetAdwords.budgetDisponivel;
-							_budgetAdwords.budgetConsumido = budgetAdwords.budgetConsumido;
-
-							_budgetAdwords.$save();
-
-						} 
-
-					});
-
-
-				/*
-				var _adwords = new Adwords();
-
-				if (_idAdwords)
-					_adwords._id = _idAdwords;
-
-				_adwords.objectIdLogin = ClienteService.objectIdCliente;
-				_adwords.keywords = $scope.keywords;
-				_adwords.budget = $scope.budget;
-				_adwords.budgetConsumido = $scope.budgetConsumido;
-
-				_adwords.$save();
-				*/
-
-
-
-				var _novoUnbounce;
-
-				$scope.lista.forEach(function(pagina, indexPagina, listaPagina) {
-					var _novoUnbounce = new NovoUnbounce();
-
-					if (pagina.Objeto) {
-						_novoUnbounce._id = pagina.Objeto._id;
-					} 
-
-					_novoUnbounce.status = pagina.Check ? 'A' : 'I';
-					_novoUnbounce.objectIdLogin = ClienteService.objectIdCliente;
-					_novoUnbounce.pageId = pagina.IDPagina;
-					_novoUnbounce.pagePath = pagina.PagePath;
-					_novoUnbounce.nome = pagina.Nome;
-					_novoUnbounce.dataEntrada = new Date(pagina.DataEntrada);
-
-					_novoUnbounce.$save();
-
-
-
-					var _novoGoogle = new NovoGoogle();
-
-					if (pagina.ObjetoGoogle) {
-						_novoGoogle._id = pagina.ObjetoGoogle._id;
-					} 
-
-					_novoGoogle.objectIdLogin = ClienteService.objectIdCliente;
-					_novoGoogle.unbouncePageId = pagina.IDPagina;
-					_novoGoogle.idAdwords = pagina.Adwords;
-					_novoGoogle.accountId = pagina.ContaSelecionada;
-					_novoGoogle.webPropertyId = pagina.PropriedadeSelecionada;
-					_novoGoogle.profileId = pagina.PerfilSelecionado;
-
-					_novoGoogle.$save();					
-				});
+						$scope.fecharModalLandingPage();
+						return;
+					}
+				});			
 			}
+		};
 
-			if (_listaItensExcluir.length > 0) {
-				_listaItensExcluir.forEach(function(itemPaginaExcluir, index, lista) {
-					DeleteGoogle.delete({
-						id: itemPaginaExcluir.ObjetoGoogle._id
-					});
 
-					if ($scope.tipo == 'S') {
-						DeleteCampanha.delete({
-							id: itemPaginaExcluir.Objeto._id
-						});
-					} else {
-						DeleteUnbounce.delete({
-							id: itemPaginaExcluir.Objeto._id
-						});
+		$scope.fecharModalLandingPage = function() {
+			fecharLoader();
+			$('#modalLandingPage').modal('hide');
+		};
+
+
+		$scope.editarBriefing = function(paramOferta) {
+			abrirLoader();
+			$scope.perguntaAtualBriefing = 1;
+
+			if (paramOferta.Briefing) {
+
+				_listaPerguntasBriefing[0].Resposta = paramOferta.Briefing.emailRecebeLeads;
+				_listaPerguntasBriefing[1].Resposta = paramOferta.Briefing.produtoServicosTrabalhados;
+				_listaPerguntasBriefing[2].Resposta = paramOferta.Briefing.abrangenciaGeografica;
+				_listaPerguntasBriefing[3].Resposta = paramOferta.Briefing.orcamentoAdwords;
+				_listaPerguntasBriefing[4].Resposta = paramOferta.Briefing.atributosTrabalhados;
+				_listaPerguntasBriefing[5].Resposta = paramOferta.Briefing.publicoAlvo;
+				_listaPerguntasBriefing[6].Resposta = paramOferta.Briefing.comoClientesProcuramGoogle;
+				_listaPerguntasBriefing[7].Resposta = paramOferta.Briefing.pricipaisDiferenciais;
+				_listaPerguntasBriefing[8].Resposta = paramOferta.Briefing.clientes;
+				_listaPerguntasBriefing[9].Resposta = paramOferta.Briefing.parceiros;
+				_listaPerguntasBriefing[10].Resposta = paramOferta.Briefing.concorrentes;
+				_listaPerguntasBriefing[11].Resposta = paramOferta.Briefing.referenciaVisual;
+
+				$scope.atualizarDadosBriefing();		
+				$('#modalBriefing').modal('show');
+				fecharLoader();
+
+			} else {
+
+				BriefingPorOferta.get({
+
+					objectIdLogin: ClienteService.objectIdCliente,
+					objectIdCampanha: paramOferta._id
+
+				}, function(resBriefingPorOferta) {
+
+					if (resBriefingPorOferta._id) {
+
+						paramOferta.Briefing = resBriefingPorOferta;
+
+						_listaPerguntasBriefing[0].Resposta = resBriefingPorOferta.emailRecebeLeads;
+						_listaPerguntasBriefing[1].Resposta = resBriefingPorOferta.produtoServicosTrabalhados;
+						_listaPerguntasBriefing[2].Resposta = resBriefingPorOferta.abrangenciaGeografica;
+						_listaPerguntasBriefing[3].Resposta = resBriefingPorOferta.orcamentoAdwords;
+						_listaPerguntasBriefing[4].Resposta = resBriefingPorOferta.atributosTrabalhados;
+						_listaPerguntasBriefing[5].Resposta = resBriefingPorOferta.publicoAlvo;
+						_listaPerguntasBriefing[6].Resposta = resBriefingPorOferta.comoClientesProcuramGoogle;
+						_listaPerguntasBriefing[7].Resposta = resBriefingPorOferta.pricipaisDiferenciais;
+						_listaPerguntasBriefing[8].Resposta = resBriefingPorOferta.clientes;
+						_listaPerguntasBriefing[9].Resposta = resBriefingPorOferta.parceiros;
+						_listaPerguntasBriefing[10].Resposta = resBriefingPorOferta.concorrentes;
+						_listaPerguntasBriefing[11].Resposta = resBriefingPorOferta.referenciaVisual;
+
 					}
 
-					if (index == lista.length-1) {
-						_listaItensExcluir = [];
-					}
+					$scope.atualizarDadosBriefing();		
+					$('#modalBriefing').modal('show');
+					fecharLoader();				 
 				});
-			}
+			}			
+		};
 
+		$scope.voltarBriefing = function() {
+			_listaPerguntasBriefing[$scope.perguntaAtualBriefing-1].Resposta = $scope.respostaBriefing;
+
+			$scope.perguntaAtualBriefing--;
+			$scope.atualizarDadosBriefing();
+		};
+
+		$scope.avancarBriefing = function() {
+			_listaPerguntasBriefing[$scope.perguntaAtualBriefing-1].Resposta = $scope.respostaBriefing;
+
+			$scope.perguntaAtualBriefing++;
+			$scope.atualizarDadosBriefing();
+		};
+
+		$scope.atualizarDadosBriefing = function() {
+			$scope.perguntaBriefing = _listaPerguntasBriefing[$scope.perguntaAtualBriefing-1].Pergunta;
+			$scope.placeholderBriefing = _listaPerguntasBriefing[$scope.perguntaAtualBriefing-1].Placeholder;
+			$scope.respostaBriefing = _listaPerguntasBriefing[$scope.perguntaAtualBriefing-1].Resposta;
+		};	
+
+		$scope.salvarBriefing = function() {
+			paramOferta.Briefing.emailRecebeLeads = _listaPerguntasBriefing[0].Resposta;
+			paramOferta.Briefing.produtoServicosTrabalhados = _listaPerguntasBriefing[1].Resposta;
+			paramOferta.Briefing.abrangenciaGeografica = _listaPerguntasBriefing[2].Resposta;
+			paramOferta.Briefing.orcamentoAdwords = _listaPerguntasBriefing[3].Resposta;
+			paramOferta.Briefing.atributosTrabalhados = _listaPerguntasBriefing[4].Resposta;
+			paramOferta.Briefing.publicoAlvo = _listaPerguntasBriefing[5].Resposta;
+			paramOferta.Briefing.comoClientesProcuramGoogle = _listaPerguntasBriefing[6].Resposta;
+			paramOferta.Briefing.pricipaisDiferenciais = _listaPerguntasBriefing[7].Resposta;
+			paramOferta.Briefing.clientes = _listaPerguntasBriefing[8].Resposta;
+			paramOferta.Briefing.parceiros = _listaPerguntasBriefing[9].Resposta;
+			paramOferta.Briefing.concorrentes = _listaPerguntasBriefing[10].Resposta;
+			paramOferta.Briefing.referenciaVisual = _listaPerguntasBriefing[11].Resposta;
+
+			$scope.fecharModalBriefing();
+		};
+
+		$scope.fecharModalBriefing = function() {
+			fecharLoader();
+			$('#modalBriefing').modal('hide');
+		};
+		
+
+		$scope.voltar = function() {
 			$location.path('/administrativo');
 		};
 
-		$scope.excluir = function(itemListaPaginas) {
-			//
+		$scope.salvar = function() {
+			abrirLoader();
+
+			$scope.salvarDadosCadastrais(
+				function(){
+
+					$scope.salvarOfertas(
+						function(){
+
+							fecharLoader();
+							$location.path('/administrativo');
+					});
+			});
 		};
 
-		$scope.fecharModal = function() {
-			$scope.lista.push({
-				Objeto: null,
-				ObjetoGoogle: null,
-				Check: true,
-				DataEntrada: new Date(),
-				IDPagina: $scope.paginaPageID,
-				Nome: $scope.paginaNome,
-				PagePath: $scope.paginaPagePath,
-				URL: '',
-				Adwords: $scope.paginaAdwords,
-				NomeShow: $scope.paginaNome,
-				PageID: $scope.paginaPageID,
-				accounts: $scope.accounts,
-				webPropertyIds: $scope.webPropertyIds,
-				profileIds: $scope.profileIds,
-				ContaSelecionada: $scope.contaSelecionada,
-				PropriedadeSelecionada: $scope.propriedadeSelecionada,
-				PerfilSelecionado: $scope.perfilSelecionado
-			});
+		$scope.salvarDadosCadastrais = function(callback) {
+			var _novoLogin = new NovoLogin();
 
-			$('#modal').modal('hide');
+			if (!_inclusaoDeCliente)
+				_novoLogin._id = _dadosLogin._id;
+
+			_novoLogin.status = $scope.status;
+			_novoLogin.login = $scope.login;
+			_novoLogin.email = $scope.contato;
+			_novoLogin.senha = $scope.senha;
+			_novoLogin.tipo = $scope.tipo;
+
+			_novoLogin.$save(function(resultadoNovoLogin){
+				var _novoComplemento = new NovoComplemento();
+
+				if (!_inclusaoDeCliente) {
+					_novoComplemento._id = _dadosComplemento._id;
+					_novoComplemento.objectIdLogin = _dadosLogin._id;
+					_novoComplemento.dataInclusao = _dadosComplemento.dataInclusao;
+				}
+				else {
+					_novoComplemento.dataInclusao = new Date();
+
+					_novoComplemento.objectIdLogin = resultadoNovoLogin._id;
+					_dadosLogin = resultadoNovoLogin._id;
+				}
+
+				_novoComplemento.nome = $scope.empresa;				
+
+				_novoComplemento.$save(
+					function(){
+						callback();
+					});
+			});
 		};
 
-		$scope.incluirBudget = function() {
-			$scope.listaBudgetAdwords.push({
+		$scope.salvarOfertas = function(callback) {
+			$scope.listaOfertas.forEach(function(oferta, index, lista) {
 
-				data: new Date(),
-				dataShow: formarData(new Date()),
-				dataInicial: $scope.dataInicial,
-				dataInicialShow: formarData($scope.dataInicial),
-				dataFinal: $scope.dataFinal,
-				dataFinalShow: formarData($scope.dataFinal),
-				budgetConsumido: $scope.budgetConsumido,
-				budgetDisponivel: $scope.budgetDisponivel
+				var _novoUnbounce = new NovoUnbounce();
 
+				if (oferta.Objeto._id) {
+
+					_novoUnbounce._id = oferta.Objeto._id;
+					_novoUnbounce.dataEntrada = new Date();
+					_novoUnbounce.status = oferta.Objeto.status;
+
+				} else {
+					_novoUnbounce.dataEntrada = oferta.Objeto.dataEntrada;
+					_novoUnbounce.status = "B";
+				}				
+
+				if (!_inclusaoDeCliente)
+					_novoUnbounce.objectIdLogin = ClienteService.objectIdCliente;
+				else 
+					_novoUnbounce.objectIdLogin = _dadosLogin;
+
+				_novoUnbounce.pageId = oferta.Objeto.pageId;
+				_novoUnbounce.pagePath = oferta.Objeto.pagePath;
+				_novoUnbounce.url = oferta.Objeto.url;
+				_novoUnbounce.nome = oferta.Objeto.nome;
+
+				_novoUnbounce.$save(function(){
+
+					$scope.salvarDadosGoogle(oferta.Google);
+
+				});
+
+				if (index == lista.length-1) {
+					callback();
+				}
 			});
+		};
 
+		$scope.salvarDadosGoogle = function(paramDadosGoogle) {
+			var _novoGoogle = new NovoGoogle();
 
-			$scope.dataInicial = null;
-			$scope.dataFinal = null;
-			$scope.budgetConsumido = null;
-			$scope.budgetDisponivel = null;
+			if (paramDadosGoogle._id) 
+				_novoGoogle._id = paramDadosGoogle._id;
+
+			if (_inclusaoDeCliente)
+				_novoGoogle.objectIdLogin = _dadosLogin;
+			else 
+				_novoGoogle.objectIdLogin = ClienteService.objectIdCliente;
+
+			_novoGoogle.unbouncePageId = paramDadosGoogle.unbouncePageId;
+			_novoGoogle.idAdwords = paramDadosGoogle.idAdwords;
+			_novoGoogle.accountId = paramDadosGoogle.accountId;
+			_novoGoogle.webPropertyId = paramDadosGoogle.webPropertyId;
+			_novoGoogle.profileId = paramDadosGoogle.profileId;
+
+			_novoGoogle.$save();
 		};
 
 		$scope.abrirTela();
-	});
+});

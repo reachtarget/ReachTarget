@@ -77,7 +77,22 @@ module.exports = function(app) {
 	controller.retornarLoginsInativos = function(req, res) {
 		Login
 			.find({ 
-				status: 'I',
+				status: 'I'
+			})
+			.exec()
+			.then(
+				function (login) {
+					res.json(login);
+				},
+				function (error) {
+					console.log(error);
+				});
+	};
+
+	controller.retornarLoginsBriefing = function(req, res) {
+		Login
+			.find({ 
+				status: 'B'
 			})
 			.exec()
 			.then(

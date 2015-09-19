@@ -24,6 +24,10 @@ angular.module('reachtarget')
 
 		var EnviarEmailLogin = $resource('/email/novo/login');
 
+		$(document).ready(function() {
+			document.getElementById('divFiltros').style.display = 'none';
+		});
+
 		$scope.adicionarOfertas = function() {
 			$scope.listaOfertas.push({
 				Nome: $scope.nomeEntradaOferta,

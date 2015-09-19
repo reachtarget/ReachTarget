@@ -21,8 +21,8 @@ angular.module('reachtarget', ['ngRoute', 'ngResource'])
 
 
 		$routeProvider.when('/administrativo/novoCliente', {
-			templateUrl: 'partials/novoCliente.html',
-			controller: 'NovoClienteController'
+			templateUrl: 'partials/cliente.html',
+			controller: 'ClienteController'
 		});
 
 		$routeProvider.when('/administrativo/cliente', {

@@ -6,4 +6,7 @@ module.exports = function(app) {
 
 	app.route('/briefing/:objectIdLogin')
 		.get(controller.briefingPorLogin);
+
+	app.route('/briefing/:objectIdLogin/:objectIdCampanha')
+		.get(controller.briefingPorLoginEOferta);
 }

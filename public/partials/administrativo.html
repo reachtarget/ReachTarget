@@ -1,19 +1,13 @@
 <div class="panel-body">
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <button ng-show="clientesAtivos" class="btn btn-primary" ng-click="novoCliente()">Novo cliente</button>
+
+      <!--
       <button ng-show="clientesAtivos" class="btn btn-primary" ng-click="GA()">{{botaoGA}}</button>
-      <button class="btn btn-primary" ng-click="tiposClientes()">{{botaoTipoClientes}}</button>
+      -->
     </div>
-
-    <div ng-show="clientesAtivos" class="col-md-1 ">
-      <button class="btn btn-primary" ng-click="retornarClientes()">Atualizar</button>
-    </div>
-
-    <div ng-show="clientesAtivos" class="col-md-3 pull-right">
-      <input type="text" class="form-control" name="daterangeAdm" id="daterangeAdm" ng-model="inptuDataInicialFinal">
-    </div>
-  </div>
+</div>
 
   <div class="row" >  
     <div class="col-md-12">
@@ -45,8 +39,11 @@
                     <button type="button" class="btn btn-default btn-editarCliente" ng-click="abrirCliente(itemCliente)"/>
                     <button type="button" class="btn btn-default btn-Visualizar" ng-click="abrirDashboard(itemCliente)"/>
                     <button type="button" class="btn btn-default btn-Email" ng-click="enviarEmailComent(itemCliente)"></button>
-                    <button ng-show="MaasOuSiteina == 'M'" type="button" class="btn btn-default " ng-click="abrirDetalhes(itemCliente)"></button>
+                    <button type="button" ng-hide="itemCliente.Show" class="btn btn-default btn-mais" ng-click="abrirDetalhes(itemCliente)"></button>
+                    <button type="button" ng-show="itemCliente.Show" class="btn btn-default btn-menos" ng-click="abrirDetalhes(itemCliente)"></button>                  
                   </td>
+
+                    
 
                   <td>
                     <b>{{itemCliente.Nome}}</b> <i style="font-size: 11px;">({{itemCliente.ID}})</i>
