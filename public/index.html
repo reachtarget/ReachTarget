@@ -74,7 +74,7 @@
             <div class="navbar navbar-default navbar-static-top">
                 <div class="navbar-header" >
                     <img id="logoTopo" class="navbar-brand" />
-                    <img id="logoCliente" class="navbar-brand" />
+                    <img id="logoCliente" style="width: 150px; height: 50px;" class="navbar-brand" />
 
                     <div id="divFiltros" name="divFiltros" data-placement="bottom" data-popover-content="#a1" data-toggle="popover" data-trigger="focus" tabindex="0">
                         <h5 id="campanhaSelecionada"></h5>
@@ -149,7 +149,7 @@
                                 </div>
                             </li>
 
-                            <li ng-show="searchOuInbound" id="estrategia">  <!-- HABILITAR -->
+                            <li id="estrategia">
                                 <div class="dropdown">
                                     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                     Estratégia
@@ -160,11 +160,11 @@
                                             <a href="#/estrategia/objetivos"><i class="fa fa-fw fa-signal"></i> Objetivos</a>
                                         </li>
 
-                                        <li id='metasMaaSRT' role="subitem">
+                                        <li ng-show="searchOuInbound" id='metasMaaSRT' role="subitem">
                                             <a href="#/estrategia/metas"><i class="fa fa-fw fa-signal"></i> Metas</a>
                                         </li>
 
-                                        <li id='timelineMaaSRT' role="subitem">
+                                        <li ng-show="searchOuInbound" id='timelineMaaSRT' role="subitem">
                                             <a href="#/estrategia/timeline"><i class="fa fa-fw fa-signal"></i> Timeline</a>
                                         </li>
                                     </ul>
@@ -178,7 +178,7 @@
                                     </a>
 
                                     <ul role="submenu" class="dropdown-menu dropdown-menu-right" id="preferences-drop">
-                                        <li ng-show="searchOuInbound" id='menuDadosCadastraisMaaS' role="subitem">
+                                        <li id='menuDadosCadastraisMaaS' role="subitem">
                                             <a href="#/configuracoes/dadosCadastrais"><i class="fa fa-fw fa-signal"></i> Dados cadastrais</a> <!-- HABILITAR -->
                                         </li>
 
@@ -206,38 +206,6 @@
                     <div class="content-middle" ng-view></div>
 
                     <h6 id="textoMaaS" name="textoMaaS">O Marketing as a Service (MaaS) é uma plataforma de marketing da Siteina - Todos os direitos reservados - <a href="https://s3-ap-southeast-2.amazonaws.com/siteina/maas/termos/termos-e-condicoes-marketing-as-a-service.pdf" target="_blank"><b>Termos e condições<b/></a></h6>
-                </div>
-            </div>
-        </div>
-
-        <div id="modalAlterarSenha" class="modal fade" ng-controller="LoginController">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Alterar senha</h4>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="row">
-                            Atual:
-                            <br/>
-                            <input class="form-control" ng-model="senhaAnterior" />
-                            <br />
-
-                            Nova:
-                            <br/>
-                            <input class="form-control" ng-model="novaSenha" />
-                        </div>
-                    </div>
-
-                    <div ng-show="usuarioSenhaInvalido" role="alert" id="alerta-login">
-                        {{mensagemUsuarioSenhaInvalido}}
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" ng-click="salvarNovaSenha()">Salvar</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -291,7 +259,6 @@
     <script src="js/controllers/LeadsMaaSController.js"></script>
     <script src="js/controllers/LoginController.js"></script>
     <script src="js/controllers/MetasMaaSController.js"></script>
-    <script src="js/controllers/NovoClienteController.js"></script>
     <script src="js/controllers/ObjetivosMaaSController.js"></script>
     <script src="js/controllers/ProjecaoController.js"></script>
     <script src="js/controllers/TimelineMaaSController.js"></script>

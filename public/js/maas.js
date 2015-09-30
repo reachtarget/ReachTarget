@@ -34,15 +34,43 @@ maasl = function(e, t) {
             cargo: t.c,
             telefone: t.t,
             interesse: t.nt,
-            pagina: t.i,
             source: t.s,
             medium: t.m,
-            term: t.tm,
-            content: t.co,
-            campaign: t.ca,
+            pagina: t.i,
+            tipo: "M"
+        },
+        contentType: _ct
+    })
+},
+
+maas_sl = function(e, t) { // savelead
+    var _maaastrckng = maaastrckng();
+    //var _maasll = maasll();
+
+    $.ajax({
+        url: _u + "/formulario",
+        type: _g,
+        dataType: _dt,
+        data: {
+            objectIdLogin: e,
+
+            nome: t.n,
+            empresa: t.e,
+            email: t.em,
+            cargo: t.c,
+            telefone: t.t,
+            interesse: t.nt,
+            pagina: t.i,
             mql_sql: t.mqlsql,
-            lat: t.la,
-            lng: t.ln
+
+            source: _maaastrckng.s,
+            medium: _maaastrckng.m,
+            term: _maaastrckng.tm,
+            content: _maaastrckng.co,
+            campaign: _maaastrckng.ca,
+            
+            lat: '', //_maasll.la,
+            lng: '' //_maasll.ln
         },
         contentType: _ct
     })
@@ -93,7 +121,7 @@ _uGC = function (l,n,s) {
     return c;
 },
 
-trckng = function() { 
+maaastrckng = function() { 
     var z = _uGC(document.cookie, '__utmz=', ';'); 
     var source  = _uGC(z, 'utmcsr=', '|'); 
     var medium  = _uGC(z, 'utmcmd=', '|'); 
@@ -127,19 +155,29 @@ trckng = function() {
         t: term,
         co: content,
         ca: campaign
-    }ei
+    }
 },
 
-ll = function(){
+maasll = function() {
+    /*
     $.ajax({
-        url: '//freegeoip.net/json/',
-        type: 'POST',
+        
+        url: 'http://www.geoplugin.net/json.gp?jsoncallback=?',
+        type: 'GET',
         dataType: 'jsonp',
+        crossDomain: true,
+
         success: function(location) {
-            return {
-                la: location.latitude,
-                ln: location.longitude
-            }
+            conosole.log(location);
+
+            //return {
+
+              //  ip: location.geoplugin_request,
+                //la: location.geoplugin_latitude,
+                //ln: location.geoplugin_longitude
+
+            //}
         }
     });
+    */
 };

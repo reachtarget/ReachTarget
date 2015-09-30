@@ -89,6 +89,7 @@ angular.module('reachtarget')
 
 		var _dadosLogin = null;
 		var _dadosComplemento = null;
+		var _oferta = null;
 
 		var _idLoginToken = null;
     	var _accessToken = null;
@@ -105,7 +106,7 @@ angular.module('reachtarget')
 		var NovoGoogle = $resource('/google');
 		var DadosGooglePorOferta = $resource('/google/:objectIdLogin/:unbouncePageId');
 
-		var Briefing = $resource('/briefing');
+		var NovoBriefing = $resource('/briefing');
 		var BriefingPorOferta = $resource('/briefing/:objectIdLogin/:objectIdCampanha');
 			
  
@@ -114,7 +115,6 @@ angular.module('reachtarget')
 			$scope.menuDadosCadastrais = (menu == 'dc');
 			$scope.menuOfertas = (menu == 'o');
 			$scope.menuSEO = (menu == 'seo');
-			$scope.menuMetas = (menu == 'm');
 
 		};
 
@@ -141,6 +141,13 @@ angular.module('reachtarget')
 				$scope.contato = resLogin.email;
 				$scope.login = resLogin.login;
 				$scope.senha = resLogin.senha;
+				
+				$scope.tipo = resLogin.tipo;
+
+				$scope.listaTipos.forEach(function(itemTipo){
+					if (itemTipo.id == $scope.tipo)
+						$scope.tipoCliente = itemTipo.descricao;
+				});
 
 				ComplementoObjectIDLogin.get({
 
@@ -548,6 +555,8 @@ angular.module('reachtarget')
 			abrirLoader();
 			$scope.perguntaAtualBriefing = 1;
 
+			_oferta = paramOferta;
+
 			if (paramOferta.Briefing) {
 
 				_listaPerguntasBriefing[0].Resposta = paramOferta.Briefing.emailRecebeLeads;
@@ -569,36 +578,81 @@ angular.module('reachtarget')
 
 			} else {
 
-				BriefingPorOferta.get({
+				if (_inclusaoDeCliente) {
 
-					objectIdLogin: ClienteService.objectIdCliente,
-					objectIdCampanha: paramOferta._id
+					paramOferta.Briefing = [{
 
-				}, function(resBriefingPorOferta) {
+						emailRecebeLeads: '',
+						produtoServicosTrabalhados: '',
+						abrangenciaGeografica: '',
+						orcamentoAdwords: '',
+						atributosTrabalhados: '',
+						publicoAlvo: '',
+						comoClientesProcuramGoogle: '',
+						pricipaisDiferenciais: '',
+						clientes: '',
+						parceiros: '',
+						concorrentes: '',
+						referenciaVisual: ''
 
-					if (resBriefingPorOferta._id) {
-
-						paramOferta.Briefing = resBriefingPorOferta;
-
-						_listaPerguntasBriefing[0].Resposta = resBriefingPorOferta.emailRecebeLeads;
-						_listaPerguntasBriefing[1].Resposta = resBriefingPorOferta.produtoServicosTrabalhados;
-						_listaPerguntasBriefing[2].Resposta = resBriefingPorOferta.abrangenciaGeografica;
-						_listaPerguntasBriefing[3].Resposta = resBriefingPorOferta.orcamentoAdwords;
-						_listaPerguntasBriefing[4].Resposta = resBriefingPorOferta.atributosTrabalhados;
-						_listaPerguntasBriefing[5].Resposta = resBriefingPorOferta.publicoAlvo;
-						_listaPerguntasBriefing[6].Resposta = resBriefingPorOferta.comoClientesProcuramGoogle;
-						_listaPerguntasBriefing[7].Resposta = resBriefingPorOferta.pricipaisDiferenciais;
-						_listaPerguntasBriefing[8].Resposta = resBriefingPorOferta.clientes;
-						_listaPerguntasBriefing[9].Resposta = resBriefingPorOferta.parceiros;
-						_listaPerguntasBriefing[10].Resposta = resBriefingPorOferta.concorrentes;
-						_listaPerguntasBriefing[11].Resposta = resBriefingPorOferta.referenciaVisual;
-
-					}
+					}];
 
 					$scope.atualizarDadosBriefing();		
 					$('#modalBriefing').modal('show');
-					fecharLoader();				 
-				});
+					fecharLoader();		
+
+				} else {
+
+					BriefingPorOferta.get({
+
+						objectIdLogin: ClienteService.objectIdCliente,
+						objectIdCampanha: paramOferta._id
+
+					}, function(resBriefingPorOferta) {
+
+						if (resBriefingPorOferta._id) {
+
+							paramOferta.Briefing = resBriefingPorOferta;
+
+							_listaPerguntasBriefing[0].Resposta = resBriefingPorOferta.emailRecebeLeads;
+							_listaPerguntasBriefing[1].Resposta = resBriefingPorOferta.produtoServicosTrabalhados;
+							_listaPerguntasBriefing[2].Resposta = resBriefingPorOferta.abrangenciaGeografica;
+							_listaPerguntasBriefing[3].Resposta = resBriefingPorOferta.orcamentoAdwords;
+							_listaPerguntasBriefing[4].Resposta = resBriefingPorOferta.atributosTrabalhados;
+							_listaPerguntasBriefing[5].Resposta = resBriefingPorOferta.publicoAlvo;
+							_listaPerguntasBriefing[6].Resposta = resBriefingPorOferta.comoClientesProcuramGoogle;
+							_listaPerguntasBriefing[7].Resposta = resBriefingPorOferta.pricipaisDiferenciais;
+							_listaPerguntasBriefing[8].Resposta = resBriefingPorOferta.clientes;
+							_listaPerguntasBriefing[9].Resposta = resBriefingPorOferta.parceiros;
+							_listaPerguntasBriefing[10].Resposta = resBriefingPorOferta.concorrentes;
+							_listaPerguntasBriefing[11].Resposta = resBriefingPorOferta.referenciaVisual;
+
+						} else {
+
+							paramOferta.Briefing = [{
+
+								emailRecebeLeads: '',
+								produtoServicosTrabalhados: '',
+								abrangenciaGeografica: '',
+								orcamentoAdwords: '',
+								atributosTrabalhados: '',
+								publicoAlvo: '',
+								comoClientesProcuramGoogle: '',
+								pricipaisDiferenciais: '',
+								clientes: '',
+								parceiros: '',
+								concorrentes: '',
+								referenciaVisual: ''
+
+							}];
+
+						}
+
+						$scope.atualizarDadosBriefing();		
+						$('#modalBriefing').modal('show');
+						fecharLoader();				 
+					});
+				}
 			}			
 		};
 
@@ -623,20 +677,31 @@ angular.module('reachtarget')
 		};	
 
 		$scope.salvarBriefing = function() {
-			paramOferta.Briefing.emailRecebeLeads = _listaPerguntasBriefing[0].Resposta;
-			paramOferta.Briefing.produtoServicosTrabalhados = _listaPerguntasBriefing[1].Resposta;
-			paramOferta.Briefing.abrangenciaGeografica = _listaPerguntasBriefing[2].Resposta;
-			paramOferta.Briefing.orcamentoAdwords = _listaPerguntasBriefing[3].Resposta;
-			paramOferta.Briefing.atributosTrabalhados = _listaPerguntasBriefing[4].Resposta;
-			paramOferta.Briefing.publicoAlvo = _listaPerguntasBriefing[5].Resposta;
-			paramOferta.Briefing.comoClientesProcuramGoogle = _listaPerguntasBriefing[6].Resposta;
-			paramOferta.Briefing.pricipaisDiferenciais = _listaPerguntasBriefing[7].Resposta;
-			paramOferta.Briefing.clientes = _listaPerguntasBriefing[8].Resposta;
-			paramOferta.Briefing.parceiros = _listaPerguntasBriefing[9].Resposta;
-			paramOferta.Briefing.concorrentes = _listaPerguntasBriefing[10].Resposta;
-			paramOferta.Briefing.referenciaVisual = _listaPerguntasBriefing[11].Resposta;
+			_listaPerguntasBriefing[$scope.perguntaAtualBriefing-1].Resposta = 
+				$scope.respostaBriefing;
 
-			$scope.fecharModalBriefing();
+			abrirLoader();
+
+			$scope.listaOfertas.forEach(function(item) {
+
+				if (item.Objeto._id == _oferta.Objeto._id) {
+
+					item.Briefing.emailRecebeLeads = _listaPerguntasBriefing[0].Resposta;
+					item.Briefing.produtoServicosTrabalhados = _listaPerguntasBriefing[1].Resposta;
+					item.Briefing.abrangenciaGeografica = _listaPerguntasBriefing[2].Resposta;
+					item.Briefing.orcamentoAdwords = _listaPerguntasBriefing[3].Resposta;
+					item.Briefing.atributosTrabalhados = _listaPerguntasBriefing[4].Resposta;
+					item.Briefing.publicoAlvo = _listaPerguntasBriefing[5].Resposta;
+					item.Briefing.comoClientesProcuramGoogle = _listaPerguntasBriefing[6].Resposta;
+					item.Briefing.pricipaisDiferenciais = _listaPerguntasBriefing[7].Resposta;
+					item.Briefing.clientes = _listaPerguntasBriefing[8].Resposta;
+					item.Briefing.parceiros = _listaPerguntasBriefing[9].Resposta;
+					item.Briefing.concorrentes = _listaPerguntasBriefing[10].Resposta;
+					item.Briefing.referenciaVisual = _listaPerguntasBriefing[11].Resposta;
+
+					$scope.fecharModalBriefing();
+				}
+			});
 		};
 
 		$scope.fecharModalBriefing = function() {
@@ -726,9 +791,13 @@ angular.module('reachtarget')
 				_novoUnbounce.url = oferta.Objeto.url;
 				_novoUnbounce.nome = oferta.Objeto.nome;
 
-				_novoUnbounce.$save(function(){
+				_novoUnbounce.$save(function(salvoUnbounce){
 
-					$scope.salvarDadosGoogle(oferta.Google);
+					if (oferta.Google)
+						$scope.salvarDadosGoogle(oferta.Google);
+
+					if (oferta.Briefing)
+						$scope.salvarDadosBriefing(oferta.Briefing, salvoUnbounce._id);
 
 				});
 
@@ -756,6 +825,34 @@ angular.module('reachtarget')
 			_novoGoogle.profileId = paramDadosGoogle.profileId;
 
 			_novoGoogle.$save();
+		};
+
+		$scope.salvarDadosBriefing = function(paramBriefing, idOferta) {
+			var _novoBriefing = new NovoBriefing();
+
+			if (paramBriefing._id) 
+				_novoBriefing._id = paramBriefing._id;
+
+			if (_inclusaoDeCliente)
+				_novoBriefing.objectIdLogin = _dadosLogin;
+			else 
+				_novoBriefing.objectIdLogin = ClienteService.objectIdCliente;
+
+			_novoBriefing.objectIdCampanha = idOferta;
+			_novoBriefing.emailRecebeLeads = paramBriefing.emailRecebeLeads;
+			_novoBriefing.produtoServicosTrabalhados = paramBriefing.produtoServicosTrabalhados;
+			_novoBriefing.abrangenciaGeografica = paramBriefing.abrangenciaGeografica;
+			_novoBriefing.orcamentoAdwords = paramBriefing.orcamentoAdwords;
+			_novoBriefing.atributosTrabalhados = paramBriefing.atributosTrabalhados;
+			_novoBriefing.publicoAlvo = paramBriefing.publicoAlvo;
+			_novoBriefing.comoClientesProcuramGoogle = paramBriefing.comoClientesProcuramGoogle;
+			_novoBriefing.pricipaisDiferenciais = paramBriefing.pricipaisDiferenciais;
+			_novoBriefing.clientes = paramBriefing.clientes;
+			_novoBriefing.parceiros = paramBriefing.parceiros;
+			_novoBriefing.concorrentes = paramBriefing.concorrentes;
+			_novoBriefing.referenciaVisual = paramBriefing.referenciaVisual;
+
+			_novoBriefing.$save();
 		};
 
 		$scope.abrirTela();

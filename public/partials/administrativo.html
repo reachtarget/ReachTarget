@@ -1,23 +1,14 @@
 <div class="panel-body">
-  <div class="row">
-    <div class="col-md-12">
-      <button ng-show="clientesAtivos" class="btn btn-primary" ng-click="novoCliente()">Novo cliente</button>
-
-      <!--
-      <button ng-show="clientesAtivos" class="btn btn-primary" ng-click="GA()">{{botaoGA}}</button>
-      -->
-    </div>
-</div>
-
   <div class="row" >  
     <div class="col-md-12">
       <div class="panel panel-default" id="panel-destaquefull">
         <div class="panel-heading">
-          <h5 class="panel-title">Clientes</h5>
+          <h5 class="panel-title">Clientes ({{quantidadeDeClientes}})</h5>
+          <button id="littleButtonAdicionarADM" name="littleButtonAdicionarADM" class="btn btn-primary" ng-click="novoCliente()">Novo cliente</button>
           <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
         </div>
         
-        <div style="overflow-y: scroll; height: 82%; width: 100%; padding: 0 !important;"  class="panel-body">
+        <div style="overflow-y: scroll; height: 96%; width: 100%; padding: 0 !important;"  class="panel-body">
           <br/>
           
           <div ng-show="clientesAtivos" class="table-responsive">
@@ -26,6 +17,7 @@
                 <tr>
                   <th width="11%" ></th>
                   <th ng-click="ordenarLista('Nome')">Cliente</th>
+                  <th width="10%" class="text-center">Tipo</th>
                   <th width="8%" class="text-center" ng-click="ordenarLista('Visualizacoes')">Visualizações</th>
                   <th width="8%" class="text-center" ng-click="ordenarLista('Visitantes')">Visitantes</th>
                   <th width="8%" class="text-center" ng-click="ordenarLista('Leads')">Leads</th>
@@ -38,31 +30,37 @@
                   <td width="11%" class="text-center"> 
                     <button type="button" class="btn btn-default btn-editarCliente" ng-click="abrirCliente(itemCliente)"/>
                     <button type="button" class="btn btn-default btn-Visualizar" ng-click="abrirDashboard(itemCliente)"/>
-                    <button type="button" class="btn btn-default btn-Email" ng-click="enviarEmailComent(itemCliente)"></button>
-                    <button type="button" ng-hide="itemCliente.Show" class="btn btn-default btn-mais" ng-click="abrirDetalhes(itemCliente)"></button>
+                    <button type="button" ng-show="itemCliente.DadosAtualizados" class="btn btn-default btn-Email" ng-click="enviarEmailComent(itemCliente)"></button>
+                    <button type="button" ng-show="itemCliente.DadosAtualizados && !itemCliente.Show" class="btn btn-default btn-mais" ng-click="abrirDetalhes(itemCliente)"></button>
                     <button type="button" ng-show="itemCliente.Show" class="btn btn-default btn-menos" ng-click="abrirDetalhes(itemCliente)"></button>                  
                   </td>
-
                     
-
                   <td>
                     <b>{{itemCliente.Nome}}</b> <i style="font-size: 11px;">({{itemCliente.ID}})</i>
                   </td>
 
-                  <td width="8%" class="text-center"> 
-                    <b>{{itemCliente.Visualizacoes}}</b>
+                  <td width="10%" class="text-center"> 
+                    {{itemCliente.TipoDescricao}}
                   </td>
 
-                  <td width="8%" class="text-center"> 
-                    <b>{{itemCliente.Visitantes}}</b>
+                  <td colspan="4" ng-hide="itemCliente.DadosAtualizados" width="32%" class="text-center"> 
+                    <button style="width: 100px; display: inline-block; height: 28px; background-color: #fff; border: 1px solid #ECECEC; background-size: 16px; color: #A5A5B2; font-size: 14px; padding: 0px;" class="btn btn-primary" ng-click="atualizarDadosCliente(itemCliente)">Atualizar</button>
                   </td>
 
-                  <td width="8%" class="text-center"> 
-                    <b>{{itemCliente.Leads}}</b>
+                  <td ng-show="itemCliente.DadosAtualizados" width="8%" class="text-center"> 
+                    {{itemCliente.Visualizacoes}}
                   </td>
 
-                  <td width="8%" class="text-center">
-                    <b>{{itemCliente.TaxaConversao}} %</b>
+                  <td ng-show="itemCliente.DadosAtualizados" width="8%" class="text-center"> 
+                    {{itemCliente.Visitantes}}
+                  </td>
+
+                  <td ng-show="itemCliente.DadosAtualizados" width="8%" class="text-center"> 
+                    {{itemCliente.Leads}}
+                  </td>
+
+                  <td ng-show="itemCliente.DadosAtualizados" width="8%" class="text-center">
+                    {{itemCliente.TaxaConversao}} %
                   </td>
                 </tr>
 
@@ -72,6 +70,8 @@
                   <td >
                     {{itemLP.NomeLanding}} <i style="font-size: 11px;">({{itemLP.IDPage}})</i>
                   </td>
+
+                  <td  width="10%"></td>
 
                   <td width="8%" class="text-center"> 
                     {{itemLP.Visualizacoes}} 

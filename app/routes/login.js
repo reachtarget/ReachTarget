@@ -11,9 +11,8 @@ module.exports = function(app) {
 		.get(controller.retornarLoginObjectIdLogin);
 
 
-	app.route('/siteinaMaas/:tipo')	
-		.get(controller.retornarLoginSiteinaMaaS);
-		
+	app.route('/clientesAtivos')	
+		.get(controller.retornarLoginsAtivos);		
 
 	app.route('/clientesInativos')
 		.get(controller.retornarLoginsInativos);

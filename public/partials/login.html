@@ -10,41 +10,46 @@
       </div>
 
       <div class="panel-body">
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom: 5px;" >
           <label class="input-group-addon" for="login">Login</label>
           <input class="form-control" id="login" name="login" ng-model="login" required>
         </div>
 
-        <!--
-        <div style="cursor: pointer;" class="input-group-addon" for="senha" ng-click="esqueciSenha()">
-          Esqueci minha senha
-        </div>
-        -->
-        
 
-        <div class="input-group">
+        <div ng-hide="esqueciSenha" class="input-group">
           <label class="input-group-addon" for="senha">Senha</label>
           <input type="password" class="form-control" id="senha" name="senha" ng-model="senha" ng-keypress="enter($event)" required>
         </div>
 
-        <div class="col-md-6 no-gutter">
-          
+        <div ng-hide="esqueciSenha" style="cursor: pointer; position: relative; top: -10px; left: 110px; padding: 0px; font-size: 12px;" class="input-group-addon" for="senha" ng-click="functionEsqueciSenha()">
+          Esqueci minha senha
+        </div>
+
+        <div ng-show="esqueciSenha" style="cursor: pointer; position: relative; top: -1px; left: 128px; padding: 2px; font-size: 12px;" class="input-group-addon" for="senha" ng-click="functionEsqueciSenha()">
+          Voltar ao login
+        </div>
+
+        <div class="col-md-6 no-gutter">          
           <!--
           <div class="input-group" id="lembrar">
             <input type="checkbox" ng-model="lembrarDeMim">Lembrar de mim
           </div> 
-          -->
-        
+          -->        
         </div>
 
         <div class="col-md-6 no-gutter">
-          <button class="btn btn-primary pull-right" ng-click="validarLogin()">Login</button>
+          <button  ng-hide="esqueciSenha" ng-disabled="login == '' || login == null || !login || senha == '' || senha == null || !senha" class="btn btn-primary pull-right" ng-click="validarLogin()">Login</button>
+          <button style="position: relative; top: 7px;" ng-show="esqueciSenha" ng-disabled="login == '' || login == null || !login" class="btn btn-primary pull-right" ng-click="enviarNovaSenha()">Enviar</button>
         </div>
 
       </div>
 
       <div ng-show="usuarioSenhaInvalido" role="alert" id="alerta-login">
         {{mensagemUsuarioSenhaInvalido}}
+      </div>
+
+      <div ng-show="disparoEmailLoginSenha" role="alert" id="ok-login">
+        Login e senha enviados por e-mail.
       </div>
     </div>
   </div>

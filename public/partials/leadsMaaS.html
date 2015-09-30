@@ -67,11 +67,11 @@
 		          <thead>
 		            <tr>
 		              <th width="3%" ng-show="permiteExcluirLead" ></th>
-		              <th width="27%">Empresa</th>
-		              <th width="16%">Interesse</th>
+		              <th width="25%">Empresa</th>
+		              <th width="23%">Interesse</th>
 		              <th width="11%" class="text-center">Entrada</th>
-		              <th width="20%" class="text-center">Status</th>
-		              <th width="14%" class="text-right">Valor venda</th>
+		              <th width="16%" class="text-center">Status</th>
+		              <th width="11%" class="text-right">Valor venda</th>
 		              <th width="11%" class="text-center">Fechamento</th>
 		            </tr>
 		          </thead>
@@ -82,7 +82,7 @@
 		                <button type="button" class="btn btn-primary" ng-click="excluirLead(itemLead)">X</button>
 		              </td>
 
-		              <td style="cursor: pointer;" rel="popover" width="27%" id="empresa{{itemLead._id}}" ng-mouseover="mouseOver(itemLead)" ng-mouseleave="mouseLeave(itemLead)">{{itemLead.Empresa}}
+		              <td rel="popover" width="25%" id="empresa{{itemLead._id}}" ng-mouseover="mouseOver('lead', itemLead)" ng-mouseleave="mouseLeave('lead', itemLead)">{{itemLead.Empresa}}
 		              	<div class="hidden" id="contentHover{{itemLead._id}}" name="contentHover{{itemLead._id}}">
 		                	<ul class="tooltip-list">
 		                		<li id="t-name" class="field">{{itemLead.Nome}}</li>
@@ -93,33 +93,117 @@
 		                </div>
 		              </td>
 
-		              <td width="16%">{{itemLead.Interesse}}</td>
+		              <td width="23%">{{itemLead.Interesse}}</td>
 		              <td width="11%" class="text-center">{{itemLead.DataEntrada}}</td>
 		              
-		              <td width="20%" class="text-center"> 
+		              <td width="16%" class="text-center" > 
+
+		              	<label 
+		              		ng-hide="itemLead.editarStatus" 
+		              		ng-mouseover="mouseOver('status', itemLead)" 
+		              		ng-mouseleave="mouseLeave('status', itemLead)"
+		              		ng-click="editStatus(itemLead)" 
+		              		style="cursor: pointer; display: inline; font-weight: normal; margin-bottom: 0px;">{{itemLead.Status}}</label>
+
+                        <button 
+                        	ng-show="itemLead.showButtonStatus && !itemLead.editarStatus" 
+                        	style="display: inline; border: 0;" 
+                        	type="button" ng-click="editStatus(itemLead)" 
+                        	class="btn btn-default btn-editarCliente" />
+
 	    	            <select 
+	    	            	ng-show="itemLead.editarStatus" 
 	    	            	class="form-control" 
 	    	            	style="height: 30px; margin-top: -2px; font-size: 14px; padding: 0px;"
 	    	            	id="propriedades{{itemLead._id}}"
 	        	          	ng-model="itemLead.IDStatus"
 	            	      	ng-options="status.id as status.descricao for status in listaStatus"
 	                	  	ng-change="salvarLead(itemLead)" 
-	                	  	rel="popover">
+	                	  	ng-blur="editStatus(itemLead)"
+	                	  	rel="popover" >
 		                </select>
 
 		                <div class="hidden" id="contentLeadFechamento{{itemLead._id}}" name="contentLeadFechamento{{itemLead._id}}">
-		                	<input id="valorFechamento{{itemLead._id}}" class="form-control" name="valorLeadFechamento{{itemLead._id}}" placeholder="R$ 0,00" >
-        					<input id="dataFechamentoLead{{itemLead._id}}" type="date" class="form-control" name="dataFechamentoLead{{itemLead._id}}" >
+		                	<input 
+		                		style="height: 40px;" 
+		                		class="form-control" 
+		                		placeholder="R$ 0,00" 
+		                		id="valorLeadFechamento{{itemLead._id}}" 
+		                		name="valorLeadFechamento{{itemLead._id}}" >
+        					
+        					<input 
+        						style="margin-top: 10px; height: 40px;" 
+        						type="date" 
+        						class="form-control" 
+        						id="dataFechamentoLead{{itemLead._id}}" 
+        						name="dataFechamentoLead{{itemLead._id}}" >
+        					
         					<br/>
+		                	
 		                	<button
 		                		id="bttnSalvarLeadFechamento{{itemLead._id}}" 
 		                		name="bttnSalvarLeadFechamento{{itemLead._id}}" 
 		                		class="btn btn-primary save-button">Salvar</button>
 		                </div>
+
 	    	          </td>
 
-		              <td width="14%" class="text-right">{{itemLead.ValorTabela}} </td>
-		              <td width="11%" class="text-center">{{itemLead.DataFechamentoTabela}} </td>
+		              <td width="11%" class="text-right" >
+		              	<button 
+		              		ng-show="itemLead.showButtonValor"
+                        	style="display: inline; border: 0;"
+                        	type="button"
+                        	class="btn btn-default btn-editarCliente" />
+
+                        <label 
+                        	ng-hide="itemLead.editarValor" 
+		              		ng-mouseover="mouseOver('valor', itemLead)"
+		              		ng-mouseleave="mouseLeave('valor', itemLead)"
+		              		ng-click="editarValor(itemLead)" 
+		              		style="cursor: pointer; display: inline; font-weight: normal; margin-bottom: 0px;">
+
+		              		{{itemLead.ValorTabela}}
+
+		              	</label>
+
+		              	<input 
+		              		ng-show="itemLead.editarValor" 
+		              		ng-blur="editarValor(itemLead)"
+		              		ng-model="itemLead.Valor"
+		              		name="editar-valor"
+		              		id="valorEdicaoFechamento{{itemLead._id}}" 	
+		                	style="height: 30px; margin-top: -2px; font-size: 14px; padding: 0px;" 
+		                	class="form-control" 
+		                	placeholder="R$ 0,00" >
+		              </td>
+
+		              <td width="11%" class="text-center" >
+		              	<button 
+		              		ng-show="itemLead.showButtonData"
+                        	style="display: inline; border: 0;"
+                        	type="button"
+                        	class="btn btn-default btn-editarCliente" />
+
+                        <label 
+                        	ng-hide="itemLead.editarData" 
+		              		ng-mouseover="mouseOver('data', itemLead)"
+		              		ng-mouseleave="mouseLeave('data', itemLead)"
+		              		ng-click="editarData(itemLead)" 
+		              		style="cursor: pointer; display: inline; font-weight: normal; margin-bottom: 0px;">
+
+		              		{{itemLead.DataFechamentoTabela}}
+		              		
+		              	</label>
+
+		              	<input 
+		              		ng-show="itemLead.editarData" 
+		              		ng-blur="editarData(itemLead)"
+		              		ng-model="itemLead.DataFechamento"
+		              		id="dataEdicaoFechamento{{itemLead._id}}" 	
+        					style="height: 30px; margin-top: -2px; font-size: 14px; padding: 0px; width: 120px;"  
+        					type="date" 
+        					class="form-control" >
+		              </td>
 		            </tr>
 		          </tbody>
 		        </table>

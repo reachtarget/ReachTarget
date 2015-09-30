@@ -58,11 +58,11 @@ module.exports = function(app) {
 				});
 	};
 
-	controller.retornarLoginSiteinaMaaS = function(req, res) {
+	controller.retornarLoginsAtivos = function(req, res) {
 		Login
 			.find({ 
 				status: 'A',
-				tipo: req.params.tipo				
+				login: { '$ne': 'maas' }
 			})
 			.exec()
 			.then(

@@ -1,16 +1,20 @@
 angular.module('reachtarget')
 	.controller('LoginController', function($scope, $location, $resource, LoginService, $rootScope) {
-		$scope.login = 'maas';
-		$scope.senha = 'siteina@67';
+		$scope.login = '';
+		$scope.senha = '';
 
 		$scope.TituloDaPagina = "Marketing as a Service";
 		$scope.lembrarDeMim = false;
 		$scope.senhaAnterior = "";
 		$scope.novaSenha = "";
+
+		$scope.disparoEmailLoginSenha = false;
+
 		$scope.usuarioSenhaInvalido = false;
 		$scope.mensagemUsuarioSenhaInvalido = 'Usuário/senha inválido.';
 
 		$rootScope.logado = false;
+		$scope.esqueciSenha = false;
 
 		$scope.administrador = false;
 		$scope.searchOuInbound = false;
@@ -95,10 +99,12 @@ angular.module('reachtarget')
 				    		LoginService.ListaCampanhas.forEach(function(item) {
 
 				    			if (item.IDPagina == e.options[e.selectedIndex].value) {
+
 				    				$("[data-toggle=popover]").popover('hide');
 				    				
 				    				LoginService.CampanhaSelecionada = item;
 				    				LoginService.clickAtualizarFiltro();
+				    				
 				    			}
 				    		});
 				    });
@@ -160,39 +166,6 @@ angular.module('reachtarget')
 			$location.path('/login');
 		};
 
-		$scope.alterarSenha = function() {
-			$scope.senhaAnterior = "";
-			$scope.novaSenha = "";
-
-			$('#modalAlterarSenha').modal('show');
-		};
-
-		$scope.salvarNovaSenha = function() {
-			if ($scope.senhaAnterior == LoginService.login.senha) {
-				var _novoLogin = new NovoLogin();
-
-				_novoLogin._id = LoginService.login._id;
-				_novoLogin.email = LoginService.login.email;
-				_novoLogin.login = LoginService.login.login;
-				_novoLogin.senha = $scope.novaSenha;
-				_novoLogin.tipo = LoginService.login.tipo;
-				_novoLogin.status = LoginService.login.status;
-
-				_novoLogin.$save();
-
-				LoginService.login.senha = $scope.novaSenha;
-
-				$scope.senhaAnterior = "";
-				$scope.novaSenha = "";
-				$scope.usuarioSenhaInvalido = false;
-
-				$('#modalAlterarSenha').modal('hide');
-			} else {
-				$scope.usuarioSenhaInvalido = true;
-				$scope.mensagemUsuarioSenhaInvalido = 'Senha atual inválida.';
-			}
-		};
-
 		$scope.abrirTela = function() {
 			var _cookie = lerCookie('rtmaassiteinaloginsenha');
 			$scope.PermiteExcluirLead = false;
@@ -243,10 +216,26 @@ angular.module('reachtarget')
 			document.getElementById('headerNav').style.display = 'block';
 
 			if (opcao == 'adm') {
+
 				document.getElementById('logoCliente').style.display = 'none';
-				document.getElementById('menusStarterSearchInbound').style.display = 'none';
-			}
-			if (opcao == 'maas') {
+				
+				document.getElementById('leads').style.visibility = 'hidden';
+				document.getElementById('resultados').style.visibility = 'hidden';
+				document.getElementById('acoes').style.visibility = 'hidden';
+				document.getElementById('estrategia').style.visibility = 'hidden';
+				document.getElementById('menuDadosCadastraisMaaS').style.display = 'none';
+				document.getElementById('menuFaturasMaaS').style.visibility = 'hidden';
+				
+			} else if (opcao == 'maas') {
+
+				document.getElementById('leads').style.visibility = 'visible';
+				document.getElementById('resultados').style.visibility = 'visible';
+				document.getElementById('acoes').style.visibility = 'visible';
+				document.getElementById('estrategia').style.visibility = 'visible';
+				document.getElementById('menuDadosCadastraisMaaS').style.display = 'block';
+				document.getElementById('menuFaturasMaaS').style.visibility = 'visible';
+
+				document.getElementById('logoCliente').style.display = 'block';
 				document.getElementById('logoCliente').src = 'https://s3-ap-southeast-2.amazonaws.com/siteina/maas/logo-clientes/' + $scope.login + '.png';
 			} 
 			
@@ -345,16 +334,18 @@ angular.module('reachtarget')
 
 			$scope.administrador = false;
 			$scope.searchOuInbound = false;
+			$scope.disparoEmailLoginSenha = false;
 			
 			Login.get({ 
 
 				login: $scope.login 
 
 			}, function(resultadoLogin){
+				
 				if ((resultadoLogin) && (resultadoLogin.senha == $scope.senha) && 
 					((resultadoLogin.status == "A") || (resultadoLogin.status == "B"))) {
+					
 					LoginService.login = resultadoLogin;
-
 					LoginService.objectIdLogin = resultadoLogin._id;
 					LoginService.accountIDUnbounce = "1109373";
 					LoginService.tipoLogin = resultadoLogin.tipo;
@@ -372,8 +363,10 @@ angular.module('reachtarget')
 
 						}, function(resultadoComplemento){
 							
-							if (resultadoComplemento)
+							if (resultadoComplemento) {
 								LoginService.nomeEmpresa = resultadoComplemento.nome;
+								LoginService.complementoLogin = resultadoComplemento;
+							}
 
 						});
 
@@ -494,7 +487,8 @@ angular.module('reachtarget')
 							Nome: itemCampanha.nome,
 							PagePath: itemCampanha.pagePath,
 							ProfileID: resultadoGoogleAnalyticsPorCampanha.profileId,
-							Adwords: resultadoGoogleAnalyticsPorCampanha.idAdwords
+							Adwords: resultadoGoogleAnalyticsPorCampanha.idAdwords,
+							Campanha: resultadoGoogleAnalyticsPorCampanha
 						});
 
 						if (indexCampanha == listaCampanha.length-1) {
@@ -600,7 +594,12 @@ angular.module('reachtarget')
 			$scope.usuarioSenhaInvalido = true;
 		};		
 
-		$scope.esqueciSenha = function() {
+		$scope.functionEsqueciSenha = function() {
+			$scope.esqueciSenha = !$scope.esqueciSenha;
+		};
+
+		$scope.enviarNovaSenha = function() {
+
 			Login.get({ 
 
 				login: $scope.login 
@@ -609,11 +608,20 @@ angular.module('reachtarget')
 
 				if (resultadoLogin._id) {
 
+					abrirLoader();
 					var _enviarEmailLogin = new EnviarEmailLogin();
+
 					_enviarEmailLogin.id = resultadoLogin.email;
 					_enviarEmailLogin.login = resultadoLogin.login;
 					_enviarEmailLogin.senha = resultadoLogin.senha;
-					_enviarEmailLogin.$save();
+					
+					_enviarEmailLogin.$save(
+						function() {
+							$scope.functionEsqueciSenha();
+							fecharLoader();
+
+							$scope.disparoEmailLoginSenha = true;
+						});
 
 				} else {
 
@@ -622,6 +630,7 @@ angular.module('reachtarget')
 
 				}
 			});
+
 		};
 
 		$scope.desabilitarNavBar();

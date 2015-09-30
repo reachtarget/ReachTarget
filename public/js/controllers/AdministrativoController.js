@@ -15,6 +15,7 @@ angular.module('reachtarget')
 		$scope.logadoGA = false;
 		$scope.botaoGA = "Login GA";
 		$scope.inptuDataInicialFinal = "";
+		$scope.quantidadeDeClientes = 0;
 
 		$scope.listaClientes = [];
 		var _listaClientesMaas = [];
@@ -26,6 +27,7 @@ angular.module('reachtarget')
 	        { id: "S", descricao: 'Semanal' },
     	    { id: "M", descricao: 'Mensal' }];
 
+    	$scope.filtroPorTipo = '';
 
 		var _i = 0;
 		var _listaAnalytics = [];
@@ -45,7 +47,7 @@ angular.module('reachtarget')
 		var _refresh = false;
 
 
-		var ClientesSiteinaMaaS = $resource('/siteinaMaas/:tipo');
+		var ClientesAtivos = $resource('/clientesAtivos');
 		var ClientesInativos = $resource('/clientesInativos');
 		var ClientesBriefing = $resource('/clientesBriefing');
 
@@ -79,8 +81,10 @@ angular.module('reachtarget')
 					$scope.retornarClientesBriefing();
 
 				} else {
+
 					$scope.clientesAtivos = false;					
 					$scope.retornarClientesInativos();
+					
 				}
 			};			
 		});
@@ -126,26 +130,32 @@ angular.module('reachtarget')
 		};
 
 		$scope.popularDadosCliente = function(item) {
-			
-			console.log(item);
+
+			console.log(item._id);
 
 			ComplementoLogin.get({
 
 				objectIdLogin: item._id
 
-				}, function(resComplementoLogin){
-
-					console.log(resComplementoLogin);
+				}, function(resComplementoLogin) {
 
 					var _cliente = {
 						Show: false,
+						DadosAtualizados: false,
 						ID: item._id,
 						Nome: resComplementoLogin.nome,
 						Email: item.email,
 						Login: item.login,
 						Senha: item.senha,
 						Tipo: item.tipo,
-						TipoTable: (item.tipo == "M") ? "MaaS" : "Consultoria",							
+						
+						TipoDescricao: 
+							(item.tipo == 'M')
+								? 'Starter'
+								: (item.tipo == 'S')
+									? 'Search'
+									: 'Inbound',
+
 						Visualizacoes: 0,
 						Visitantes: 0,
 						Leads: 0,
@@ -156,259 +166,342 @@ angular.module('reachtarget')
 
 					$scope.listaClientes.push(_cliente);
 
+					if (_i < _listaDadosClientes.length-1) {
+						_i++;
+						$scope.popularDadosCliente(_listaDadosClientes[_i]);	
+					}
 
-					if (item.tipo == "M")
-						_listaClientesMaas.push(_cliente);
+					/*
 
-					if (_cliente.Tipo == "S") {								
+					PaginasUnbouncePorUsuario.query({
 
-						TokenGoogle.get({
-							objectIdLogin: _cliente.ID
-						}, function(resultadoTokenGoogle) {
+						objectId: _cliente.ID
 
-							gapi.client.setApiKey(LoginService.ApiKey);
+					}, function(resultadoPaginasUnbouncePorUsuario) {
 
-			    			gapi.auth.setToken({
-								access_token: resultadoTokenGoogle.accessToken
-							});
-							
-							gapi.client.analytics.data.ga.get({
-	    						'ids': 'ga:' + resultadoTokenGoogle.profileId,
-    							'start-date': LoginService.DataInicialFormat,
-    							'end-date': LoginService.DataFinalFormat,
-    							'metrics': 'ga:sessions,ga:users',
-							})
-							.execute(function(resGAPI) {   
+						var _ok = false;
+						var _qtdePagina = 0;
 
-								if ((resGAPI.code) && (resGAPI.code == 401)) {
+						resultadoPaginasUnbouncePorUsuario.forEach(function(itemPagina, indexPagina, listaPagina) {
 
-									RefreshToken.get({
-										
-										accessToken: resultadoTokenGoogle.accessToken,
-										refreshToken: resultadoTokenGoogle.refreshToken,
-										id: resultadoTokenGoogle._id
+							GoogleAnalyticsPorUnbouncePage.get({
 
-									}, function(resRefreshToken){
-										gapi.client.setApiKey(LoginService.ApiKey);
+								objectIdLogin:  _cliente.ID,
+								unbouncePageId: itemPagina.pageId
 
-						    			gapi.auth.setToken({
-											access_token: resRefreshToken.accessToken
-										});
+							}, function(resGoogleAnalyticsPorUnbouncePage) {
 
-										_refresh = true;
+								var _landing = {
+									IDPage: itemPagina.pageId,
+									NomeLanding: itemPagina.nome, 
+									ProfileID: resGoogleAnalyticsPorUnbouncePage.profileId,
+									Visualizacoes: 0,
+									Visitantes: 0,
+									Leads: 0,
+									ListaLeads: [],
+									TaxaConversao: '0.0'
+								};
+
+
+								if (_listaProfilesID.indexOf(_landing.ProfileID) == -1) {
+
+									_listaProfilesID.push(_landing.ProfileID);
+									
+									gapi.client.analytics.data.ga.get({
+										'ids': 'ga:' + _landing.ProfileID,
+										'start-date': LoginService.DataInicialFormat,
+										'end-date': LoginService.DataFinalFormat,
+										'metrics': 'ga:sessions,ga:users,ga:uniquePageviews',
+										'dimensions': 'ga:pagePath'											
+									})
+									.execute(function(resGAPI) {
+
+										if (resGAPI.rows) {
+											_listaAnalytics.push(resGAPI.rows);
+											
+											_ok = true;
+
+											resGAPI.rows.forEach(function(itemAnalytics) {
+
+												if (itemAnalytics[0] == itemPagina.pagePath) {
+
+													_landing.Visualizacoes = new Number(itemAnalytics[1]);
+													_landing.Visitantes = new Number(itemAnalytics[2]);
+
+													_cliente.Visualizacoes += new Number(itemAnalytics[1]);
+													_cliente.Visitantes += new Number(itemAnalytics[2]);
+
+
+													if (_landing.Visitantes > 0)
+														_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
+													else 
+														_landing.TaxaConversao = '0.0';
+												}
+											});											
+										}
+
+										if (indexPagina == listaPagina.length-1) {
+
+											if (_i < _listaDadosClientes.length-1) {
+												if (_cliente.Visitantes > 0)
+													_cliente.TaxaConversao = ((_cliente.Leads / _cliente.Visitantes) * 100).toFixed(1);
+												else 
+													_cliente.TaxaConversao = '0.0';
+
+												_i++;
+												$scope.popularDadosCliente(_listaDadosClientes[_i]);	
+											}												
+										}
 									});
 
 								} else {
 
-									if (resGAPI.rows) {
-										_cliente.Visualizacoes = new Number(resGAPI.rows[0][0]);
-										_cliente.Visitantes = new Number(resGAPI.rows[0][1]);	
-									} else {
-										_cliente.Visualizacoes = 0;
-										_cliente.Visitantes = 0;
-									}
-									
+									var refreshIntervalId = 
+										setInterval(function() {
+											if (_ok) {
 
-									if (!_refresh) {
+												_listaAnalytics.forEach(function(itemAnalytics) {
 
-    									ConsultarLeads.query({
+													itemAnalytics.forEach(function(item0) {
 
-    										objectId: _cliente.ID,
-              								dataInicial: LoginService.DataInicial,
-	          								dataFinal: LoginService.DataFinal
+														if (item0[0] == itemPagina.pagePath) {
 
-    									}, function(resultadoLeads) {
+															_landing.Visualizacoes = new Number(item0[1]);
+															_landing.Visitantes = new Number(item0[2]);
 
-    										_cliente.Leads = resultadoLeads.length;
+															_cliente.Visualizacoes += new Number(item0[1]);
+															_cliente.Visitantes += new Number(item0[2]);
 
-    										if (_cliente.Visitantes > 0)
-												_cliente.TaxaConversao = ((_cliente.Leads / _cliente.Visitantes) * 100).toFixed(1);
-											else 
-												_cliente.TaxaConversao = '0.0';
 
-    									});
-									}
+															if (_landing.Visitantes > 0)
+																_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
+															else 
+																_landing.TaxaConversao = '0.0';
+														}
+													});														
+												});	
+
+												clearInterval(refreshIntervalId);
+
+												if (indexPagina == listaPagina.length-1) {
+
+													if (_i < _listaDadosClientes.length-1) {
+														if (_cliente.Visitantes > 0)
+															_cliente.TaxaConversao = ((_cliente.Leads / _cliente.Visitantes) * 100).toFixed(1);
+														else 
+															_cliente.TaxaConversao = '0.0';
+
+														_i++;
+														$scope.popularDadosCliente(_listaDadosClientes[_i]);	
+													}												
+												}
+											}
+										},
+										250);										
 								}
 
-								//$scope.popularDadosCliente(_listaDadosClientes[_i]);
-							});
-						});
 
-					} else if (_cliente.Tipo == "M") {
-						PaginasUnbouncePorUsuario.query({
-							objectId: _cliente.ID
-						}, function(resultadoPaginasUnbouncePorUsuario) {
+								ConsultarLeadsMaaS.query({
 
-							var _ok = false;
-							var _qtdePagina = 0;
+									objectId: _cliente.ID,
+									dataInicial: LoginService.DataInicial,
+									dataFinal: LoginService.DataFinal,
+									pagina: itemPagina.pageId
 
-							resultadoPaginasUnbouncePorUsuario.forEach(function(itemPagina, indexPagina, listaPagina) {
+								}, function(resultadoLeadsPaginaUnbounce) {
 
-								GoogleAnalyticsPorUnbouncePage.get({
+									_landing.Leads += resultadoLeadsPaginaUnbounce.length;
+									_landing.ListaLeads = resultadoLeadsPaginaUnbounce;
 
-									objectIdLogin:  _cliente.ID,
-									unbouncePageId: itemPagina.pageId
+									if (_landing.Visitantes > 0)
+										_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
+									else 
+										_landing.TaxaConversao = '0.0';
 
-								}, function(resGoogleAnalyticsPorUnbouncePage) {
+									_cliente.Leads += resultadoLeadsPaginaUnbounce.length;
 
-									var _landing = {
-										IDPage: itemPagina.pageId,
-										NomeLanding: itemPagina.nome, 
-										ProfileID: resGoogleAnalyticsPorUnbouncePage.profileId,
-										Visualizacoes: 0,
-										Visitantes: 0,
-										Leads: 0,
-										ListaLeads: [],
-										TaxaConversao: '0.0'
-									};
-
-
-									if (_listaProfilesID.indexOf(_landing.ProfileID) == -1) {
-
-										_listaProfilesID.push(_landing.ProfileID);
-										
-										gapi.client.analytics.data.ga.get({
-											'ids': 'ga:' + _landing.ProfileID,
-											'start-date': LoginService.DataInicialFormat,
-											'end-date': LoginService.DataFinalFormat,
-											'metrics': 'ga:sessions,ga:users,ga:uniquePageviews',
-											'dimensions': 'ga:pagePath'											
-										})
-										.execute(function(resGAPI) {
-
-											if (resGAPI.rows) {
-												_listaAnalytics.push(resGAPI.rows);
-												
-												_ok = true;
-
-												resGAPI.rows.forEach(function(itemAnalytics) {
-
-													if (itemAnalytics[0] == itemPagina.pagePath) {
-
-														_landing.Visualizacoes = new Number(itemAnalytics[1]);
-														_landing.Visitantes = new Number(itemAnalytics[2]);
-
-														_cliente.Visualizacoes += new Number(itemAnalytics[1]);
-														_cliente.Visitantes += new Number(itemAnalytics[2]);
-
-
-														if (_landing.Visitantes > 0)
-															_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
-														else 
-															_landing.TaxaConversao = '0.0';
-													}
-												});											
-											}
-
-											if (indexPagina == listaPagina.length-1) {
-
-												if (_i < _listaDadosClientes.length-1) {
-													if (_cliente.Visitantes > 0)
-														_cliente.TaxaConversao = ((_cliente.Leads / _cliente.Visitantes) * 100).toFixed(1);
-													else 
-														_cliente.TaxaConversao = '0.0';
-
-													_i++;
-													$scope.popularDadosCliente(_listaDadosClientes[_i]);	
-												}												
-											}
+									if (resultadoLeadsPaginaUnbounce.length > 0) {
+										resultadoLeadsPaginaUnbounce.forEach(function(item){
+											_cliente.ListaLeads.push(item);
 										});
-
-									} else {
-
-										var refreshIntervalId = 
-											setInterval(function() {
-												if (_ok) {
-
-													_listaAnalytics.forEach(function(itemAnalytics) {
-
-														itemAnalytics.forEach(function(item0) {
-
-															if (item0[0] == itemPagina.pagePath) {
-
-																_landing.Visualizacoes = new Number(item0[1]);
-																_landing.Visitantes = new Number(item0[2]);
-
-																_cliente.Visualizacoes += new Number(item0[1]);
-																_cliente.Visitantes += new Number(item0[2]);
-
-
-																if (_landing.Visitantes > 0)
-																	_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
-																else 
-																	_landing.TaxaConversao = '0.0';
-															}
-														});														
-													});	
-
-													clearInterval(refreshIntervalId);
-
-													if (indexPagina == listaPagina.length-1) {
-
-														if (_i < _listaDadosClientes.length-1) {
-															if (_cliente.Visitantes > 0)
-																_cliente.TaxaConversao = ((_cliente.Leads / _cliente.Visitantes) * 100).toFixed(1);
-															else 
-																_cliente.TaxaConversao = '0.0';
-
-															_i++;
-															$scope.popularDadosCliente(_listaDadosClientes[_i]);	
-														}												
-													}
-												}
-											},
-											250);										
 									}
-
-
-									ConsultarLeadsMaaS.query({
-
-										objectId: _cliente.ID,
-										dataInicial: LoginService.DataInicial,
-										dataFinal: LoginService.DataFinal,
-										pagina: itemPagina.pageId
-
-									}, function(resultadoLeadsPaginaUnbounce) {
-
-										_landing.Leads += resultadoLeadsPaginaUnbounce.length;
-										_landing.ListaLeads = resultadoLeadsPaginaUnbounce;
-
-										if (_landing.Visitantes > 0)
-											_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
-										else 
-											_landing.TaxaConversao = '0.0';
-
-										_cliente.Leads += resultadoLeadsPaginaUnbounce.length;
-
-										if (resultadoLeadsPaginaUnbounce.length > 0) {
-											resultadoLeadsPaginaUnbounce.forEach(function(item){
-												_cliente.ListaLeads.push(item);
-											});
-										}
-										
-										_cliente.ListaLP.push(_landing);										
-									});
-
-
-									/*
-									var _id = resGoogleAnalyticsPorUnbouncePage.profileId;
-
-									$scope.dadosAnalyticsCampanhasMaaS(_id, _landing, _cliente, itemPagina.pagePath);
-
-									_qtdePagina++;
-
-									if (_qtdePagina == listaPagina.length) {
-
-										
-									}
-									*/
-
+									
+									_cliente.ListaLP.push(_landing);										
 								});
 							});
 						});
-					}
+					});
+					*/
 			});
 		}
+
+		$scope.atualizarDadosCliente = function(cliente) {
+
+			abrirLoader();
+
+			PaginasUnbouncePorUsuario.query({
+
+				objectId: cliente.ID
+
+			}, function(resultadoPaginasUnbouncePorUsuario) {
+
+				var _ok = false;
+				var _qtdePagina = 0;
+
+				resultadoPaginasUnbouncePorUsuario.forEach(function(itemPagina, indexPagina, listaPagina) {
+
+					GoogleAnalyticsPorUnbouncePage.get({
+
+						objectIdLogin:  cliente.ID,
+						unbouncePageId: itemPagina.pageId
+
+					}, function(resGoogleAnalyticsPorUnbouncePage) {
+
+						var _landing = {
+							IDPage: itemPagina.pageId,
+							NomeLanding: itemPagina.nome, 
+							ProfileID: resGoogleAnalyticsPorUnbouncePage.profileId,
+							Visualizacoes: 0,
+							Visitantes: 0,
+							Leads: 0,
+							ListaLeads: [],
+							TaxaConversao: '0.0'
+						};
+
+
+						if (_listaProfilesID.indexOf(_landing.ProfileID) == -1) {
+
+							_listaProfilesID.push(_landing.ProfileID);
+							
+							gapi.client.analytics.data.ga.get({
+								'ids': 'ga:' + _landing.ProfileID,
+								'start-date': LoginService.DataInicialFormat,
+								'end-date': LoginService.DataFinalFormat,
+								'metrics': 'ga:sessions,ga:users,ga:uniquePageviews',
+								'dimensions': 'ga:pagePath'											
+							})
+							.execute(function(resGAPI) {
+
+								if (resGAPI.rows) {
+									_listaAnalytics.push(resGAPI.rows);
+									
+									_ok = true;
+
+									resGAPI.rows.forEach(function(itemAnalytics) {
+
+										if (itemAnalytics[0] == itemPagina.pagePath) {
+
+											_landing.Visualizacoes = new Number(itemAnalytics[1]);
+											_landing.Visitantes = new Number(itemAnalytics[2]);
+
+											cliente.Visualizacoes += new Number(itemAnalytics[1]);
+											cliente.Visitantes += new Number(itemAnalytics[2]);
+
+
+											if (_landing.Visitantes > 0)
+												_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
+											else 
+												_landing.TaxaConversao = '0.0';
+										}
+									});											
+								}
+
+								if (indexPagina == listaPagina.length-1) {
+
+									if (_i < _listaDadosClientes.length-1) {
+										if (cliente.Visitantes > 0)
+											cliente.TaxaConversao = ((cliente.Leads / cliente.Visitantes) * 100).toFixed(1);
+										else 
+											cliente.TaxaConversao = '0.0';
+
+										_i++;
+										$scope.popularDadosCliente(_listaDadosClientes[_i]);	
+									}												
+								}
+							});
+
+						} else {
+
+							var refreshIntervalId = 
+								setInterval(function() {
+									if (_ok) {
+
+										_listaAnalytics.forEach(function(itemAnalytics) {
+
+											itemAnalytics.forEach(function(item0) {
+
+												if (item0[0] == itemPagina.pagePath) {
+
+													_landing.Visualizacoes = new Number(item0[1]);
+													_landing.Visitantes = new Number(item0[2]);
+
+													cliente.Visualizacoes += new Number(item0[1]);
+													cliente.Visitantes += new Number(item0[2]);
+
+
+													if (_landing.Visitantes > 0)
+														_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
+													else 
+														_landing.TaxaConversao = '0.0';
+												}
+											});														
+										});	
+
+										clearInterval(refreshIntervalId);
+
+										if (indexPagina == listaPagina.length-1) {
+
+											if (_i < _listaDadosClientes.length-1) {
+												if (cliente.Visitantes > 0)
+													cliente.TaxaConversao = ((cliente.Leads / cliente.Visitantes) * 100).toFixed(1);
+												else 
+													cliente.TaxaConversao = '0.0';
+
+												_i++;
+												$scope.popularDadosCliente(_listaDadosClientes[_i]);	
+											}												
+										}
+									}
+								},
+								250);										
+						}
+
+
+						ConsultarLeadsMaaS.query({
+
+							objectId: cliente.ID,
+							dataInicial: LoginService.DataInicial,
+							dataFinal: LoginService.DataFinal,
+							pagina: itemPagina.pageId
+
+						}, function(resultadoLeadsPaginaUnbounce) {
+
+							_landing.Leads += resultadoLeadsPaginaUnbounce.length;
+							_landing.ListaLeads = resultadoLeadsPaginaUnbounce;
+
+							if (_landing.Visitantes > 0)
+								_landing.TaxaConversao = ((_landing.Leads / _landing.Visitantes) * 100).toFixed(1);
+							else 
+								_landing.TaxaConversao = '0.0';
+
+							cliente.Leads += resultadoLeadsPaginaUnbounce.length;
+
+							if (resultadoLeadsPaginaUnbounce.length > 0) {
+								resultadoLeadsPaginaUnbounce.forEach(function(item){
+									cliente.ListaLeads.push(item);
+								});
+							}
+
+							fecharLoader();
+
+							cliente.DadosAtualizados = true;
+							cliente.ListaLP.push(_landing);										
+						});
+					});
+				});
+			});
+
+		};
 
 
 		$scope.retornarClientes = function() {
@@ -420,12 +513,10 @@ angular.module('reachtarget')
 			$scope.listaClientes = [];
 			_listaClientesMaas = [];
 
-			ClientesSiteinaMaaS
-				.query({
-					tipo: LoginService.TipoAdministrativo
-				}, function(resClientes) {
+			ClientesAtivos
+				.query(function(resClientes) {
 
-					console.log(resClientes);
+					$scope.quantidadeDeClientes = resClientes.length;
 
 					if (resClientes.length == 0) {
 

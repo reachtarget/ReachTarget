@@ -15,30 +15,20 @@ angular.module('reachtarget')
 		$scope.concorrentes = null;
 		$scope.referenciaVisual = null;
 
-		$scope.textoBotao = "Enviar briefing";
-
-		var _idBriefing = null;
-
-		var Briefing = $resource('/briefing');
-		var BriefingPorLogin = $resource('/briefing/:objectIdLogin');
+		var BriefingPorLoginECampanha = $resource('/briefing/:objectIdLogin/:objectIdCampanha');
 
 
 		$scope.carregarBriefing = function() {
-			_idBriefing = null;
-			$scope.textoBotao = "Enviar briefing";
 
-			BriefingPorLogin.get({
+			BriefingPorLoginECampanha.get({
 
-				objectIdLogin: LoginService.objectIdLogin
+				objectIdLogin: LoginService.objectIdLogin,
+				objectIdCampanha: LoginService.CampanhaSelecionada._id
 
 			}, function(resultadoBriefingPorLogin) {
 
 				if (resultadoBriefingPorLogin._id) {
 
-					_idBriefing = resultadoBriefingPorLogin._id;
-
-					$scope.nomeEmpresa = resultadoBriefingPorLogin.nomeEmpresa;
-					$scope.emailRecebeLeads = resultadoBriefingPorLogin.emailRecebeLeads;
 					$scope.produtoServicosTrabalhados = resultadoBriefingPorLogin.produtoServicosTrabalhados;
 					$scope.abrangenciaGeografica = resultadoBriefingPorLogin.abrangenciaGeografica;
 					$scope.orcamentoAdwords = resultadoBriefingPorLogin.orcamentoAdwords;
@@ -50,40 +40,8 @@ angular.module('reachtarget')
 					$scope.parceiros = resultadoBriefingPorLogin.parceiros;
 					$scope.concorrentes = resultadoBriefingPorLogin.concorrentes;
 					$scope.referenciaVisual = resultadoBriefingPorLogin.referenciaVisual;
-
-					$scope.textoBotao = "Reenviar briefing";
-
 				}
 
-			});
-		};
-
-		$scope.enviarBriefing = function() {
-			var _briefing = new Briefing();
-
-			if (_idBriefing)
-				_briefing._id = _idBriefing;				
-
-			_briefing.objectIdLogin = LoginService.objectIdLogin;
-			_briefing.dataPreenchimento = new Date();
-			_briefing.nomeEmpresa = $scope.nomeEmpresa;
-			_briefing.emailRecebeLeads = $scope.emailRecebeLeads;
-			_briefing.produtoServicosTrabalhados = $scope.produtoServicosTrabalhados;
-			_briefing.abrangenciaGeografica = $scope.abrangenciaGeografica;
-			_briefing.orcamentoAdwords = $scope.orcamentoAdwords;
-			_briefing.atributosTrabalhados = $scope.atributosTrabalhados;
-			_briefing.publicoAlvo = $scope.publicoAlvo;
-			_briefing.comoClientesProcuramGoogle = $scope.comoClientesProcuramGoogle;
-			_briefing.pricipaisDiferenciais = $scope.pricipaisDiferenciais;
-			_briefing.clientes = $scope.clientes;
-			_briefing.parceiros = $scope.parceiros;
-			_briefing.concorrentes = $scope.concorrentes;
-			_briefing.referenciaVisual = $scope.referenciaVisual;
-
-			_briefing.$save(
-				function() {
-					if (_idBriefing)
-						$location.path('maas');
 			});
 		};
 

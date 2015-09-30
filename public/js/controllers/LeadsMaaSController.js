@@ -11,6 +11,8 @@ angular.module('reachtarget')
     $scope.filtro = "";
     $scope.temCampanhaSelecionada = true;
 
+    var _popoverLeadFechamento = false;
+
     var NovoLead = $resource('/lead');
 	var ExcluirLead = $resource('/excluir/lead/:id');
 	var ConsultarLeads = $resource('/lead/maas/:objectId/:dataInicial/:dataFinal/:pagina');
@@ -108,6 +110,7 @@ angular.module('reachtarget')
 						_data = new Date(lead.data);
 						_dataTabela = lpad(_data.getDate(), 2) + "/" + lpad(new Number(_data.getMonth() + 1), 2) + "/" + _data.getFullYear();
 						_dataFechamentoTabela = null;
+						_dataFechamento = null;
 						_fechamento = null;
 
 						if (lead.valorFechamento) {
@@ -134,10 +137,17 @@ angular.module('reachtarget')
 							DataEntrada: _dataTabela,
 							IDStatus: lead.status,
 							Status: $scope.listaStatus[lead.status].descricao,
+							showButtonStatus: false,
+							editarStatus: false,
 							ValorTabela: _fechamento,
 							Valor: lead.valorFechamento,
+							showButtonValor: false,
+							editarValor: false,
 							DataFechamentoTabela: _dataFechamentoTabela,
-							DataFechamento: lead.dataFechamento
+							DataFechamento: _dataFechamento,
+							showButtonData: false,
+							editarData: false,
+							habilitarSalvarLead: false
 						});
 					}
 
@@ -153,9 +163,11 @@ angular.module('reachtarget')
 
 	$scope.salvarLead = function(leadAlteracao) {
 
-		var _alterarLead = new NovoLead(leadAlteracao.Lead);
+		leadAlteracao.Status = $scope.listaStatus[leadAlteracao.IDStatus].descricao;
 
 		if (leadAlteracao.IDStatus == 4) {
+
+			_popoverLeadFechamento = true;
 
 			$('#propriedades' + leadAlteracao._id).popover({
 			    placement : 'right',
@@ -168,7 +180,12 @@ angular.module('reachtarget')
 
 			$('#propriedades' + leadAlteracao._id).popover('show');
 
-			$("#valorFechamento" + leadAlteracao._id).maskMoney({
+			setTimeout(function(){
+				leadAlteracao.habilitarSalvarLead = true;
+			},
+			1000);
+
+			$("#valorLeadFechamento" + leadAlteracao._id).maskMoney({
     				showSymbol: true, 
     				prefix: "R$ ", 
     				decimal: ",", 
@@ -179,7 +196,7 @@ angular.module('reachtarget')
 
 			$('#bttnSalvarLeadFechamento' + leadAlteracao._id).click(function() {
 
-				var _valor = $("#valorFechamento" + leadAlteracao._id).maskMoney('unmasked')[0];
+				var _valor = $("#valorLeadFechamento" + leadAlteracao._id).maskMoney('unmasked')[0];
 				var _data = new Date($('#dataFechamentoLead' + leadAlteracao._id).val());
 				_data.setDate(_data.getDate() + 1);
 
@@ -188,29 +205,20 @@ angular.module('reachtarget')
 				leadAlteracao.DataFechamento = _data;
 				leadAlteracao.DataFechamentoTabela = lpad(_data.getDate(), 2) + "/" + lpad(new Number(_data.getMonth() + 1), 2) + "/" + _data.getFullYear();
 
+				var _alterarLead = new NovoLead(leadAlteracao.Lead);
 				_alterarLead.status = leadAlteracao.IDStatus;
 				_alterarLead.valorFechamento = _valor;
 				_alterarLead.dataFechamento = _data;
 
 				_alterarLead.$save(function(){
+					_popoverLeadFechamento = false;
+					$scope.editStatus(leadAlteracao);
+
 					$scope.atualizarDadosSuperiores();
 					$('#propriedades' + leadAlteracao._id).popover('hide');
 				});
 			});
 
-		} else {
-
-			leadAlteracao.Valor = null;
-			leadAlteracao.ValorTabela = null;
-			leadAlteracao.DataFechamento = null;
-			leadAlteracao.DataFechamentoTabela = null;
-
-			_alterarLead.status = leadAlteracao.IDStatus;
-			_alterarLead.valorFechamento = null;
-			_alterarLead.dataFechamento = null;
-
-			_alterarLead.$save();
-			$scope.atualizarDadosSuperiores();
 		}
 	};
 
@@ -278,23 +286,129 @@ angular.module('reachtarget')
 		});
     };
 
-    $scope.mouseOver = function(lead) {
-    	$('#empresa' + lead._id).popover({
-		    placement: 'top',
-		    trigger: 'manual',
-		    container : 'body',
-		    html: true,
-		    content: function() {
-          		return $('#contentHover' + lead._id).html();
-        	}
-		});
+    $scope.mouseOver = function(tipo, lead) {
+    	if (tipo == 'lead') {
 
-		$('#empresa' + lead._id).popover('show');			
+	    	$('#empresa' + lead._id).popover({
+			    placement: 'top',
+			    trigger: 'manual',
+			    container : 'body',
+			    html: true,
+			    content: function() {
+	          		return $('#contentHover' + lead._id).html();
+	        	}
+			});
+
+			$('#empresa' + lead._id).popover('show');			
+
+		} else if (tipo == 'status') {
+
+			lead.showButtonStatus = true;
+
+		} else if (tipo == 'valor') {
+
+			lead.showButtonValor = (lead.IDStatus == 4);
+
+		} else if (tipo == 'data') {
+
+			lead.showButtonData = (lead.IDStatus == 4);
+
+		}
     };
 
-    $scope.mouseLeave = function(lead) {
-    	$('#empresa' + lead._id).popover('hide');
+    $scope.mouseLeave = function(tipo, lead) {
+    	if (tipo == 'lead') {
+
+	    	$('#empresa' + lead._id).popover('hide');
+
+	    } else if (tipo == 'status') {
+
+	    	lead.showButtonStatus = false;
+
+	    } else if (tipo == 'valor') {
+
+	    	lead.showButtonValor = false;
+
+		} else if (tipo == 'data') {
+
+			lead.showButtonData = false;
+
+		}
     };
+
+    $scope.editStatus = function(lead) {
+    	if (!_popoverLeadFechamento) {
+
+	    	lead.editarStatus = !lead.editarStatus;
+
+
+	    	if ((lead.IDStatus != 4) && (!lead.editarStatus)) {
+	    		
+	    		lead.Valor = null;
+				lead.ValorTabela = null;
+				lead.DataFechamento = null;
+				lead.DataFechamentoTabela = null;
+
+				var _alterarLead = new NovoLead(lead.Lead);
+				_alterarLead.status = lead.IDStatus;
+				_alterarLead.valorFechamento = null;
+				_alterarLead.dataFechamento = null;
+
+				_alterarLead.$save();
+				$scope.atualizarDadosSuperiores();
+
+	    	}
+    	}
+    };
+
+    $scope.editarValor = function(lead) {
+    	lead.editarValor = !lead.editarValor;
+
+    	if (lead.editarValor) {
+
+    		$("[name='editar-valor']").maskMoney({
+    				showSymbol: true, 
+    				prefix: "R$ ", 
+    				decimal: ",", 
+    				thousands: "."
+    		});
+
+    	} else {
+
+			var _valor = $("#valorEdicaoFechamento" + lead._id).maskMoney('unmasked')[0];
+
+			lead.Valor = _valor;
+			lead.ValorTabela = 'R$ ' + formatReal(_valor);
+
+			var _alterarLead = new NovoLead(lead.Lead);
+			_alterarLead.status = lead.IDStatus;
+			_alterarLead.valorFechamento = _valor;
+			_alterarLead.$save();
+
+			$scope.atualizarDadosSuperiores();
+    	}
+    };
+
+    $scope.editarData = function(lead) {
+    	lead.editarData = !lead.editarData;
+
+    	if (!lead.editarData) {
+
+			var _data = new Date($('#dataEdicaoFechamento' + lead._id).val());
+			_data.setDate(_data.getDate() + 1);
+
+			lead.DataFechamento = _data;
+			lead.DataFechamentoTabela = lpad(_data.getDate(), 2) + "/" + lpad(new Number(_data.getMonth() + 1), 2) + "/" + _data.getFullYear();
+
+			var _alterarLead = new NovoLead(lead.Lead);
+			_alterarLead.status = lead.IDStatus;
+			_alterarLead.dataFechamento = _data;
+			_alterarLead.$save();
+
+			$scope.atualizarDadosSuperiores();
+    	}
+    };
+
 
     $scope.consultarLeads();
 });
