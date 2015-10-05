@@ -4,7 +4,11 @@
       <div class="panel panel-default" id="panel-destaquefull">
         <div class="panel-heading">
           <h5 class="panel-title">Clientes ({{quantidadeDeClientes}})</h5>
+
+          <button style="right: 306px;" id="littleButtonAdicionarADM" name="littleButtonAdicionarADM" class="btn btn-primary" ng-hide"logadoGA" ng-click="GA()">Login GA</button>
+          
           <button id="littleButtonAdicionarADM" name="littleButtonAdicionarADM" class="btn btn-primary" ng-click="novoCliente()">Novo cliente</button>
+          
           <input id="little" class="form-control" placeholder="Pesquisar" ng-model="filtro"/>
         </div>
         

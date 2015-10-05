@@ -7,6 +7,6 @@ module.exports = function(app) {
 	app.route('/briefing/:objectIdLogin')
 		.get(controller.briefingPorLogin);
 
-	app.route('/briefing/:objectIdLogin/:objectIdCampanha')
+	app.route('/briefingPorOferta/:objectIdLogin/:objectIdCampanha')
 		.get(controller.briefingPorLoginEOferta);
 }

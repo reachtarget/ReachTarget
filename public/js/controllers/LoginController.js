@@ -308,6 +308,20 @@ angular.module('reachtarget')
 
 				$scope.TituloDaPagina = "ReachTarget";
 
+			} else if (_urlAcesso == 'homolo') {
+
+				_favicon = 'vendor/bootstrap/img/maas/favicon.ico'
+				_login = 'vendor/bootstrap/img/maas/logotipo-marketing-as-a-service.png';
+				_topo = 'vendor/bootstrap/img/maas/marketing-as-a-service-logo.png';
+
+				LoginService.ApiKey = "AIzaSyCRufP9DpO_dFh_JC7BLtmTY4L7PyFfDYM";
+				LoginService.ClienteID = "863929293926-mdjncleikusp23iukjip8c3cthb3lu1v.apps.googleusercontent.com";
+				LoginService.ClientSecret = "vPToXTnMnVGp1nW86RBGzvb6";
+				LoginService.RedirectUri = "http://homologacao.marketingasaservice.com.br/oauth2callback";
+				LoginService.TipoAdministrativo = "M";
+
+				$scope.TituloDaPagina = "Marketing as a Service";
+
 			}
 
 			var link = document.createElement('link');
@@ -330,6 +344,11 @@ angular.module('reachtarget')
 		};
 
 		$scope.validarLogin = function() {
+			if (($scope.login == '') || ($scope.login == null) ||
+				($scope.senha == '') || ($scope.senha == null)) 
+				return;
+
+
 			abrirLoader();
 
 			$scope.administrador = false;
@@ -483,6 +502,7 @@ angular.module('reachtarget')
 					}, function(resultadoGoogleAnalyticsPorCampanha) {
 
 						LoginService.ListaCampanhas.push({
+							IDCampanha: itemCampanha._id,
 							IDPagina: itemCampanha.pageId,
 							Nome: itemCampanha.nome,
 							PagePath: itemCampanha.pagePath,

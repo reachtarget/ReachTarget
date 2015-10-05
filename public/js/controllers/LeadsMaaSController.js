@@ -337,10 +337,14 @@ angular.module('reachtarget')
     };
 
     $scope.editStatus = function(lead) {
+    	/*
+    	$scope.empresaLeadAlteracao = lead.Empresa;
+    	$('#modalStatus').modal('show');
+    	*/
+
     	if (!_popoverLeadFechamento) {
 
 	    	lead.editarStatus = !lead.editarStatus;
-
 
 	    	if ((lead.IDStatus != 4) && (!lead.editarStatus)) {
 	    		

@@ -125,13 +125,13 @@ angular.module('reachtarget')
     				$scope.logadoGA = false;
 					
 					document.getElementById('loaderIndex').style.display = 'none';
-    			}	    		
+    			}
     		});
 		};
 
 		$scope.popularDadosCliente = function(item) {
+			abrirLoader();
 
-			console.log(item._id);
 
 			ComplementoLogin.get({
 
@@ -139,36 +139,45 @@ angular.module('reachtarget')
 
 				}, function(resComplementoLogin) {
 
-					var _cliente = {
-						Show: false,
-						DadosAtualizados: false,
-						ID: item._id,
-						Nome: resComplementoLogin.nome,
-						Email: item.email,
-						Login: item.login,
-						Senha: item.senha,
-						Tipo: item.tipo,
-						
-						TipoDescricao: 
-							(item.tipo == 'M')
-								? 'Starter'
-								: (item.tipo == 'S')
-									? 'Search'
-									: 'Inbound',
+					if ((resComplementoLogin) && (resComplementoLogin._id)) {
 
-						Visualizacoes: 0,
-						Visitantes: 0,
-						Leads: 0,
-						TaxaConversao: '0.0',
-						ListaLP: [],
-						ListaLeads: []
-					};
+						var _cliente = {
+							Show: false,
+							DadosAtualizados: false,
+							ID: item._id,
+							Nome: resComplementoLogin.nome,
+							Email: item.email,
+							Login: item.login,
+							Senha: item.senha,
+							Tipo: item.tipo,
+							
+							TipoDescricao: 
+								(item.tipo == 'M')
+									? 'Starter'
+									: (item.tipo == 'S')
+										? 'Search'
+										: 'Inbound',
 
-					$scope.listaClientes.push(_cliente);
+							Visualizacoes: 0,
+							Visitantes: 0,
+							Leads: 0,
+							TaxaConversao: '0.0',
+							ListaLP: [],
+							ListaLeads: []
+						};
+
+						$scope.listaClientes.push(_cliente);
+					}
 
 					if (_i < _listaDadosClientes.length-1) {
+						
 						_i++;
 						$scope.popularDadosCliente(_listaDadosClientes[_i]);	
+
+					} else {
+
+						fecharLoader();
+
 					}
 
 					/*
@@ -505,6 +514,8 @@ angular.module('reachtarget')
 
 
 		$scope.retornarClientes = function() {
+			abrirLoader();
+			
 			_listaAnalytics = [];
 			_listaProfilesID = [];
 

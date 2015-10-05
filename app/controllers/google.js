@@ -144,6 +144,11 @@ module.exports = function(app) {
 			oauth2Client = 
 				new OAuth2('863929293926-e6jsrke6hh3olpps5b04a1a515lt8586.apps.googleusercontent.com', 'btSSS0N7x0dGgfYq1FDpQwM', 'postmessage');
 
+		} else if (host == 'homologacao.marketingasaservice.com.br') {
+
+			oauth2Client = 
+				new OAuth2('863929293926-mdjncleikusp23iukjip8c3cthb3lu1v.apps.googleusercontent.com', 'vPToXTnMnVGp1nW86RBGzvb6', 'postmessage');
+
 		} else {
 
 			oauth2Client = 
@@ -154,3 +159,5 @@ module.exports = function(app) {
 
 	return controller;
 }
+
+

@@ -234,3 +234,69 @@
       </div>
 	</div>	
 </div>
+
+
+<!-- Modal Status -->
+<div id="modalStatus" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 450px;" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row" style="margin: 0px;">
+          <div class="col-md-12">
+
+            <!-- Empresa -->
+            <div class="row" style="margin: 0px;">
+              <div class="col-md-12" style="height: 33px;">
+                <h2 style="position: relative; top: -26px; margin: 0px; left: -17px;" >{{empresaLeadAlteracao}}</h2>
+              </div>
+            </div>
+            <!-- Empresa -->
+
+            <!-- Status -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="contaAnalytics">Status</label>
+                  <select class="form-control" id="contaAnalytics" ng-model="statusLeadAlteracao" ng-options="status.id as status.descricao for status in listaStatus">
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- Status -->
+
+            <!-- Valor / Data fechamento -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="pagePath">Valor</label>
+                  <input class="form-control" required>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="input-group" style="margin-bottom: 0px; display: block;">
+                  <label style="position: relative; top: -8px; text-align: left; left: -10px;" class="input-group-addon" for="urlAcesso">Data de fechamento</label>
+                  <input style="height: 44px;" class="form-control" type="date" required>
+                </div>
+              </div>
+            </div>
+            <!-- Valor / Data fechamento -->            
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal-footer">
+        <button style="position: relative; left: -14px;" type="button" class="btn btn-primary" ng-click="salvarLandingPage()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal LandingPage -->

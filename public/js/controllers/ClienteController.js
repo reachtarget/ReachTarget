@@ -107,7 +107,7 @@ angular.module('reachtarget')
 		var DadosGooglePorOferta = $resource('/google/:objectIdLogin/:unbouncePageId');
 
 		var NovoBriefing = $resource('/briefing');
-		var BriefingPorOferta = $resource('/briefing/:objectIdLogin/:objectIdCampanha');
+		var BriefingPorOferta = $resource('/briefingPorOferta/:objectIdLogin/:objectIdCampanha');
 			
  
 		$scope.clickMenu = function(menu) {
@@ -603,10 +603,13 @@ angular.module('reachtarget')
 
 				} else {
 
+					console.log(ClienteService.objectIdCliente);
+					console.log(paramOferta.Objeto._id);
+
 					BriefingPorOferta.get({
 
 						objectIdLogin: ClienteService.objectIdCliente,
-						objectIdCampanha: paramOferta._id
+						objectIdCampanha: paramOferta.Objeto._id
 
 					}, function(resBriefingPorOferta) {
 
@@ -628,6 +631,19 @@ angular.module('reachtarget')
 							_listaPerguntasBriefing[11].Resposta = resBriefingPorOferta.referenciaVisual;
 
 						} else {
+
+							_listaPerguntasBriefing[0].Resposta = '';
+							_listaPerguntasBriefing[1].Resposta = '';
+							_listaPerguntasBriefing[2].Resposta = '';
+							_listaPerguntasBriefing[3].Resposta = '';
+							_listaPerguntasBriefing[4].Resposta = '';
+							_listaPerguntasBriefing[5].Resposta = '';
+							_listaPerguntasBriefing[6].Resposta = '';
+							_listaPerguntasBriefing[7].Resposta = '';
+							_listaPerguntasBriefing[8].Resposta = '';
+							_listaPerguntasBriefing[9].Resposta = '';
+							_listaPerguntasBriefing[10].Resposta = '';
+							_listaPerguntasBriefing[11].Resposta = '';
 
 							paramOferta.Briefing = [{
 
