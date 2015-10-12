@@ -1,5 +1,5 @@
 angular.module('reachtarget')
-    .controller('LeadsMaaSController', function($resource, $scope, $location, LoginService) {
+    .controller('LeadsMaaSController', function($resource, $scope, $location, LoginService, FichaLeadService) {
 
 	$scope.listaLeads = [];
     $scope.permiteExcluirLead = false;
@@ -411,6 +411,13 @@ angular.module('reachtarget')
 
 			$scope.atualizarDadosSuperiores();
     	}
+    };
+
+    $scope.fichaDoLead = function(lead) {
+    	FichaLeadService.objectLead = lead;
+
+    	$('#empresa' + lead._id).popover('hide');
+    	$location.path('/leads/fichaDoLead');
     };
 
 

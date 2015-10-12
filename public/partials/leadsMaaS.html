@@ -82,7 +82,7 @@
 		                <button type="button" class="btn btn-primary" ng-click="excluirLead(itemLead)">X</button>
 		              </td>
 
-		              <td rel="popover" width="25%" id="empresa{{itemLead._id}}" ng-mouseover="mouseOver('lead', itemLead)" ng-mouseleave="mouseLeave('lead', itemLead)">{{itemLead.Empresa}}
+		              <td style="cursor: pointer;" rel="popover" width="25%" id="empresa{{itemLead._id}}" ng-click="fichaDoLead(itemLead)" ng-mouseover="mouseOver('lead', itemLead)" ng-mouseleave="mouseLeave('lead', itemLead)">{{itemLead.Empresa}}
 		              	<div class="hidden" id="contentHover{{itemLead._id}}" name="contentHover{{itemLead._id}}">
 		                	<ul class="tooltip-list">
 		                		<li id="t-name" class="field">{{itemLead.Nome}}</li>

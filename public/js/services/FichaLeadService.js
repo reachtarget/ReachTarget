@@ -1,4 +1,4 @@
 angular.module('reachtarget')
 	.service('FichaLeadService', function() {
-		var idLead = "";
+		var objectLead = null;
 });

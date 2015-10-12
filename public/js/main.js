@@ -42,6 +42,11 @@ angular.module('reachtarget', ['ngRoute', 'ngResource'])
 			controller: 'LeadsMaaSController'
 		});
 
+		$routeProvider.when('/leads/fichaDoLead', {
+			templateUrl: 'partials/fichaLeadMaaS.html',
+			controller: 'FichaLeadMaaSController'
+		});
+
 
 		$routeProvider.when('/resultados/estatisticas', {
 			templateUrl: 'partials/estatisticasMaaS.html',

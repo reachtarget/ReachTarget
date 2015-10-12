@@ -1,5 +1,5 @@
 angular.module('reachtarget')
-	.controller('FichaLeadController', function($resource, $scope, $location, LoginService, FichaLeadService) {
+	.controller('FichaLeadMaaSController', function($resource, $scope, $location, LoginService, FichaLeadService) {
 
 	$scope.nome = "";
 	$scope.cargo = "";
@@ -28,16 +28,19 @@ angular.module('reachtarget')
     var _valorAtual = null;    
 
 	var ConsultarLeadPorID = $resource('/lead/:objectId/:idLead');
-	var ConsultarTimelineLead = $resource('/timelineLead/:objectId/:idLead');
-
+	//var ConsultarTimelineLead = $resource('/timelineLead/:objectId/:idLead');
 
 
 	$scope.consultarDadosLead = function(){
+
 		ConsultarLeadPorID.get({ 
+
 			objectId: LoginService.objectIdLogin,
-			idLead: FichaLeadService.idLead
-		},
-		function(lead) { 
+			idLead: FichaLeadService.objectLead._id
+
+		}, function(lead) { 
+
+			console.log(lead);
 
 			if (lead.dataFechamento) {
 				var _data = new Date(lead.dataFechamento);
@@ -56,11 +59,13 @@ angular.module('reachtarget')
 			$scope.origem = lead.origem;
 			$scope.status = $scope.listaStatus[lead.status].descricao;
 
-			$scope.consultarTimeline();
+			//$scope.consultarTimeline();
 		});
 	};
 
 	$scope.consultarTimeline = function(){
+		/*
+
 		ConsultarTimelineLead.query({ 
 
 			objectId: LoginService.objectIdLogin,
@@ -96,6 +101,7 @@ angular.module('reachtarget')
                 });
 			});
 		});
+		*/
 	};
 
 	$scope.consultarDadosLead();	
