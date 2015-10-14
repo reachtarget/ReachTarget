@@ -129,7 +129,7 @@ angular.module('reachtarget')
     			'end-date': LoginService.DataFinalFormat,
     			'dimensions': _diaSemanaMesGA,
     			'sort': _ordenacaoDiaSemanaMesGA,
-    			'metrics': 'ga:sessions,ga:users',
+    			'metrics': 'ga:pageviews,ga:uniquePageviews',
     			'filters':  
 					(LoginService.CampanhaSelecionada.PagePath == '/') 
 						? null

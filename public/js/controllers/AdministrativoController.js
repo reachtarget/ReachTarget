@@ -220,7 +220,7 @@ angular.module('reachtarget')
 										'ids': 'ga:' + _landing.ProfileID,
 										'start-date': LoginService.DataInicialFormat,
 										'end-date': LoginService.DataFinalFormat,
-										'metrics': 'ga:sessions,ga:users,ga:uniquePageviews',
+										'metrics': 'ga:pageviews,ga:uniquePageviews',
 										'dimensions': 'ga:pagePath'											
 									})
 									.execute(function(resGAPI) {
@@ -386,7 +386,7 @@ angular.module('reachtarget')
 								'ids': 'ga:' + _landing.ProfileID,
 								'start-date': LoginService.DataInicialFormat,
 								'end-date': LoginService.DataFinalFormat,
-								'metrics': 'ga:sessions,ga:users,ga:uniquePageviews',
+								'metrics': 'ga:pageviews,ga:uniquePageviews',
 								'dimensions': 'ga:pagePath'											
 							})
 							.execute(function(resGAPI) {
@@ -567,7 +567,7 @@ angular.module('reachtarget')
                 	'ids': 'ga:60998176',
                 	'start-date': _dataTesteGA,
                 	'end-date': _dataTesteGA,
-                	'metrics': 'ga:sessions',
+                	'metrics': 'ga:pageviews',
             	})
             	.execute(function(resultado) {
             		if ((resultado.code) && (resultado.code == 401)) {
